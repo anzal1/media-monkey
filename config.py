@@ -23,7 +23,7 @@ LANGUAGE = os.getenv("LANGUAGE", "en")
 
 # ── LLM (Gemini — most advanced model) ──────
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-pro")
 
 # ── TTS (ElevenLabs — random voice each run) ─
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
