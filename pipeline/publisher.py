@@ -427,8 +427,12 @@ def _ig_web_login() -> tuple[str | None, str]:
         if err_type:
             print(f"     Error type: {err_type}")
         if data.get("checkpoint_url"):
-            print(
-                f"     ⚠️  Checkpoint: https://www.instagram.com{data['checkpoint_url']}")
+            cp_url = data["checkpoint_url"]
+            if cp_url.startswith("http"):
+                full_url = cp_url
+            else:
+                full_url = f"https://www.instagram.com{cp_url}"
+            print(f"     ⚠️  Checkpoint: {full_url}")
             print(f"        Open that URL in your browser, verify, then re-run.")
         return None, ""
 
