@@ -1,0 +1,12 @@
+output/
+.env
+*.pickle
+__pycache__/
+.venv/
+*.pyc
+assets/music/*.mp3
+client_secrets.json
+youtube_token.pickle
+instagram_session.json
+*.session
+.DS_Store

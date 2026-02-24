@@ -1,0 +1,155 @@
+name: 🐵 Media Monkey — Instagram Reels
+
+on:
+  # Run 3 times a day (8 AM, 2 PM, 8 PM UTC) for better engagement
+  schedule:
+    - cron: "0 8 * * *"
+    - cron: "0 14 * * *"
+    - cron: "0 20 * * *"
+
+  # Manual trigger with optional overrides
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Video topic (leave empty for auto-pilot — live trending)"
+        required: false
+        type: string
+      category:
+        description: "Topic category (used when topic is empty)"
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - fun
+          - tech
+          - science
+          - psychology
+          - money
+          - history
+          - health
+          - motivation
+          - trending
+      style:
+        description: "Content style (auto-matched in auto-pilot)"
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - fun_facts
+          - motivational
+          - scary_stories
+          - reddit_stories
+          - top5_listicle
+          - news_recap
+          - did_you_know
+          - fun_entertainment
+          - tech_explainer
+          - trending_now
+      language:
+        description: "Language"
+        required: false
+        default: "en"
+        type: choice
+        options:
+          - en
+          - hi
+
+env:
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+  PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+  YOUTUBE_UPLOAD_ENABLED: "false"
+  INSTAGRAM_UPLOAD_ENABLED: "true"
+  INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
+  INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
+  INSTAGRAM_TOTP_SECRET: ${{ secrets.INSTAGRAM_TOTP_SECRET }}
+
+jobs:
+  generate-and-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: 📦 Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: 📦 Install Python dependencies
+        run: pip install -r requirements.txt
+
+      # ── Restore cached Instagram session (avoids login challenges) ──
+      - name: 🔐 Restore Instagram session cache
+        uses: actions/cache@v4
+        with:
+          path: instagram_session.json
+          key: ig-session-${{ secrets.INSTAGRAM_USERNAME }}
+
+      # ── Build the CLI command ──
+      - name: 🐵 Generate & publish video
+        run: |
+          CMD="python main.py --publish"
+
+          # Optional: specific topic
+          TOPIC="${{ github.event.inputs.topic }}"
+          if [ -n "$TOPIC" ]; then
+            CMD="$CMD --topic \"$TOPIC\""
+          fi
+
+          # Optional: category (only when no topic)
+          CATEGORY="${{ github.event.inputs.category }}"
+          if [ -z "$TOPIC" ] && [ -n "$CATEGORY" ]; then
+            CMD="$CMD --category $CATEGORY"
+          fi
+
+          # Optional: style override
+          STYLE="${{ github.event.inputs.style }}"
+          if [ -n "$STYLE" ]; then
+            CMD="$CMD --style $STYLE"
+          fi
+
+          # Language
+          LANG="${{ github.event.inputs.language || 'en' }}"
+          CMD="$CMD --lang $LANG"
+
+          echo "Running: $CMD"
+          eval $CMD
+
+      # ── Save Instagram session for next run ──
+      - name: 🔐 Save Instagram session
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: instagram_session.json
+          key: ig-session-${{ secrets.INSTAGRAM_USERNAME }}
+
+      - name: 📤 Upload video as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-${{ github.run_number }}
+          path: |
+            output/*/final_video.mp4
+            output/*/thumbnail.jpg
+          retention-days: 7
+
+      - name: 📤 Upload metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: metadata-${{ github.run_number }}
+          path: |
+            output/*/script.json
+            output/*/voice_info.json
+          retention-days: 7
