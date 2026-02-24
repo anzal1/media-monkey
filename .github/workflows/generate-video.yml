@@ -81,13 +81,18 @@ jobs:
           python-version: "3.13"
           cache: "pip"
 
-      - name: 📦 Install system dependencies
+      - name: 📦 Install ffmpeg (static binary — fast)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          # Static build is ~70MB single binary — way faster than apt-get (94MB + 100 deps)
+          curl -sL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz | \
+            tar -xJ --strip-components=1 -C /usr/local/bin/ --wildcards '*/ffmpeg' '*/ffprobe'
+          ffmpeg -version | head -1
 
       - name: 📦 Install Python dependencies
-        run: pip install -r requirements.txt
+        run: |
+          # Install PyTorch CPU-only first (much smaller than default CUDA build)
+          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
 
       # ── Restore cached Instagram session (avoids login challenges) ──
       - name: 🔐 Restore Instagram session cache
