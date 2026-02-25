@@ -166,13 +166,7 @@ jobs:
         if: always()
         run: |
           if [ -f instagram_session.json ]; then
-            python3 << 'PYEOF'
-          import json, time
-          data = json.load(open('instagram_session.json'))
-          data['saved_at'] = int(time.time())
-          json.dump(data, open('instagram_session.json', 'w'), indent=2)
-          print('Session timestamp refreshed')
-          PYEOF
+            python3 -c 'import json,time;d=json.load(open("instagram_session.json"));d["saved_at"]=int(time.time());json.dump(d,open("instagram_session.json","w"),indent=2);print("Session timestamp refreshed")'
           fi
 
       - name: 🔐 Cache session
