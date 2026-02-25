@@ -166,14 +166,13 @@ jobs:
         if: always()
         run: |
           if [ -f instagram_session.json ]; then
-            # Update saved_at timestamp so next run sees fresh age
-            python3 -c "
-import json, time
-data = json.load(open('instagram_session.json'))
-data['saved_at'] = int(time.time())
-json.dump(data, open('instagram_session.json', 'w'), indent=2)
-print('✅ Session timestamp refreshed')
-"
+            python3 << 'PYEOF'
+          import json, time
+          data = json.load(open('instagram_session.json'))
+          data['saved_at'] = int(time.time())
+          json.dump(data, open('instagram_session.json', 'w'), indent=2)
+          print('Session timestamp refreshed')
+          PYEOF
           fi
 
       - name: 🔐 Cache session
