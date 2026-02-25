@@ -432,8 +432,15 @@ def _ig_web_login() -> tuple[str | None, str]:
                 full_url = cp_url
             else:
                 full_url = f"https://www.instagram.com{cp_url}"
-            print(f"     ⚠️  Checkpoint: {full_url}")
-            print(f"        Open that URL in your browser, verify, then re-run.")
+            print(f"     ⚠️  Checkpoint required: {full_url}")
+            print(f"        Instagram flagged this login (datacenter / new IP).")
+            print(f"        ")
+            print(f"        To fix for GitHub Actions:")
+            print(f"          1. Run locally: python scripts/export_session.py")
+            print(
+                f"          2. Copy the base64 output as GitHub secret INSTAGRAM_SESSION_B64")
+            print(
+                f"          3. Re-run the workflow — it will use the pre-seeded session")
         return None, ""
 
 

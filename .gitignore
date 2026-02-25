@@ -10,3 +10,5 @@ youtube_token.pickle
 instagram_session.json
 *.session
 .DS_Store
+.secrets
+.actrc

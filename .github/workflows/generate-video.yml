@@ -94,12 +94,42 @@ jobs:
           pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements.txt
 
-      # ── Restore cached Instagram session (avoids login challenges) ──
-      - name: 🔐 Restore Instagram session cache
-        uses: actions/cache@v4
+      # ── Restore Instagram session ──
+      # Priority: cache (freshest, from last run) > secret (bootstrap seed)
+      # The session auto-refreshes every run (3x/day keeps it alive indefinitely)
+      - name: 🔐 Restore Instagram session (cache)
+        id: session-cache
+        uses: actions/cache/restore@v4
         with:
           path: instagram_session.json
-          key: ig-session-${{ secrets.INSTAGRAM_USERNAME }}
+          key: ig-session-${{ secrets.INSTAGRAM_USERNAME }}-${{ github.run_number }}
+          restore-keys: |
+            ig-session-${{ secrets.INSTAGRAM_USERNAME }}-
+
+      - name: 🔐 Seed session from secret (first run / cache miss)
+        if: steps.session-cache.outputs.cache-hit != 'true'
+        run: |
+          if [ -n "${{ secrets.INSTAGRAM_SESSION_B64 }}" ]; then
+            echo "${{ secrets.INSTAGRAM_SESSION_B64 }}" | base64 -d > instagram_session.json
+            echo "✅ Bootstrapped session from INSTAGRAM_SESSION_B64 secret"
+          else
+            echo "⚠️  No cached session AND no INSTAGRAM_SESSION_B64 secret!"
+            echo "   Run locally: python scripts/export_session.py"
+            echo "   Then add the output as a GitHub secret: INSTAGRAM_SESSION_B64"
+          fi
+
+      - name: 🔍 Check session age
+        run: |
+          if [ -f instagram_session.json ]; then
+            SAVED_AT=$(python3 -c "import json; print(json.load(open('instagram_session.json')).get('saved_at', 0))")
+            AGE_DAYS=$(python3 -c "import time; print(int((time.time() - $SAVED_AT) / 86400))")
+            echo "📅 Session age: ${AGE_DAYS} days"
+            if [ "$AGE_DAYS" -gt 60 ]; then
+              echo "::warning::Instagram session is ${AGE_DAYS} days old. Consider refreshing: python scripts/export_session.py"
+            fi
+          else
+            echo "::warning::No Instagram session found. Run: python scripts/export_session.py"
+          fi
 
       # ── Build the CLI command ──
       - name: 🐵 Generate & publish video
@@ -131,13 +161,27 @@ jobs:
           echo "Running: $CMD"
           eval $CMD
 
-      # ── Save Instagram session for next run ──
+      # ── Save refreshed Instagram session for next run ──
       - name: 🔐 Save Instagram session
+        if: always()
+        run: |
+          if [ -f instagram_session.json ]; then
+            # Update saved_at timestamp so next run sees fresh age
+            python3 -c "
+import json, time
+data = json.load(open('instagram_session.json'))
+data['saved_at'] = int(time.time())
+json.dump(data, open('instagram_session.json', 'w'), indent=2)
+print('✅ Session timestamp refreshed')
+"
+          fi
+
+      - name: 🔐 Cache session
         if: always()
         uses: actions/cache/save@v4
         with:
           path: instagram_session.json
-          key: ig-session-${{ secrets.INSTAGRAM_USERNAME }}
+          key: ig-session-${{ secrets.INSTAGRAM_USERNAME }}-${{ github.run_number }}
 
       - name: 📤 Upload video as artifact
         if: always()
