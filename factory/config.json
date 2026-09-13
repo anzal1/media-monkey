@@ -1,0 +1,47 @@
+{
+  "voice": "af_bella",
+  "voiceCandidates": ["af_heart", "af_bella", "am_michael"],
+  "speed": 1.12,
+  "lang": "en",
+  "hindiVoice": "hf_alpha",
+  "model": "gemini-2.5-flash",
+  "video": { "width": 1080, "height": 1920, "fps": 30, "tailSeconds": 0.8 },
+  "background": {
+    "tiers": { "physics": 0.5, "harvested": 0.35, "publicDomain": 0.15 },
+    "physicsPages": ["rings", "plinko"],
+    "poolSeeds": [1, 2, 3],
+    "freshVariant": "auto",
+    "freshSeconds": 6,
+    "freshFps": 30,
+    "freshBudgetSeconds": 240,
+    "captureFramesPerSecond": 24,
+    "encodeRealtimeFactor": 0.2
+  },
+  "subtitle": {
+    "fontName": "Anton",
+    "bold": false,
+    "fontSize": 94,
+    "outline": 6,
+    "primaryColor": "#ffffff",
+    "accentColor": "#ff8a3d",
+    "maxWordsOnScreen": 3,
+    "hookTitleSeconds": 1.5,
+    "hookFontSize": 116,
+    "hookCharsPerLine": 18
+  },
+  "kokoro": {
+    "modelId": "onnx-community/Kokoro-82M-v1.0-ONNX",
+    "dtype": "q8",
+    "sampleRate": 24000
+  },
+  "topics": {
+    "useGoogleSearch": true,
+    "liveCount": 8
+  },
+  "ctaFallbacks": [
+    "follow for the next one",
+    "follow, there is a weirder one coming",
+    "follow if your brain just itched",
+    "one of these a day, follow up"
+  ]
+}

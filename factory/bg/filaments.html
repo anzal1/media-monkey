@@ -1,0 +1,116 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>mm bg: filaments</title>
+<!--
+  Neuron-filament drift. Particles wander a slow curl field and wire themselves
+  to near neighbours, so the structure keeps forming and dissolving like a
+  connectome slice. Canvas 2D, additive blending, deterministic.
+  Every motion term is periodic over LOOP_SECONDS, so the 60s recording loops
+  seamlessly.
+-->
+<style>
+  html,body{margin:0;background:#05070a;overflow:hidden}
+  canvas{display:block;width:1080px;height:1920px}
+</style>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="_harness.js"></script>
+<script>
+(() => {
+  const W = 1080, H = 1920;
+  const c = document.getElementById('c');
+  const g = c.getContext('2d', { alpha: false });
+  const TAU = Math.PI * 2;
+  const PERIOD = FPS * LOOP_SECONDS;
+
+  const r = rng(20260913);
+  const N = 230;
+  const nodes = [];
+  for (let i = 0; i < N; i++) {
+    nodes.push({
+      // home position plus two periodic wander terms with integer frequencies
+      x0: r() * W, y0: r() * H,
+      a1: 30 + r() * 90, a2: 12 + r() * 40,
+      f1: 1 + Math.floor(r() * 3), f2: 2 + Math.floor(r() * 4),
+      p1: r() * TAU, p2: r() * TAU,
+      pulse: 1 + Math.floor(r() * 5), pp: r() * TAU,
+      size: 1.4 + r() * 3.2,
+      warm: r(),
+    });
+  }
+
+  // reach far enough that the graph is visibly a mesh, not a starfield
+  const LINK = 250;
+
+  function frame(i) {
+    const u = (i % PERIOD) / PERIOD;      // 0..1 loop phase
+    const th = u * TAU;
+
+    g.fillStyle = '#05070a';
+    g.fillRect(0, 0, W, H);
+
+    // slow copper vignette that breathes
+    const breathe = 0.5 + 0.5 * Math.sin(th);
+    const rg = g.createRadialGradient(W / 2, H * 0.42, 60, W / 2, H * 0.42, H * 0.75);
+    rg.addColorStop(0, `rgba(224,120,66,${0.10 + 0.05 * breathe})`);
+    rg.addColorStop(1, 'rgba(5,7,10,0)');
+    g.fillStyle = rg;
+    g.fillRect(0, 0, W, H);
+
+    for (const n of nodes) {
+      n.x = n.x0 + n.a1 * Math.sin(n.f1 * th + n.p1) + n.a2 * Math.cos(n.f2 * th + n.p2);
+      n.y = n.y0 + n.a1 * Math.cos(n.f1 * th + n.p2) + n.a2 * Math.sin(n.f2 * th + n.p1);
+    }
+
+    g.globalCompositeOperation = 'lighter';
+
+    // filaments
+    g.lineWidth = 1.7;
+    for (let a = 0; a < N; a++) {
+      const na = nodes[a];
+      for (let b = a + 1; b < N; b++) {
+        const nb = nodes[b];
+        const dx = na.x - nb.x, dy = na.y - nb.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 > LINK * LINK) continue;
+        const d = Math.sqrt(d2);
+        const k = 1 - d / LINK;
+        const warm = (na.warm + nb.warm) * 0.5;
+        const alpha = 0.46 * k * k;
+        g.strokeStyle = warm > 0.72
+          ? `rgba(232,150,96,${alpha * 1.4})`
+          : `rgba(140,206,224,${alpha})`;
+        g.beginPath();
+        // slight bow so the wires read organic, not like a graph plot
+        const mx = (na.x + nb.x) / 2 + dy * 0.12;
+        const my = (na.y + nb.y) / 2 - dx * 0.12;
+        g.moveTo(na.x, na.y);
+        g.quadraticCurveTo(mx, my, nb.x, nb.y);
+        g.stroke();
+      }
+    }
+
+    // somas
+    for (const n of nodes) {
+      const pulse = 0.55 + 0.45 * Math.sin(n.pulse * th + n.pp);
+      const rad = n.size * (0.7 + 0.6 * pulse);
+      const gr = g.createRadialGradient(n.x, n.y, 0, n.x, n.y, rad * 7);
+      const col = n.warm > 0.72 ? '224,150,96' : '150,214,230';
+      gr.addColorStop(0, `rgba(${col},${0.55 + 0.35 * pulse})`);
+      gr.addColorStop(0.28, `rgba(${col},${0.16 * pulse})`);
+      gr.addColorStop(1, `rgba(${col},0)`);
+      g.fillStyle = gr;
+      g.beginPath();
+      g.arc(n.x, n.y, rad * 7, 0, TAU);
+      g.fill();
+      g.fillStyle = `rgba(240,248,255,${0.5 + 0.4 * pulse})`;
+      g.beginPath();
+      g.arc(n.x, n.y, rad * 0.62, 0, TAU);
+      g.fill();
+    }
+
+    g.globalCompositeOperation = 'source-over';
+  }
+
+  mmBoot({ frame, name: 'filaments' });
+})();
+</script>

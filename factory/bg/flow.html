@@ -1,0 +1,149 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>mm bg: flow</title>
+<!--
+  Domain-warped noise field, rendered as flowing contour bands.
+  Deliberately canvas 2D and not WebGL: headless Chrome needs SwiftShader flags
+  for WebGL and can silently fall back to a black frame, while a CPU field at
+  quarter resolution (270x480) upscaled with smoothing is fast, always renders,
+  and gives the soft fluid edge we want anyway.
+  Time enters only through cos/sin of a single phase, so the 60s loop is seamless.
+-->
+<style>
+  html,body{margin:0;background:#04050a;overflow:hidden}
+  canvas#c{display:block;width:1080px;height:1920px}
+</style>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="_harness.js"></script>
+<script>
+(() => {
+  const W = 1080, H = 1920;
+  const SW = 270, SH = 480;                 // field resolution, upscaled 4x
+  const c = document.getElementById('c');
+  const g = c.getContext('2d', { alpha: false });
+  const off = document.createElement('canvas');
+  off.width = SW; off.height = SH;
+  const og = off.getContext('2d', { alpha: false });
+  const img = og.createImageData(SW, SH);
+  const TAU = Math.PI * 2;
+  const PERIOD = FPS * LOOP_SECONDS;
+
+  // --- seeded 3D value noise ---------------------------------------------
+  const r = rng(424242);
+  const P = new Uint8Array(512);
+  {
+    const p = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) p[i] = i;
+    for (let i = 255; i > 0; i--) {
+      const j = Math.floor(r() * (i + 1));
+      const t = p[i]; p[i] = p[j]; p[j] = t;
+    }
+    for (let i = 0; i < 512; i++) P[i] = p[i & 255];
+  }
+  const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const hash = (x, y, z) => (P[(P[(P[x & 255] + y) & 255] + z) & 255] / 255) * 2 - 1;
+
+  function noise3(x, y, z) {
+    const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
+    const xf = x - xi, yf = y - yi, zf = z - zi;
+    const u = fade(xf), v = fade(yf), w = fade(zf);
+    const c000 = hash(xi, yi, zi), c100 = hash(xi + 1, yi, zi);
+    const c010 = hash(xi, yi + 1, zi), c110 = hash(xi + 1, yi + 1, zi);
+    const c001 = hash(xi, yi, zi + 1), c101 = hash(xi + 1, yi, zi + 1);
+    const c011 = hash(xi, yi + 1, zi + 1), c111 = hash(xi + 1, yi + 1, zi + 1);
+    return lerp(
+      lerp(lerp(c000, c100, u), lerp(c010, c110, u), v),
+      lerp(lerp(c001, c101, u), lerp(c011, c111, u), v),
+      w,
+    );
+  }
+
+  function fbm(x, y, z, oct) {
+    let a = 0.5, f = 1, s = 0;
+    for (let i = 0; i < oct; i++) {
+      s += a * noise3(x * f, y * f, z * f);
+      f *= 2.02; a *= 0.5;
+    }
+    return s;
+  }
+
+  // copper -> ink ramp, sampled once into a LUT
+  const LUT = new Uint8Array(256 * 3);
+  {
+    const stops = [
+      [0.00, 4, 6, 12],
+      [0.34, 14, 30, 44],
+      [0.55, 36, 86, 104],
+      [0.72, 224, 120, 66],
+      [0.86, 246, 186, 126],
+      [1.00, 255, 246, 236],
+    ];
+    for (let i = 0; i < 256; i++) {
+      const t = i / 255;
+      let k = 0;
+      while (k < stops.length - 2 && t > stops[k + 1][0]) k++;
+      const [t0, r0, g0, b0] = stops[k];
+      const [t1, r1, g1, b1] = stops[k + 1];
+      const f = Math.min(1, Math.max(0, (t - t0) / (t1 - t0)));
+      LUT[i * 3] = r0 + (r1 - r0) * f;
+      LUT[i * 3 + 1] = g0 + (g1 - g0) * f;
+      LUT[i * 3 + 2] = b0 + (b1 - b0) * f;
+    }
+  }
+
+  const SCALE = 2.6;
+  const data = img.data;
+
+  function frame(i) {
+    const th = ((i % PERIOD) / PERIOD) * TAU;
+    // time lives on a circle: everything returns to itself after one loop
+    const cz = 1.6 + Math.cos(th) * 1.25;
+    const sz = 1.6 + Math.sin(th) * 1.25;
+    const drift = Math.sin(th) * 0.55;
+
+    let o = 0;
+    for (let y = 0; y < SH; y++) {
+      const fy = (y / SH) * SCALE * 1.78;
+      for (let x = 0; x < SW; x++) {
+        const fx = (x / SW) * SCALE;
+        // domain warp
+        const wx = fbm(fx + 0.0, fy + 0.0, cz, 3);
+        const wy = fbm(fx + 5.2, fy + 1.3, sz, 3);
+        let n = fbm(fx + 1.9 * wx + drift, fy + 1.9 * wy, cz * 0.6 + sz * 0.4, 4);
+
+        // contour banding: high contrast ridges instead of a soft blob
+        let v = n * 1.55 + 0.5;
+        const band = Math.abs(Math.sin(v * 7.5 + th));
+        v = Math.min(1, Math.max(0, v * 0.55 + band * 0.55));
+
+        // vertical falloff keeps the caption band readable
+        const vy = y / SH;
+        v *= 0.55 + 0.62 * Math.sin(Math.PI * Math.min(1, Math.max(0, (vy - 0.02) / 0.96)));
+
+        const idx = (Math.min(255, Math.max(0, (v * 255) | 0))) * 3;
+        data[o++] = LUT[idx];
+        data[o++] = LUT[idx + 1];
+        data[o++] = LUT[idx + 2];
+        data[o++] = 255;
+      }
+    }
+    og.putImageData(img, 0, 0);
+
+    g.fillStyle = '#04050a';
+    g.fillRect(0, 0, W, H);
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(off, 0, 0, W, H);
+
+    // a second, offset copy in screen blend adds the fluid sheen
+    g.globalAlpha = 0.20;
+    g.globalCompositeOperation = 'lighter';
+    g.drawImage(off, -18, 22, W + 36, H - 44);
+    g.globalAlpha = 1;
+    g.globalCompositeOperation = 'source-over';
+  }
+
+  mmBoot({ frame, name: 'flow' });
+})();
+</script>

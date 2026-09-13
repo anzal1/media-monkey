@@ -1,0 +1,31 @@
+# ── AI / LLM (Gemini) ────────────────────────
+google-genai>=1.0.0
+
+# ── Text-to-Speech (ElevenLabs) ──────────────
+elevenlabs>=1.0.0
+
+# ── Video / Audio processing ─────────────────
+imageio-ffmpeg>=0.5.0
+Pillow>=10.0.0
+pydub>=0.25.1
+numpy>=1.26.0
+
+# ── Subtitles / Captions ─────────────────────
+openai-whisper>=20231117
+pysrt>=1.1.2
+
+# ── Stock footage (Pexels fallback) ──────────
+requests>=2.31.0
+
+# ── Upload / Publishing ──────────────────────
+google-api-python-client>=2.100.0
+google-auth-oauthlib>=1.2.0
+pyotp>=2.9.0
+
+# ── Audio compat (Python 3.13 dropped audioop) ─
+audioop-lts>=0.2.1
+
+# ── Config & Utilities ───────────────────────
+python-dotenv>=1.0.0
+click>=8.1.0
+rich>=13.0.0

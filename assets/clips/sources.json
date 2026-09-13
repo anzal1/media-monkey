@@ -1,0 +1,109 @@
+[
+  {
+    "id": "nasa-GSFC_20150420_Orbit_m11858_2014",
+    "file": "nasa-GSFC_20150420_Orbit_m11858_2014.mp4",
+    "title": "Earth from Orbit 2014",
+    "origin": "NASA images API",
+    "sourceUrl": "https://images.nasa.gov/details/GSFC_20150420_Orbit_m11858_2014",
+    "downloadUrl": "https://images-assets.nasa.gov/video/GSFC_20150420_Orbit_m11858_2014/GSFC_20150420_Orbit_m11858_2014~medium.mp4",
+    "license": "NASA media usage guidelines: generally not copyrighted, free to use",
+    "query": "earth from orbit",
+    "fetchedAt": "2026-09-12T20:19:37.625Z",
+    "tier": "publicDomain",
+    "attribution": null,
+    "screen": {
+      "luma": 98,
+      "motion": 15.4,
+      "staticEdge": 0.61
+    }
+  },
+  {
+    "id": "manual-glitter-water-6208741",
+    "file": "manual-glitter-water-6208741.mp4",
+    "title": "glitter water 6208741",
+    "origin": "https://www.pexels.com/video/close-up-view-of-small-glittering-particles-flowing-through-water-6208741/",
+    "sourceUrl": "https://www.pexels.com/video/close-up-view-of-small-glittering-particles-flowing-through-water-6208741/",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "manual",
+    "fetchedAt": "2026-09-12T20:46:58.292Z",
+    "screen": {
+      "luma": 90,
+      "motion": 4.17,
+      "staticEdge": 0.88
+    }
+  },
+  {
+    "id": "manual-ink-mixing-4194954",
+    "file": "manual-ink-mixing-4194954.mp4",
+    "title": "ink mixing 4194954",
+    "origin": "https://www.pexels.com/video/mixing-colored-ink-in-water-4194954/",
+    "sourceUrl": "https://www.pexels.com/video/mixing-colored-ink-in-water-4194954/",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "manual",
+    "fetchedAt": "2026-09-12T20:47:05.232Z",
+    "screen": {
+      "luma": 143,
+      "motion": 2.9,
+      "staticEdge": 0
+    }
+  },
+  {
+    "id": "manual-ink-water-18333375",
+    "file": "manual-ink-water-18333375.mp4",
+    "title": "ink water 18333375",
+    "origin": "https://www.pexels.com/video/ink-in-water-18333375/",
+    "sourceUrl": "https://www.pexels.com/video/ink-in-water-18333375/",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "manual",
+    "fetchedAt": "2026-09-12T20:47:09.108Z",
+    "screen": {
+      "luma": 143.9,
+      "motion": 5.83,
+      "staticEdge": 0.51
+    }
+  },
+  {
+    "id": "nasa-GSFC_20181022_ICON_m12902_Airglow",
+    "file": "nasa-GSFC_20181022_ICON_m12902_Airglow.mp4",
+    "title": "The Secrets behind Earth’s Multi-colored Glow",
+    "origin": "NASA images API",
+    "sourceUrl": "https://images.nasa.gov/details/GSFC_20181022_ICON_m12902_Airglow",
+    "downloadUrl": "https://images-assets.nasa.gov/video/GSFC_20181022_ICON_m12902_Airglow/GSFC_20181022_ICON_m12902_Airglow~medium.mp4",
+    "license": "NASA media usage guidelines: generally not copyrighted, free to use",
+    "attribution": null,
+    "tier": "publicDomain",
+    "query": "aurora from the space station",
+    "score": 1,
+    "screen": {
+      "luma": 55,
+      "motion": 5.54,
+      "staticEdge": 0.97
+    },
+    "fetchedAt": "2026-09-13T09:41:07.433Z"
+  },
+  {
+    "id": "nasa-GSFC_20160527_Hurricanes_m12251_HurricaneDrought",
+    "file": "nasa-GSFC_20160527_Hurricanes_m12251_HurricaneDrought.mp4",
+    "title": "Ten-Year Gap in Major Hurricanes Continues: Hurricane Drought",
+    "origin": "NASA images API",
+    "sourceUrl": "https://images.nasa.gov/details/GSFC_20160527_Hurricanes_m12251_HurricaneDrought",
+    "downloadUrl": "https://images-assets.nasa.gov/video/GSFC_20160527_Hurricanes_m12251_HurricaneDrought/GSFC_20160527_Hurricanes_m12251_HurricaneDrought~medium.mp4",
+    "license": "NASA media usage guidelines: generally not copyrighted, free to use",
+    "attribution": null,
+    "tier": "publicDomain",
+    "query": "hurricane from space",
+    "score": 1,
+    "screen": {
+      "luma": 85.7,
+      "motion": 3.9,
+      "staticEdge": 1.08
+    },
+    "fetchedAt": "2026-09-13T09:41:45.739Z"
+  }
+]
