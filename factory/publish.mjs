@@ -19,7 +19,7 @@ const arg = (k) => {
   return i >= 0 ? args[i + 1] : null;
 };
 
-const IG_USER_ID = process.env.IG_USER_ID;
+let IG_USER_ID = process.env.IG_USER_ID;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
 const videoUrl = arg('--video-url');
 const captionFile = arg('--caption-file');
@@ -28,13 +28,18 @@ if (!videoUrl) {
   console.error('usage: publish.mjs --video-url <url> [--caption-file <path>]');
   process.exit(2);
 }
-if (!IG_USER_ID || !TOKEN) {
-  console.log('publish: IG_USER_ID / IG_ACCESS_TOKEN not set — skipping (reel stays unpublished).');
+if (!TOKEN) {
+  console.log('publish: IG_ACCESS_TOKEN not set — skipping (reel stays unpublished).');
   process.exit(0);
 }
 
 const caption = captionFile ? readFileSync(captionFile, 'utf8').trim().slice(0, 2190) : '';
-const G = 'https://graph.facebook.com/v21.0';
+
+// Two API flavors: tokens from "API setup with Instagram login" (IGAA...) talk to
+// graph.instagram.com and can self-resolve their user id; classic Facebook-login
+// page tokens talk to graph.facebook.com and need IG_USER_ID.
+const IG_LOGIN = TOKEN.startsWith('IG') || process.env.IG_API === 'instagram';
+const G = IG_LOGIN ? 'https://graph.instagram.com/v21.0' : 'https://graph.facebook.com/v21.0';
 
 async function gpost(path, params) {
   const body = new URLSearchParams({ ...params, access_token: TOKEN });
@@ -50,6 +55,12 @@ async function gget(path, params) {
   const j = await r.json();
   if (j.error) throw new Error(path + ': ' + JSON.stringify(j.error));
   return j;
+}
+
+if (!IG_USER_ID) {
+  const me = await gget('me', { fields: 'user_id,username,id' });
+  IG_USER_ID = me.user_id || me.id;
+  console.log('resolved account:', me.username || '?', IG_USER_ID);
 }
 
 // 1. create the media container
