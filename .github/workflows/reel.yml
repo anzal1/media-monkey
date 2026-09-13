@@ -1,0 +1,81 @@
+name: 🐵 Daily Reel
+
+on:
+  schedule:
+    # 11:00 and 19:00 IST (05:30 / 13:30 UTC) — IG engagement windows
+    - cron: "30 5 * * *"
+    - cron: "30 13 * * *"
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Optional topic (blank = auto trending)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reel
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cache Kokoro model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/voila/models
+          key: kokoro-82m-v1-q8
+
+      - run: npm ci
+
+      - name: Render reel
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.topic }}" ]; then
+            node factory/make.mjs "${{ github.event.inputs.topic }}"
+          else
+            node factory/make.mjs --auto
+          fi
+          REEL=$(find out -name reel.mp4 -newer package.json | head -1)
+          echo "REEL=$REEL" >> "$GITHUB_ENV"
+          echo "SLUG=$(basename $(dirname $REEL))" >> "$GITHUB_ENV"
+
+      - name: Keep reel as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.SLUG }}
+          path: |
+            ${{ env.REEL }}
+            out/**/caption.txt
+
+      - name: Host reel at a public raw URL (reels branch)
+        run: |
+          git config user.name "media-monkey-bot"
+          git config user.email "anzalabidi@gmail.com"
+          git fetch origin reels || true
+          git checkout -B reels origin/reels 2>/dev/null || git checkout --orphan reels
+          git rm -rq --cached . 2>/dev/null || true
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'staging' -exec rm -rf {} + 2>/dev/null || true
+          mkdir -p staging
+          cp "$REEL" "staging/$SLUG.mp4"
+          cp "$(dirname "$REEL")/caption.txt" "staging/$SLUG.txt"
+          ls staging | sort | head -n -10 | while read f; do rm "staging/$f"; done
+          git add -A && git commit -qm "reel: $SLUG" && git push -qf origin reels
+          echo "VIDEO_URL=https://raw.githubusercontent.com/${{ github.repository }}/reels/staging/$SLUG.mp4" >> "$GITHUB_ENV"
+          git checkout -q ${{ github.sha }}
+
+      - name: Publish to Instagram (skips politely without Meta secrets)
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: node factory/publish.mjs --video-url "$VIDEO_URL" --caption-file "$(dirname "$REEL")/caption.txt"
