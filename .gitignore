@@ -6,7 +6,7 @@ out/
 # assets/bg/*.mp4 is KEPT on purpose: the procedural loops are the account's
 # owned footage and take ~3 min each to re-record.
 # Fetched stock clips are not: they are re-fetchable from sources.json.
-assets/clips/*.mp4
+assets/clips/**/*.mp4
 assets/clips/.tmp-*
 assets/bg/calm/
 legacy/__pycache__/
