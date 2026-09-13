@@ -1,0 +1,46 @@
+name: 🔧 Token refresh + weekly insights
+
+on:
+  schedule:
+    # token refresh every Monday 03:00 UTC; insights ride along
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Refresh Instagram token (keeps it immortal)
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: node factory/refresh-token.mjs
+
+      - name: Collect insights history
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: node factory/insights.mjs --summary | tee /tmp/summary.txt
+
+      - name: Commit history
+        run: |
+          git config user.name "media-monkey-bot"
+          git config user.email "anzalabidi@gmail.com"
+          git add insights/history.jsonl
+          git diff --cached --quiet || git commit -m "insights: weekly snapshot" && git push
+      - name: Open weekly summary issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create -R "$GITHUB_REPOSITORY" \
+            --title "monkey report · $(date -u +%Y-%m-%d)" \
+            --body "$(sed -n '/## weekly summary/,$p' /tmp/summary.txt)" \
+            --label report || true
