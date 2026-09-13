@@ -37,9 +37,13 @@ jobs:
 
       - run: npm ci
 
+      - name: System ffmpeg (for ffprobe)
+        run: sudo apt-get update -qq && sudo apt-get install -yqq ffmpeg
+
       - name: Render reel
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MEDIAMONKEY_FFPROBE: /usr/bin/ffprobe
         run: |
           if [ -n "${{ github.event.inputs.topic }}" ]; then
             node factory/make.mjs "${{ github.event.inputs.topic }}"
