@@ -2,9 +2,12 @@ name: 🐵 Daily Reel
 
 on:
   schedule:
-    # 11:00 and 19:00 IST (05:30 / 13:30 UTC) — IG engagement windows
-    - cron: "30 5 * * *"
-    - cron: "30 13 * * *"
+    # 4x daily, spaced across IST audience windows (times are UTC).
+    # Bump or cut by adding/removing a line; IG quota is 100 posts/24h.
+    - cron: "0 3 * * *"    # 08:30 IST  morning commute
+    - cron: "30 7 * * *"   # 13:00 IST  lunch
+    - cron: "30 13 * * *"  # 19:00 IST  evening peak
+    - cron: "30 17 * * *"  # 23:00 IST  late-night scroll
   workflow_dispatch:
     inputs:
       topic:
