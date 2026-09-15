@@ -167,12 +167,16 @@ export async function liveTopics(count = 8, opts = {}) {
     `Today is ${today}. Channel lane: ${j.lane}.\n` +
     (cat
       ? `THIS BATCH MUST BE ABOUT: ${cat.key} (${cat.hint}). Do not drift into other ` +
-        `subjects, and do not make it about AI unless the category IS machines.\n` +
+        `subjects, and do not make it about AI unless the category IS ai.\n` +
         `Search the web for genuinely interesting recent findings or discussions in that subject.\n\n`
       : `Search the web for what is actually being discussed right now in this lane.\n\n`) +
     `Then propose ${count} short-form video topics with real viral potential for a ` +
     `30 to 45 second reel. Rules:\n` +
     '- Each topic must rest on a real, checkable fact or a real current story. No speculation.\n' +
+    '- VIRAL TEST: it must make a scrolling stranger think "wait, WHAT?" in the first 3 seconds. ' +
+    'Favour a number that sounds impossible, a hidden cost, a thing that should not work but does, ' +
+    'or a widely believed claim that is actually wrong.\n' +
+    '- Skip anything a tech-news reader already knows. No product launch recaps, no roundups.\n' +
     '- No celebrities, no copyrighted characters, no brands as protagonists.\n' +
     '- Phrase each as a lowercase topic line, 5 to 12 words, no hashtags, no quotes.\n' +
     '- Prefer the surprising mechanism over the news headline.\n\n' +

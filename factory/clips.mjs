@@ -64,6 +64,7 @@ const QUEUE = path.join(CLIPS_DIR, 'queue.json');
 // The genre. Motion-heavy by construction, which is why v1 needs no motion
 // analysis: a hydraulic press clip is never a static shot.
 const SATISFYING = [
+  // oddly-satisfying core: the genre's proven retention engine
   'hydraulic press crushing',
   'kinetic sand cutting',
   'marble run',
@@ -75,6 +76,28 @@ const SATISFYING = [
   'cnc machining',
   'paint mixing',
   'glass blowing',
+  'slime stretching',
+  'ferrofluid magnet',
+  'laser cutting metal',
+  'welding sparks closeup',
+  'liquid nitrogen freezing',
+  'gears turning macro',
+  'wood lathe turning',
+  'chocolate pouring macro',
+  'sand falling slow motion',
+  // tech-flavoured visuals: match the channel lane, still motion-heavy
+  'circuit board macro',
+  'server room lights',
+  'data center corridor',
+  '3d printer printing',
+  'robot arm factory',
+  'mechanical keyboard typing macro',
+  'drone flying city night',
+  'neon city timelapse',
+  'fiber optic cables',
+  'code on screen closeup',
+  'satellite orbiting earth animation',
+  'semiconductor wafer',
 ];
 
 // Raw b-roll phrasing on purpose. Asking NASA for "nebula telescope" returns

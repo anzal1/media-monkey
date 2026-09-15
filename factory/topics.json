@@ -1,5 +1,5 @@
 {
-  "lane": "wild true mechanisms: how brains, bodies, animals, space, physics and machines actually work, one surprising mechanism per reel",
+  "lane": "viral tech: the surprising mechanism behind the tech people are actually arguing about this week, one jaw-dropper per reel",
   "backlog": [
     "why your brain cant ignore a loading spinner",
     "the fly connectome has 140000 neurons and we mapped every one",
@@ -34,44 +34,52 @@
   ],
   "categories": [
     {
-      "key": "brain",
-      "hint": "neuroscience, perception, memory, attention, illusions"
+      "key": "ai",
+      "hint": "AI models, agents, what they can and cannot do, AI in the wild"
     },
     {
-      "key": "animals",
-      "hint": "animal senses and abilities: octopus, mantis shrimp, tardigrades, bats, ants"
+      "key": "phones",
+      "hint": "phones and consumer gadgets: batteries, cameras, chips, repairability"
     },
     {
       "key": "space",
-      "hint": "planets, black holes, spacecraft, the sun, the moon, cosmic scale"
+      "hint": "space tech: rockets, satellites, Starlink, probes, launch engineering"
     },
     {
-      "key": "body",
-      "hint": "the human body's hidden machinery: blood, bones, gut, immune system, sleep"
-    },
-    {
-      "key": "psychology",
-      "hint": "why people behave oddly: habits, memory errors, crowd behaviour, decisions"
+      "key": "security",
+      "hint": "hacking, breaches, scams, encryption, surveillance, password cracking"
     },
     {
       "key": "internet",
-      "hint": "internet culture and its history: protocols, viral mechanics, old web, moderation"
+      "hint": "how the internet physically works: cables, DNS, CDNs, outages, protocols"
     },
     {
-      "key": "physics",
-      "hint": "physics of ordinary things: glass, ice, sound, pressure, friction, light"
+      "key": "gaming",
+      "hint": "gaming tech: GPUs, frame generation, anti-cheat, physics engines, speedrun tech"
     },
     {
-      "key": "ocean",
-      "hint": "deep sea and extreme environments: pressure, bioluminescence, vents, ice"
+      "key": "chips",
+      "hint": "semiconductors: fabs, nanometres, TSMC, chip shortages, how chips are made"
     },
     {
-      "key": "medicine",
-      "hint": "strange but real medicine: anaesthesia, transplants, pain, phantom limbs"
+      "key": "robots",
+      "hint": "robotics and automation: warehouse robots, humanoids, drones, self-driving"
     },
     {
-      "key": "machines",
-      "hint": "AI and machines: how models actually work, robots, chips, automation"
+      "key": "history",
+      "hint": "tech history and famous failures: doomed products, old hardware, legendary bugs"
+    },
+    {
+      "key": "devlife",
+      "hint": "coding culture: open source drama, legacy code, outages caused by one line"
+    },
+    {
+      "key": "money",
+      "hint": "tech money: data centre costs, subscription economics, what your data is worth"
+    },
+    {
+      "key": "biotech",
+      "hint": "brain-computer interfaces, wearables, bio-sensing, medical devices"
     }
   ]
 }
