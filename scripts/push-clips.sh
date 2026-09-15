@@ -5,8 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-SECS="${CLIP_SECONDS:-15}"
-CRF="${CLIP_CRF:-31}"
+SECS="${CLIP_SECONDS:-12}"
+CRF="${CLIP_CRF:-33}"
 STAGE="$(mktemp -d)"
 mkdir -p "$STAGE/assets/clips"
 
@@ -25,14 +25,15 @@ BRANCH_DIR="$(mktemp -d)"
 git worktree add -q --detach "$BRANCH_DIR"
 (
   cd "$BRANCH_DIR"
-  git checkout -q --orphan clips
+  # unique build ref, pushed to `clips`; re-runnable, unlike checking out `clips`
+  git checkout -q --orphan "_clips_build_$$"
   git rm -rq --cached . 2>/dev/null || true
   find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} + 2>/dev/null || true
   mkdir -p assets/clips
   cp "$STAGE/assets/clips/"* assets/clips/
   git add -A
   git commit -qm "clip bank: $(ls assets/clips/*.mp4 | wc -l | tr -d ' ') clips"
-  git push -qf origin clips
+  git push -qf origin HEAD:clips
 )
 git worktree remove --force "$BRANCH_DIR"
 echo "pushed to origin/clips"
