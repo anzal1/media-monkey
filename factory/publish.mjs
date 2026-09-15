@@ -63,27 +63,49 @@ if (!IG_USER_ID) {
   console.log('resolved account:', me.username || '?', IG_USER_ID);
 }
 
-// 1. create the media container
-const container = await gpost(`${IG_USER_ID}/media`, {
-  media_type: 'REELS',
-  video_url: videoUrl,
-  caption,
-  share_to_feed: 'true',
-});
-console.log('container:', container.id);
+// Meta's transcode occasionally fails on a perfectly valid file (verified: the
+// same URL that returned ERROR transcoded to FINISHED minutes later). So the
+// whole create-and-poll cycle is retried before the run is called a failure.
+const ATTEMPTS = 3;
+let containerId = null;
 
-// 2. poll until Meta finishes fetching/transcoding (up to ~5 min)
-let status = '';
-for (let i = 0; i < 60; i++) {
-  await new Promise((r) => setTimeout(r, 5000));
-  const s = await gget(container.id, { fields: 'status_code,status' });
-  status = s.status_code;
-  if (status === 'FINISHED') break;
-  if (status === 'ERROR') throw new Error('container error: ' + JSON.stringify(s));
-  if (i % 6 === 0) console.log('  status:', status);
+for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+  // 1. create the media container
+  const container = await gpost(`${IG_USER_ID}/media`, {
+    media_type: 'REELS',
+    video_url: videoUrl,
+    caption,
+    share_to_feed: 'true',
+  });
+  console.log(`container (attempt ${attempt}/${ATTEMPTS}):`, container.id);
+
+  // 2. poll until Meta finishes fetching/transcoding (up to ~5 min)
+  let status = '';
+  let detail = null;
+  for (let i = 0; i < 60; i++) {
+    await new Promise((r) => setTimeout(r, 5000));
+    const s = await gget(container.id, { fields: 'status_code,status' });
+    status = s.status_code;
+    if (status === 'FINISHED') break;
+    if (status === 'ERROR' || status === 'EXPIRED') {
+      detail = s;
+      break;
+    }
+    if (i % 6 === 0) console.log('  status:', status);
+  }
+
+  if (status === 'FINISHED') {
+    containerId = container.id;
+    break;
+  }
+
+  const why = detail ? JSON.stringify(detail) : 'never finished (last: ' + status + ')';
+  if (attempt === ATTEMPTS) throw new Error('container failed after ' + ATTEMPTS + ' attempts: ' + why);
+  const backoff = 30 * attempt;
+  console.log(`  transcode ${status}, retrying in ${backoff}s: ${why}`);
+  await new Promise((r) => setTimeout(r, backoff * 1000));
 }
-if (status !== 'FINISHED') throw new Error('container never finished (last: ' + status + ')');
 
 // 3. publish
-const pub = await gpost(`${IG_USER_ID}/media_publish`, { creation_id: container.id });
+const pub = await gpost(`${IG_USER_ID}/media_publish`, { creation_id: containerId });
 console.log('published media id:', pub.id);

@@ -75,7 +75,15 @@ jobs:
           mkdir -p staging
           cp "$RUNNER_TEMP/$SLUG.mp4" "staging/$SLUG.mp4"
           cp "$RUNNER_TEMP/$SLUG.txt" "staging/$SLUG.txt"
-          ls staging | sort | head -n -10 | while read f; do rm "staging/$f"; done
+          # Keep the 20 most recently COMMITTED files (10 reels) plus the one we
+          # are about to publish. The old alphabetical prune could delete the
+          # current reel before Meta fetched it.
+          git log --name-only --pretty=format: -n 60 -- staging \
+            | sed '/^$/d' | awk '!seen[$0]++' | head -20 > "$RUNNER_TEMP/keep.txt"
+          for f in staging/*; do
+            case "$f" in staging/"$SLUG".*) continue ;; esac
+            grep -qxF "$f" "$RUNNER_TEMP/keep.txt" || rm -f "$f"
+          done
           git add -A && git commit -qm "reel: $SLUG" && git push -qf origin reels
           echo "VIDEO_URL=https://raw.githubusercontent.com/${{ github.repository }}/reels/staging/$SLUG.mp4" >> "$GITHUB_ENV"
           git checkout -q ${{ github.sha }}
