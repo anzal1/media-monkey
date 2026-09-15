@@ -13,6 +13,10 @@ on:
       topic:
         description: "Optional topic (blank = auto trending)"
         required: false
+      dry_run:
+        description: "Render only, do not publish to Instagram"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -39,6 +43,13 @@ jobs:
           key: kokoro-82m-v1-q8
 
       - run: npm ci
+
+      - name: Fetch clip bank (harvested + public-domain tiers)
+        run: |
+          git fetch --depth 1 origin clips 2>/dev/null \
+            && git checkout FETCH_HEAD -- assets/clips \
+            && echo "clip bank: $(ls assets/clips/*.mp4 2>/dev/null | wc -l | tr -d ' ') clips" \
+            || echo "no clips branch yet, physics tier only"
 
       - name: System ffmpeg (for ffprobe)
         run: sudo apt-get update -qq && sudo apt-get install -yqq ffmpeg
@@ -95,4 +106,9 @@ jobs:
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-        run: node factory/publish.mjs --video-url "$VIDEO_URL" --caption-file "$RUNNER_TEMP/$SLUG.txt"
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "dry run: rendered $SLUG, hosted at $VIDEO_URL, not publishing."
+            exit 0
+          fi
+          node factory/publish.mjs --video-url "$VIDEO_URL" --caption-file "$RUNNER_TEMP/$SLUG.txt"

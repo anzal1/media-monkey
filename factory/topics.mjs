@@ -130,6 +130,31 @@ export function parseTopicList(raw) {
 }
 
 /**
+ * Least-recently-used category, so the account cannot collapse into one theme.
+ * Live news skews hard toward whatever is trending (AI, lately), so the category
+ * is chosen FIRST and the search is pointed at it, rather than letting the
+ * headlines pick the subject every time.
+ */
+export function pickCategory(opts = {}) {
+  const j = JSON.parse(fs.readFileSync(TOPICS_FILE, 'utf8'));
+  const cats = j.categories || [];
+  if (!cats.length) return null;
+  let hist = [];
+  try {
+    hist = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'));
+  } catch {}
+  const recent = hist
+    .slice(-cats.length)
+    .map((h) => h.category)
+    .filter(Boolean);
+  const unused = cats.filter((c) => !recent.includes(c.key));
+  const from = unused.length ? unused : cats;
+  const pick = from[Math.floor(Math.random() * from.length)];
+  if (opts.log) opts.log(`  category: ${pick.key} (recent: ${recent.join(', ') || 'none'})`);
+  return pick;
+}
+
+/**
  * Grounded trend pull. Returns [] and sets `.reason` on the thrown error if the
  * key cannot use the google_search tool, so the caller can fall back quietly.
  */
@@ -137,9 +162,14 @@ export async function liveTopics(count = 8, opts = {}) {
   const log = opts.log || (() => {});
   const j = JSON.parse(fs.readFileSync(TOPICS_FILE, 'utf8'));
   const today = new Date().toISOString().slice(0, 10);
+  const cat = opts.category || null;
   const prompt =
-    `Today is ${today}. Search the web for what is actually being discussed right ` +
-    `now in this lane: ${j.lane}.\n\n` +
+    `Today is ${today}. Channel lane: ${j.lane}.\n` +
+    (cat
+      ? `THIS BATCH MUST BE ABOUT: ${cat.key} (${cat.hint}). Do not drift into other ` +
+        `subjects, and do not make it about AI unless the category IS machines.\n` +
+        `Search the web for genuinely interesting recent findings or discussions in that subject.\n\n`
+      : `Search the web for what is actually being discussed right now in this lane.\n\n`) +
     `Then propose ${count} short-form video topics with real viral potential for a ` +
     `30 to 45 second reel. Rules:\n` +
     '- Each topic must rest on a real, checkable fact or a real current story. No speculation.\n' +
@@ -173,6 +203,7 @@ export async function supplyTopics(n = 1, opts = {}) {
   const log = opts.log || (() => {});
   const notes = [];
   const seen = historyKeys();
+  const category = opts.category === null ? null : opts.category || pickCategory({ log });
   const pool = [];
   const add = (list) => {
     for (const item of list) {
@@ -185,7 +216,7 @@ export async function supplyTopics(n = 1, opts = {}) {
 
   if (opts.useGoogleSearch ?? CONFIG.topics.useGoogleSearch) {
     try {
-      add(await liveTopics(opts.liveCount || CONFIG.topics.liveCount, { log }));
+      add(await liveTopics(opts.liveCount || CONFIG.topics.liveCount, { log, category }));
       notes.push('google_search grounding: ok');
     } catch (e) {
       notes.push(`google_search grounding unavailable (${e.message.slice(0, 120)}), fell back to HN`);
@@ -209,7 +240,8 @@ export async function supplyTopics(n = 1, opts = {}) {
   const fresh = pool.filter((p) => p.source !== 'backlog').sort((a, b) => rank[a.source] - rank[b.source]);
   const ordered = [...fresh, ...backlog];
 
-  return { topics: ordered.slice(0, n), notes };
+  const tagged = ordered.slice(0, n).map((t) => ({ ...t, category: t.category || (category && category.key) || null }));
+  return { topics: tagged, notes, category: category && category.key };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

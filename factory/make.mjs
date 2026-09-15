@@ -219,7 +219,7 @@ async function makeOne(topicEntry, args, index, count) {
     throw new Error(`rendered reel is ${v.width}x${v.height}, expected 1080x1920`);
   }
 
-  appendHistory({ slug, topic, source: topicEntry.source || 'cli', lang: args.lang });
+  appendHistory({ slug, topic, source: topicEntry.source || 'cli', category: topicEntry.category || null, lang: args.lang });
 
   const secs = (Date.now() - t0) / 1000;
   log(`  OK ${path.relative(ROOT, res.video)}`);
