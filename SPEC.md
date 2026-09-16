@@ -4,7 +4,7 @@ Goal: an automated reel factory for instagram.com/mediamonkey.ai (157 posts, 0
 followers: volume already failed, FORMAT is the rebuild). Output: ready-to-post
 9:16 MP4 reels + captions, generated end to end on this machine for free.
 
-## The format (every reel, 30-45s, 1080x1920, 30fps)
+## The format (every reel, 110-150s, 1080x1920, 30fps)
 1. HOOK, 0-1.5s: one line of huge text + spoken punch ("your brain does this
    too and you can watch it happen"). The first frame must work as a thumbnail.
 2. BODY: 3-5 rapid beats, each one surprising concrete fact or claim, spoken
@@ -105,3 +105,28 @@ local yt-dlp. Clips are harvested on this machine and their mp4s plus
   energetic voice, readable karaoke captions synced within ~200ms feel, owned
   background, correct 1080x1920, hook frame first.
 - No network calls at render time except Gemini for the script.
+
+## Voice
+
+`config.json` -> `voice` takes either a Kokoro voice name (`bm_lewis`) or a
+blend (`bm_lewis:0.7,am_michael:0.3`). Weights are normalised, so `7,3` and
+`0.7,0.3` mean the same thing.
+
+Kokoro cannot clone: there is no way to hand it a reference clip and get that
+speaker back. What it has is a 510x256 style table per voice, and those tables
+share a space, so a weighted average of two is a valid third voice. That is the
+only free route to a voice that is ours rather than one of the 28 everyone else
+ships. `factory/tts.mjs` installs a blend by writing the averaged table over the
+`am_santa` slot before that name is first loaded, then generates through the
+normal API so kokoro's own text normalisation stays in the path. One blend per
+process; `npm ci` restores the original file on CI.
+
+Not possible here, for the record:
+- A recognisable character voice. Those are owned, and the persona rules in
+  `factory/persona.md` already ban copyrighted characters.
+- Cloning a real person. Kokoro has no cloning path; engines that do
+  (Chatterbox, F5-TTS, XTTS) are Python and want a GPU, which would end the
+  free-CI story this whole pipeline is built on.
+
+`node factory/tts.mjs --sample` renders one wav per entry in `voiceCandidates`
+so a change can be listened to before it ships.

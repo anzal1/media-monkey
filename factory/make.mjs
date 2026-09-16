@@ -25,7 +25,7 @@ import { writeScript, segmentsOf, slugify } from './script.mjs';
 import { synthSegments } from './tts.mjs';
 import { assemble } from './assemble.mjs';
 import { supplyTopics, appendHistory } from './topics.mjs';
-import { writeDiagram } from './explainer/diagram.mjs';
+import { writeScenes } from './explainer/scenes.mjs';
 import { renderExplainer } from './explainer/render.mjs';
 import { probeSummary } from './ffmpeg.mjs';
 
@@ -112,15 +112,21 @@ async function makeOne(topicEntry, args, index, count) {
   {
     // The scene IS the content here, so it replaces the background entirely and
     // is timed to the narration rather than looped under it.
-    const diagram = await writeDiagram(topic, script, { log });
-    bg = await renderExplainer({
-      diagram,
-      segments,
-      outFile: path.join(outDir, 'scene.mp4'),
+    const board = await writeScenes(topic, script, {
+      // the real narration length of each beat decides how many scenes it gets
+      beatDurations: segments.filter((s) => s.kind === 'beat').map((s) => s.duration),
+      category: topicEntry.category || null,
       episode: 'THE PROD MONKEY',
+      handle: CONFIG.handle || '',
       log,
     });
-    fs.writeFileSync(path.join(outDir, 'diagram.json'), JSON.stringify(diagram, null, 2));
+    bg = await renderExplainer({
+      board,
+      segments,
+      outFile: path.join(outDir, 'scene.mp4'),
+      log,
+    });
+    fs.writeFileSync(path.join(outDir, 'scenes.json'), JSON.stringify(board, null, 2));
   }
 
   const isExplainer = format === 'explainer';

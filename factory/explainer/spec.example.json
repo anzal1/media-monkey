@@ -1,17 +1,51 @@
 {
-  "eyebrow": "SYSTEM DESIGN / RATE LIMITING",
-  "headline": "One counter. Ten thousand requests.",
-  "subhead": "Token bucket, end to end",
-  "episode": "MEDIA MONKEY / 01",
-  "nodes": [
-    { "id": "client", "step": 0, "x": 70,  "y": 250, "w": 300, "h": 150, "chip": "browser", "title": "Client", "sub": "1000 req/s" },
-    { "id": "edge",   "step": 1, "x": 480, "y": 250, "w": 330, "h": 150, "chip": "edge · nginx", "title": "Rate limiter", "sub": "token bucket" },
-    { "id": "redis",  "step": 2, "x": 480, "y": 520, "w": 330, "h": 150, "chip": "redis", "title": "Counter", "sub": "key · window · TTL", "accent": true },
-    { "id": "api",    "step": 3, "x": 70,  "y": 520, "w": 300, "h": 150, "chip": "api.internal", "title": "Your API", "sub": "only what survives" }
-  ],
-  "edges": [
-    { "from": "client", "to": "edge",  "step": 1, "label": "burst" },
-    { "from": "edge",   "to": "redis", "step": 2, "label": "INCR + EXPIRE" },
-    { "from": "redis",  "to": "api",   "step": 3, "label": "allowed" }
+  "eyebrow": "DATABASES",
+  "accent": "#2563eb",
+  "episode": "THE PROD MONKEY",
+  "handle": "",
+  "title": { "kicker": "DATABASES", "title": "Your pool is not too small." },
+  "titleUntil": 3,
+  "starts": [3, 8, 13, 18, 23, 28, 33, 38, 43],
+  "scenes": [
+    { "beat": 0, "half": 0, "type": "flow", "headline": "Every request wants one.",
+      "subhead": "Where the connection comes from",
+      "data": { "nodes": [
+        { "label": "API", "sub": "40 workers", "kind": "server" },
+        { "label": "Pool", "sub": "max 10", "kind": "queue" },
+        { "label": "Postgres", "sub": "one backend each", "kind": "database" } ],
+        "edge": "checkout", "packet": true } },
+    { "beat": 0, "half": 1, "type": "stat", "headline": "Four waiting per slot.",
+      "subhead": "", "data": { "value": "40:10", "label": "WORKERS TO CONNECTIONS", "tone": "bad" } },
+    { "beat": 1, "half": 0, "type": "window", "headline": "The wait shows up here.",
+      "subhead": "What the log actually says",
+      "data": { "app": "psql", "file": "app_prod", "lines": [
+        { "text": "SELECT * FROM pg_stat_activity", "tone": "plain" },
+        { "text": " state    | wait_event_type", "tone": "dim" },
+        { "text": " idle in transaction | Client", "tone": "bad" },
+        { "text": " active   | Lock", "tone": "bad" } ],
+        "status": { "left": "app_prod", "right": "12 rows" } } },
+    { "beat": 1, "half": 1, "type": "card", "headline": "One holder blocks all.",
+      "subhead": "", "data": { "kind": "lock", "title": "pid 40231", "pill": "idle in tx", "sub": "held for four minutes" } },
+    { "beat": 2, "half": 0, "type": "compare", "headline": "Bigger pool, same wall.",
+      "subhead": "Two ways to size it",
+      "data": { "left": { "label": "Pool 10", "sub": "queue at the app", "kind": "queue" },
+                "right": { "label": "Pool 100", "sub": "queue in the database", "kind": "database" },
+                "rows": [ { "left": "waits are visible", "right": "waits are hidden" },
+                          { "left": "one backend each", "right": "memory per backend" } ] } },
+    { "beat": 2, "half": 1, "type": "list", "headline": "What actually helps.",
+      "subhead": "", "data": { "title": "Fixes that hold", "items": [
+        { "label": "Shorten the transaction", "tone": "good" },
+        { "label": "Set idle_in_transaction_session_timeout", "tone": "good" },
+        { "label": "Raise the pool blindly", "tone": "bad" } ] } },
+    { "beat": 3, "half": 0, "type": "diff", "headline": "Two lines of config.",
+      "subhead": "", "data": { "title": "postgresql.conf", "rows": [
+        { "text": "- idle_in_transaction_session_timeout = 0", "tone": "del" },
+        { "text": "+ idle_in_transaction_session_timeout = 30s", "tone": "add" },
+        { "text": "  statement_timeout = 10s", "tone": "plain" } ] } },
+    { "beat": 3, "half": 1, "type": "note", "headline": "That is the whole trick.",
+      "subhead": "", "data": { "lead": "The pool is a queue.",
+        "body": "Make the work shorter, not the queue longer." } },
+    { "beat": 4, "half": 0, "type": "stat", "headline": "Back under control.",
+      "subhead": "", "data": { "value": "40ms", "label": "P99 CHECKOUT WAIT", "tone": "good" } }
   ]
 }

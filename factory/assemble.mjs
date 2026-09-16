@@ -267,12 +267,22 @@ export function buildAss(script, segments, words, opts = {}) {
       'm -540 -140 l 540 -140 l 540 140 l -540 140{\\p0}',
     );
   }
+  // BorderStyle 3 draws the box per span, so any per-word change to the border
+  // or the scale makes the "one clean caption bar" break into a stepped, ragged
+  // shape. With a box theme the emphasis therefore has to be colour only: same
+  // border, same scale, every word fully opaque, and the accent word coloured.
+  const boxed = borderStyle === 3;
   for (const w of words) {
     if (w.kind === 'hook') continue;         // covered by the title card
     const parts = w.groupWords.map((gw, j) => {
       const isActive = j === w.indexInGroup;
       const isAccent = w.groupAccents[j];
       const col = isAccent ? accent : white;
+      if (boxed) {
+        // the spoken word is the accent colour as it passes; the rest stay ink
+        const c = isActive || isAccent ? accent : white;
+        return `{\\c${c}\\alpha&H00&\\fscx100\\fscy100\\bord${sub.outline}}${assEscape(gw)}`;
+      }
       if (isActive) {
         return `{\\c${col}\\alpha&H00&\\fscx112\\fscy112\\bord${sub.outline}}${assEscape(gw)}`;
       }

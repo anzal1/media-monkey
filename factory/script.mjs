@@ -131,6 +131,24 @@ function stripFence(raw) {
   return body;
 }
 
+/**
+ * The per-beat headline is the line printed large while that beat is spoken.
+ * A model that forgets the field, writes a chapter title, or repeats itself
+ * should not kill the whole script, so fall back to the beat's own opening
+ * clause, which is by construction the claim the beat is making.
+ */
+function headlineOf(b, text, i) {
+  const raw = cleanSpoken((b && b.headline) || '');
+  const words = wordsOf(raw);
+  if (raw && words.length <= 6 && !/^(understanding|how to|what is|in this|section)\b/i.test(raw)) {
+    return raw;
+  }
+  // first clause of the beat, trimmed to 5 words, with a full stop
+  const clause = text.split(/(?<=[.!?])\s|,\s/)[0] || text;
+  const short = wordsOf(clause).slice(0, 5).join(' ');
+  return short ? `${short.charAt(0).toUpperCase()}${short.slice(1)}.` : `Step ${i + 1}.`;
+}
+
 /** throws with a human-readable reason; the reason is fed back on retry. */
 export function validate(obj, topic, lang = 'en') {
   const err = (m) => { throw new Error(m); };
@@ -141,21 +159,34 @@ export function validate(obj, topic, lang = 'en') {
   if (wordsOf(hook).length > 12) err(`hook is ${wordsOf(hook).length} words, max 12`);
 
   if (!Array.isArray(obj.beats)) err('beats is not an array');
-  if (obj.beats.length < 5 || obj.beats.length > 9) {
-    err(`beats has ${obj.beats.length} entries, need 6 to 8`);
+  if (obj.beats.length < 9 || obj.beats.length > 15) {
+    err(`beats has ${obj.beats.length} entries, need 10 to 14`);
   }
 
   const beats = obj.beats.map((b, i) => {
     const text = cleanSpoken(typeof b === 'string' ? b : b.text || '');
     if (!text) err(`beat ${i + 1} has no text`);
     const n = wordsOf(text).length;
-    if (n < 14) err(`beat ${i + 1} is only ${n} words, need 14 to 42`);
-    if (n > 42) err(`beat ${i + 1} is ${n} words, need 14 to 42`);
+    if (n < 18) err(`beat ${i + 1} is only ${n} words, need 28 to 42`);
+    if (n > 50) err(`beat ${i + 1} is ${n} words, need 28 to 42`);
 
     const source = cleanSpoken((b && b.source) || '');
     if (!source) err(`beat ${i + 1} has no source; every claim needs a checkable anchor`);
 
-    return { text, accent: pickAccent(text, b.accent), source };
+    // The headline is what the viewer reads while this beat plays, so it is a
+    // hard requirement: a scene with no headline is a scene with no point.
+    const headline = headlineOf(b, text, i);
+
+    return { text, headline, accent: pickAccent(text, b.accent), source };
+  });
+
+  // Two scenes in a row carrying the same headline reads as a stall, so the
+  // later one falls back to its own beat text.
+  const seenHeadlines = new Set();
+  beats.forEach((b, i) => {
+    const key = b.headline.toLowerCase();
+    if (!seenHeadlines.has(key)) { seenHeadlines.add(key); return; }
+    b.headline = headlineOf({}, b.text, i);
   });
 
   let cta = cleanSpoken(obj.cta || '');
@@ -195,13 +226,19 @@ export function validate(obj, topic, lang = 'en') {
     + wordsOf(cta).length
     // the Hindi opener is spoken too, so it spends from the same budget
     + (lang === 'mix' ? wordsOf(hookHi).length : 0);
-  if (spokenWords > 350) {
-    err(`script is ${spokenWords} spoken words, about ${(spokenWords / 3).toFixed(0)}s. ` +
-        'Cut it to 230 to 330 words: shorten beats, do not drop the analogy beat.');
+  // The voice reads ~4.2 words a second at the configured speed, so words are
+  // the only real lever on runtime. Enforced here because the model overshoots
+  // in one direction and undershoots in the other depending on the topic.
+  const WPS = 3.1;
+  if (spokenWords > 470) {
+    err(`script is ${spokenWords} spoken words, about ${(spokenWords / WPS).toFixed(0)}s. ` +
+        'Cut it to 350 to 470 words: shorten beats, do not drop the analogy beat ' +
+        'and do not drop beats.');
   }
-  if (spokenWords < 210) {
-    err(`script is only ${spokenWords} spoken words, about ${(spokenWords / 3).toFixed(0)}s. ` +
-        'The format needs 230 to 330 words across 6 to 8 beats.');
+  if (spokenWords < 330) {
+    err(`script is only ${spokenWords} spoken words, about ${(spokenWords / WPS).toFixed(0)}s. ` +
+        'The format needs 350 to 470 words across 10 to 14 beats. Add beats, ' +
+        'one component each, rather than padding the ones you have.');
   }
 
   return {

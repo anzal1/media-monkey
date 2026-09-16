@@ -1,6 +1,6 @@
 /*
- * render.mjs — renders the explainer scene to an mp4 sized and timed to the
- * narration, then hands it back as a background for the normal assemble step.
+ * render.mjs — renders the scene track to an mp4 timed to the narration, then
+ * hands it back as the "background" for the normal assemble step.
  *
  * The scene is the same frame-stepped HTML route as the procedural backgrounds
  * (factory/record-bg.mjs), so there is no second rendering stack to maintain.
@@ -14,34 +14,62 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const SPEC_FILE = path.join(ROOT, 'factory', 'bg', 'explainer-spec.js');
 
 /**
- * @param {object} diagram  from writeDiagram()
- * @param {Array<{id,duration}>} segments  synthesised TTS segments, in order
- * @param {string} outFile  mp4 path to write
+ * A beat owns two to four scenes that hard-cut inside it. The narration for a
+ * beat is one TTS segment, so the cuts are placed inside that segment's
+ * duration, very slightly front-loaded: the setup scene gets a little less than
+ * its even share so the payoff frame is already up when the payoff is spoken.
  */
-export async function renderExplainer({ diagram, segments, outFile, episode, log = () => {} }) {
-  // beat i reveals with segment i+1 (segment 0 is the spoken hook)
-  const starts = [];
+export function sceneStarts(scenes, segments) {
+  const beatAt = new Map();      // beat index -> { start, duration }
   let t = 0;
+  let beat = 0;
+  let hookEnd = 0;
   for (const s of segments) {
-    if (s.kind === 'beat') starts.push(t);
+    if (s.kind === 'hook') hookEnd = t + s.duration;
+    if (s.kind === 'beat') beatAt.set(beat++, { start: t, duration: s.duration });
+    // the closing line gets its own card, keyed one past the last beat
+    if (s.kind === 'cta') beatAt.set(beat, { start: t, duration: s.duration });
     t += s.duration;
   }
-  // the first node lands on the hook so the frame is never empty
-  // -0.6 so the first component is fully drawn on frame 0: Instagram uses an
-  // early frame as the grid cover, and a blank diagram makes a dead thumbnail.
-  const stepStarts = [-0.6, ...starts.slice(1)].slice(0, diagram.nodes.length);
-  while (stepStarts.length < diagram.nodes.length) stepStarts.push(t);
 
-  const total = segments.reduce((a, s) => a + s.duration, 0);
+  const starts = new Array(scenes.length).fill(0);
+  scenes.forEach((sc, i) => {
+    const b = beatAt.get(sc.beat);
+    if (!b) { starts[i] = i ? starts[i - 1] + 4 : hookEnd; return; }
+    const of = Math.max(1, sc.of || 2);
+    const k = Math.min(sc.half || 0, of - 1);
+    // even split, pulled 10% earlier so each frame leads its line slightly
+    const frac = of === 1 ? 0 : (k / of) * 0.9;
+    starts[i] = b.start + b.duration * frac;
+  });
+  // monotonic: a model that returned an odd half ordering must not rewind time
+  for (let i = 1; i < starts.length; i++) {
+    if (starts[i] <= starts[i - 1]) starts[i] = starts[i - 1] + 0.5;
+  }
+  return { starts, titleUntil: hookEnd, total: t };
+}
+
+/**
+ * @param {object} board    from writeScenes()
+ * @param {Array<{id,kind,duration}>} segments  synthesised TTS segments, in order
+ * @param {string} outFile  mp4 path to write
+ */
+export async function renderExplainer({ board, segments, outFile, log = () => {} }) {
+  const { starts, titleUntil, total } = sceneStarts(board.scenes, segments);
   const seconds = Math.ceil(total + 0.8);
 
-  const spec = { ...diagram, stepStarts, episode: episode || 'THE PROD MONKEY' };
+  const spec = { ...board, starts, titleUntil };
   fs.writeFileSync(SPEC_FILE, 'window.SPEC = ' + JSON.stringify(spec) + ';');
-  log(`  explainer: ${diagram.nodes.length} nodes, reveals at ${stepStarts.map((x) => x.toFixed(1)).join('s, ')}s`);
 
-  // The channel is explainer-only now, so this recording IS the reel: there is no
-  // background pool to fall back on. A transient Chromium or ffmpeg failure must
-  // not cost the whole post, hence the retry.
+  const cuts = starts.map((s, i) => (starts[i + 1] ?? total) - s);
+  const avg = cuts.reduce((a, b) => a + b, 0) / Math.max(1, cuts.length);
+  log(`  scene track: ${board.scenes.length} scenes over ${seconds}s, ` +
+      `title card ${titleUntil.toFixed(1)}s, average cut ${avg.toFixed(1)}s, ` +
+      `longest ${Math.max(...cuts).toFixed(1)}s`);
+
+  // The channel is explainer-only, so this recording IS the reel: there is no
+  // background pool to fall back on. A transient Chromium or ffmpeg failure
+  // must not cost the whole post, hence the retry.
   let lastErr = null;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {

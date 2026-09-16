@@ -1,9 +1,7 @@
 {
-  "voice": "bm_lewis",
+  "voice": "bm_lewis:0.5,bm_george:0.5",
   "voiceCandidates": [
-    "af_heart",
-    "af_bella",
-    "am_michael"
+    "bm_lewis:0.5,bm_george:0.5"
   ],
   "speed": 1.32,
   "lang": "en",
@@ -65,9 +63,9 @@
     "one of these a day, follow up"
   ],
   "explainerSubtitle": {
-    "fontSize": 64,
-    "hookFontSize": 76,
-    "outline": 14,
+    "fontSize": 54,
+    "hookFontSize": 66,
+    "outline": 12,
     "shadow": 0,
     "borderStyle": 3,
     "alignment": 2,
@@ -76,7 +74,10 @@
     "accentColor": "#c2410c",
     "boxColor": "#ffffff",
     "maxWordsOnScreen": 4,
-    "scrim": false
+    "scrim": false,
+    "fontName": "Inter",
+    "bold": true
   },
-  "format": "explainer"
+  "format": "explainer",
+  "handle": ""
 }

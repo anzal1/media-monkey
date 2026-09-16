@@ -40,26 +40,34 @@ nod along to without really knowing.
    your p99 spikes", "next system design interview"). Never "stay curious".
 4. Nothing medical or diagnostic. No advice. Facts only.
 
-## Format contract (75 to 110 seconds of speech, total)
-- **hook**: 1 line, spoken in about 2 seconds. Also the first frame of the video
-  as huge static text, so it must read as a thumbnail. Max 9 words. It states
-  the symptom or the weird result. No "did you know".
-- **beats**: 6 to 8 of them, in this shape:
+## Format contract (110 to 150 seconds of speech, total)
+
+The reel is long on purpose. A viewer who stays for two minutes is worth more
+than three who bounce at eight seconds, and the only thing that holds them is
+that every ten seconds they learn one more true thing they did not know.
+
+- **hook**: 1 line, spoken in about 2 seconds. Also the title card of the video,
+  so it must read as a thumbnail. Max 9 words. It states the symptom or the
+  weird result. No "did you know".
+- **beats**: 10 to 14 of them, in this shape:
   1. SYMPTOM: what an engineer actually sees. Dashboards, errors, the bill.
   2. ANALOGY: one plain-language picture of the mechanism, using everyday
      objects (a queue at a counter, a locked door, a photocopier). This is the
      beat that lets a non-expert follow the rest. Never skip it.
-  3-6. MECHANISM: the real steps, in order, one component per beat. Introduce
-     every technical term the first time you use it, in the same breath, in
-     plain words: "the write-ahead log, the file the database appends to before
-     it changes anything".
-  7. CONSEQUENCE: what it costs, with a real number where one exists.
-  8. FIX: what an engineer actually does about it.
-- Each beat is 25 to 40 words. Spoken, not written: short clauses, one idea per
+  3 to N-2. MECHANISM: the real steps, in order, ONE component per beat. Never
+     two. Introduce every technical term the first time you use it, in the same
+     breath, in plain words: "the write-ahead log, the file the database
+     appends to before it changes anything". A beat that names two components
+     is two beats.
+  N-1. CONSEQUENCE: what it costs, with a real number where one exists.
+  N. FIX: what an engineer actually does about it.
+- Each beat is 28 to 42 words. Spoken, not written: short clauses, one idea per
   sentence, no subordinate clause pile-ups.
-- **length budget, hard**: hook + all beats + cta must total between 230 and 330
-  words. The voice reads about 3 words a second, so that is the 75 to 110 second
-  video this format needs. Prefer more beats over longer beats.
+- **length budget, hard**: hook + all beats + cta must total between 350 and
+  470 words. The voice reads about 3.1 words a second, so that is the 110 to
+  150 second video this format needs. Prefer MORE beats over longer beats: each
+  beat becomes its own scene on screen, and a scene that has to hold two ideas
+  is a scene the viewer skips.
 - **layman rule**: a curious person who does not write code should be able to
   follow the whole thing, while an engineer should still learn the precise
   mechanism. If a sentence would lose the first person, add the plain-language
@@ -69,6 +77,23 @@ nod along to without really knowing.
   the punch. They get highlighted in the captions. They must appear in the beat
   text verbatim, same spelling, no punctuation attached.
 
+## Per-beat headline
+
+Every beat also carries a `headline`: the line printed large on screen while
+that beat is spoken. It is NOT the beat text and NOT a title of the video. It
+is the one claim that beat makes, written as a short spoken fragment, usually
+ending in a full stop.
+
+Good: "Conflicts can still happen." "The lock never gets released."
+"One connection, held open." "R2 changes the equation." "Keep going."
+Bad: "Understanding Database Locks" (that is a chapter heading).
+Bad: "In this section we look at locks" (that is narration).
+
+Rules: max 5 words, sentence case, no colons, no question marks unless the
+beat really is a question, never repeat the hook, never repeat a previous
+beat's headline. Write it the way one engineer says it to another while
+pointing at a screen.
+
 ## Output
 Return **only** a JSON object, no markdown fence, no commentary:
 
@@ -77,14 +102,51 @@ Return **only** a JSON object, no markdown fence, no commentary:
   "slug": "kebab-case-slug-max-6-words",
   "hook": "string",
   "beats": [
-    { "text": "string", "accent": ["word", "word"], "source": "string" }
+    { "text": "string", "headline": "string", "accent": ["word", "word"], "source": "string" }
   ],
   "cta": "string",
-  "caption": "LONG Instagram caption, 150 to 240 words, structured exactly as: (1) one line naming the symptom an engineer would actually see in production; (2) a blank line; (3) four to six numbered steps walking the mechanism in order, each 1 to 2 sentences, using the real component names from the beats; (4) a blank line; (5) one line starting 'The takeaway:' giving the rule they should remember; (6) a blank line; (7) a save line naming the moment they will need this, e.g. 'Save this for your next incident review.' Plain text only: no markdown, no bullet characters, no emoji except the step numbers if you want them. Never mention brains, dopamine or attention spans.",
-  "hashtags": ["five", "niche", "tags", "no", "spam"]
+  "caption": "see the caption rules below",
+  "hashtags": ["five", "to", "seven", "specific", "tags"]
 }
 ```
 
-Hashtag rules: exactly 5, lowercase, no `#`, niche to neuroscience/AI/cognition.
-Never use the generic banned set: fyp, viral, explore, explorepage, trending,
-foryou, foryoupage, reels, reelsinstagram, love, instagood.
+Hashtag rules: 5 to 7, lowercase, no `#`, specific to THIS reel's technology
+(postgres, tls, kubernetes, rustlang). The pipeline appends the broad
+engineering tags itself, so do not spend yours on them. Never use the generic
+banned set: fyp, viral, explore, explorepage, trending, foryou, foryoupage,
+reels, reelsinstagram, love, instagood.
+
+## Caption rules
+
+The caption is a post, not a document. Someone reading it with the sound off
+should get the whole idea and still want to watch. Write it the way you would
+type it to a colleague who asked what you were on about.
+
+Shape, 170 to 260 words:
+
+1. Three short declarative fragments that state the situation. Line breaks
+   between them, no connective tissue. This is the part people see before the
+   "more" cut, so it carries the whole hook.
+2. Blank line. One sentence that names the thing and says what it is, in plain
+   words. This is the definition the rest leans on.
+3. Blank line. A concrete scenario, introduced by a line like "Picture this:"
+   or "Here is where it bites:", followed by three short lines each starting
+   with an arrow character. Situations, not steps.
+4. Blank line. Two or three plain paragraphs walking the mechanism in order,
+   using the real component names from the beats. Prose, full sentences.
+5. Blank line. One or two lines on what it costs you when you get it wrong, or
+   what you get back when you get it right. Real numbers if you have them.
+6. Blank line. A closing line naming the moment they will need this.
+
+Hard rules:
+- NEVER number the steps. Numbered lists read like documentation and that is
+  the single thing that makes a caption feel like a title card.
+- NEVER write "The takeaway:", "TL;DR", "In summary", "Key points" or any other
+  label that announces a section. The writing carries itself.
+- NEVER open with the title of the reel. Open with the situation.
+- Vary the opener across posts. If the last one began with a symptom, begin
+  this one with a number, a piece of a log line, or a flat contradiction.
+- Contractions are fine here. This is typed, not spoken.
+- Plain text. No markdown, no bullet characters other than the arrows, at most
+  one emoji and only at the end of the opening fragments.
+- Never mention brains, dopamine or attention spans.

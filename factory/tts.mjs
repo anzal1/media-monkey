@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG = JSON.parse(fs.readFileSync(path.join(HERE, 'config.json'), 'utf8'));
@@ -38,6 +39,92 @@ async function getTTS() {
     })();
   }
   return ttsPromise;
+}
+
+/*
+ * ---- voice blending -------------------------------------------------------
+ *
+ * Kokoro is not a cloning model: there is no way to hand it a reference clip
+ * and get that speaker back. What it does have is a style vector per voice,
+ * shipped as a 510x256 float table (one 256-dim style per token-length bucket).
+ * Those vectors live in the same space, so a weighted average of two of them is
+ * a valid third voice. That is the only free lever for a voice that is ours
+ * rather than one of the 28 everyone else is shipping.
+ *
+ * `voice` in config.json may therefore be either a name ("bm_lewis") or a blend
+ * ("bm_lewis:0.7,am_michael:0.3").
+ */
+const VOICES_DIR = (() => {
+  const req = createRequire(import.meta.url);
+  try {
+    // dist/kokoro.cjs -> ../voices
+    return path.join(path.dirname(path.dirname(req.resolve('kokoro-js'))), 'voices');
+  } catch {
+    return null;
+  }
+})();
+
+export function parseVoice(spec) {
+  const parts = String(spec || '').split(',').map((p) => p.trim()).filter(Boolean);
+  if (parts.length < 2 && !String(spec).includes(':')) return null;
+  const mix = parts.map((p) => {
+    const [name, w] = p.split(':');
+    return { voice: name.trim(), weight: Number(w) };
+  }).filter((m) => m.voice && Number.isFinite(m.weight) && m.weight > 0);
+  if (mix.length < 2) return null;
+  const total = mix.reduce((a, m) => a + m.weight, 0);
+  return mix.map((m) => ({ ...m, weight: m.weight / total }));
+}
+
+const styleCache = new Map();
+function loadStyle(voice) {
+  if (styleCache.has(voice)) return styleCache.get(voice);
+  if (!VOICES_DIR) throw new Error('cannot locate the kokoro voices directory');
+  const file = path.join(VOICES_DIR, `${voice}.bin`);
+  if (!fs.existsSync(file)) throw new Error(`no such kokoro voice: ${voice}`);
+  const buf = fs.readFileSync(file);
+  const vec = new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4);
+  styleCache.set(voice, vec);
+  return vec;
+}
+
+/** Weighted average of several voices' style tables. */
+export function blendStyle(mix) {
+  const vecs = mix.map((m) => loadStyle(m.voice));
+  const n = Math.min(...vecs.map((v) => v.length));
+  const out = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    let acc = 0;
+    for (let k = 0; k < vecs.length; k++) acc += vecs[k][i] * mix[k].weight;
+    out[i] = acc;
+  }
+  return out;
+}
+
+/*
+ * Kokoro looks a voice up by NAME and caches it in a module-private map, with
+ * no public way to hand it a raw style vector. So a blend is installed into a
+ * slot: the blended table is written over one voice file before that name is
+ * ever loaded in this process, and generation proceeds through the normal API,
+ * which keeps kokoro's own text normalisation and phonemisation in the path.
+ * am_santa is the slot because it is the lowest-graded voice in the set and is
+ * never a real choice. npm ci restores the original file on every CI run.
+ */
+const BLEND_SLOT = 'am_santa';
+let installedBlend = null;
+let blendWarned = false;
+
+function installBlend(mix) {
+  const key = mix.map((m) => `${m.voice}:${m.weight.toFixed(3)}`).join(',');
+  if (installedBlend === key) return BLEND_SLOT;
+  if (installedBlend) {
+    throw new Error('one blended voice per process: kokoro caches a voice by name after first use');
+  }
+  if (!VOICES_DIR) throw new Error('cannot locate the kokoro voices directory');
+  const vec = blendStyle(mix);
+  fs.writeFileSync(path.join(VOICES_DIR, `${BLEND_SLOT}.bin`), Buffer.from(vec.buffer, vec.byteOffset, vec.byteLength));
+  installedBlend = key;
+  return BLEND_SLOT;
 }
 
 /** RMS energy of a Float32 PCM buffer, 0..1. Used by the voice comparison. */
@@ -71,6 +158,17 @@ export function isHindiVoice(v) {
 async function generate(text, voice, speed) {
   const tts = await getTTS();
   let audio;
+  const mix = parseVoice(voice);
+  if (mix) {
+    try {
+      voice = installBlend(mix);
+    } catch (e) {
+      // An unattended nightly must not lose a reel over a voice experiment, so
+      // a blend that cannot be installed degrades to its heaviest ingredient.
+      voice = mix.slice().sort((a, b) => b.weight - a.weight)[0].voice;
+      blendWarned = blendWarned || (console.warn(`  blend unavailable (${e.message}), using ${voice}`), true);
+    }
+  }
   if (isHindiVoice(voice)) {
     const ipa = await phonemizeHindi(text);
     const enc = tts.tokenizer(ipa, { truncation: true });
