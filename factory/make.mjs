@@ -165,10 +165,29 @@ async function chooseBackground(o) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+/** --format wins; otherwise roll the house mix from config. */
+function resolveFormat(explicit) {
+  if (explicit) return explicit;
+  const mode = CONFIG.format || 'brainrot';
+  if (mode !== 'mix') return mode;
+  const mix = CONFIG.formatMix || { explainer: 1 };
+  let roll = Math.random() * Object.values(mix).reduce((a, b) => a + b, 0);
+  for (const [name, weight] of Object.entries(mix)) {
+    roll -= weight;
+    if (roll <= 0) return name;
+  }
+  return 'explainer';
+}
+
 async function makeOne(topicEntry, args, index, count) {
   const topic = topicEntry.topic;
   const t0 = Date.now();
   log(`\n[${index + 1}/${count}] ${topic}   (source: ${topicEntry.source || 'cli'})`);
+
+  // One voice, two visual treatments: the persona and the topic depth are the
+  // same either way, so the format is just how this mechanism is best shown.
+  const format = resolveFormat(args.format);
+  log(`  format: ${format}`);
 
   const script = await writeScript(topic, { lang: args.lang, log });
   const segments0 = segmentsOf(script);
@@ -195,7 +214,7 @@ async function makeOne(topicEntry, args, index, count) {
 
   const bgDir = path.join(ROOT, 'assets', 'bg');
   let bg;
-  if ((args.format || CONFIG.format || 'brainrot') === 'explainer') {
+  if (format === 'explainer') {
     // The scene IS the content here, so it replaces the background entirely and
     // is timed to the narration rather than looped under it.
     const diagram = await writeDiagram(topic, script, { log });
@@ -219,7 +238,7 @@ async function makeOne(topicEntry, args, index, count) {
   });
   }
 
-  const isExplainer = (args.format || CONFIG.format || 'brainrot') === 'explainer';
+  const isExplainer = format === 'explainer';
   const res = await assemble({
     script,
     segments,

@@ -17,6 +17,9 @@ on:
         description: "Render only, do not publish to Instagram"
         type: boolean
         default: false
+      format:
+        description: "explainer | brainrot | blank = house mix"
+        required: false
 
 permissions:
   contents: write
@@ -59,10 +62,12 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MEDIAMONKEY_FFPROBE: /usr/bin/ffprobe
         run: |
+          FMT=""
+          if [ -n "${{ github.event.inputs.format }}" ]; then FMT="--format ${{ github.event.inputs.format }}"; fi
           if [ -n "${{ github.event.inputs.topic }}" ]; then
-            node factory/make.mjs "${{ github.event.inputs.topic }}"
+            node factory/make.mjs "${{ github.event.inputs.topic }}" $FMT
           else
-            node factory/make.mjs --auto
+            node factory/make.mjs --auto $FMT
           fi
           REEL=$(find out -name reel.mp4 -newer package.json | head -1)
           echo "REEL=$REEL" >> "$GITHUB_ENV"

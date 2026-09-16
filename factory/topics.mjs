@@ -172,11 +172,16 @@ export async function liveTopics(count = 8, opts = {}) {
       : `Search the web for what is actually being discussed right now in this lane.\n\n`) +
     `Then propose ${count} short-form video topics with real viral potential for a ` +
     `30 to 45 second reel. Rules:\n` +
-    '- Each topic must rest on a real, checkable fact or a real current story. No speculation.\n' +
-    '- VIRAL TEST: it must make a scrolling stranger think "wait, WHAT?" in the first 3 seconds. ' +
-    'Favour a number that sounds impossible, a hidden cost, a thing that should not work but does, ' +
-    'or a widely believed claim that is actually wrong.\n' +
-    '- Skip anything a tech-news reader already knows. No product launch recaps, no roundups.\n' +
+    '- Each topic must rest on a real, checkable mechanism. No speculation, no vibes.\n' +
+    '- DEPTH TEST: a working engineer must finish the reel knowing something they can USE ' +
+    'or explain in a design review: a failure mode, a tradeoff, a number that changes a decision. ' +
+    'Never a definition, never a listicle, never "what is X".\n' +
+    '- HOOK TEST: it must still stop a scroll. The best hooks here are a counterintuitive ' +
+    'second-order effect ("adding a replica made writes slower"), a hidden cost, or a thing ' +
+    'everyone does that is quietly wrong.\n' +
+    '- Assume the viewer is a mid-level engineer. Skip anything on the first page of the docs. ' +
+    'No product launch recaps, no news roundups, no beginner explainers.\n' +
+    '- Prefer mechanisms that decompose into 4 components, because the reel draws one per beat.\n' +
     '- No celebrities, no copyrighted characters, no brands as protagonists.\n' +
     '- Phrase each as a lowercase topic line, 5 to 12 words, no hashtags, no quotes.\n' +
     '- Prefer the surprising mechanism over the news headline.\n\n' +

@@ -1,5 +1,5 @@
 {
-  "lane": "viral tech: the surprising mechanism behind the tech people are actually arguing about this week, one jaw-dropper per reel",
+  "lane": "working software, explained properly: one real mechanism per reel from AI systems, distributed systems, databases, networks and the infrastructure underneath them",
   "backlog": [
     "why your brain cant ignore a loading spinner",
     "the fly connectome has 140000 neurons and we mapped every one",
@@ -34,52 +34,52 @@
   ],
   "categories": [
     {
-      "key": "ai",
-      "hint": "AI models, agents, what they can and cannot do, AI in the wild"
+      "key": "ai-systems",
+      "hint": "inference serving: KV cache, continuous batching, quantisation, vector indexes, RAG retrieval, GPU scheduling, context windows, embedding drift"
     },
     {
-      "key": "phones",
-      "hint": "phones and consumer gadgets: batteries, cameras, chips, repairability"
+      "key": "distributed",
+      "hint": "consensus and coordination: Raft, leader election, quorums, split brain, partitioning, replication lag, exactly-once vs at-least-once"
     },
     {
-      "key": "space",
-      "hint": "space tech: rockets, satellites, Starlink, probes, launch engineering"
+      "key": "databases",
+      "hint": "storage engines: B-trees vs LSM, MVCC, WAL, isolation levels, query planners, index selectivity, vacuum, hot partitions"
+    },
+    {
+      "key": "networking",
+      "hint": "the wire: TCP slow start, TLS handshakes, HTTP/2 vs 3, head-of-line blocking, DNS resolution, BGP, anycast, load balancer algorithms"
+    },
+    {
+      "key": "caching",
+      "hint": "cache behaviour: invalidation strategies, thundering herd, stampede locks, TTL jitter, write-through vs write-back, CDN tiering, cache keys"
+    },
+    {
+      "key": "concurrency",
+      "hint": "parallel execution: locks and contention, async runtimes, event loops, backpressure, queue depth, thread pools, false sharing"
+    },
+    {
+      "key": "performance",
+      "hint": "where the time goes: p99 vs mean, tail amplification, GC pauses, cold starts, memory layout, cache lines, N+1 queries, profiling"
     },
     {
       "key": "security",
-      "hint": "hacking, breaches, scams, encryption, surveillance, password cracking"
+      "hint": "real attack surface: token lifetimes, JWT pitfalls, TLS termination, secret rotation, supply-chain, SSRF, rate limit bypass"
     },
     {
-      "key": "internet",
-      "hint": "how the internet physically works: cables, DNS, CDNs, outages, protocols"
+      "key": "observability",
+      "hint": "seeing production: distributed tracing, metric cardinality explosions, sampling strategies, SLOs and error budgets, log costs"
     },
     {
-      "key": "gaming",
-      "hint": "gaming tech: GPUs, frame generation, anti-cheat, physics engines, speedrun tech"
+      "key": "infra",
+      "hint": "the platform: container cold start, k8s scheduling and evictions, autoscaling lag, blue-green vs canary, IaC drift, noisy neighbours"
     },
     {
-      "key": "chips",
-      "hint": "semiconductors: fabs, nanometres, TSMC, chip shortages, how chips are made"
+      "key": "data",
+      "hint": "data in motion: streaming vs batch, backfills, schema evolution, watermarks, idempotent consumers, partition skew, CDC"
     },
     {
-      "key": "robots",
-      "hint": "robotics and automation: warehouse robots, humanoids, drones, self-driving"
-    },
-    {
-      "key": "history",
-      "hint": "tech history and famous failures: doomed products, old hardware, legendary bugs"
-    },
-    {
-      "key": "devlife",
-      "hint": "coding culture: open source drama, legacy code, outages caused by one line"
-    },
-    {
-      "key": "money",
-      "hint": "tech money: data centre costs, subscription economics, what your data is worth"
-    },
-    {
-      "key": "biotech",
-      "hint": "brain-computer interfaces, wearables, bio-sensing, medical devices"
+      "key": "reliability",
+      "hint": "when it breaks: retry storms, circuit breakers, idempotency keys, graceful degradation, timeouts and deadlines, incident patterns"
     }
   ]
 }
