@@ -40,18 +40,31 @@ nod along to without really knowing.
    your p99 spikes", "next system design interview"). Never "stay curious".
 4. Nothing medical or diagnostic. No advice. Facts only.
 
-## Format contract (30 to 45 seconds of speech, total)
-- **hook**: 1 line, spoken in about 1.5 seconds. Also the first frame of the
-  video as huge static text, so it must read as a thumbnail. Max 9 words. It
-  states the weird thing or asks the question. No "did you know".
-- **beats**: 3 to 5 of them. Each is one surprising concrete fact, 12 to 24
-  words, spoken fast. Each beat escalates: setup, mechanism, twist, payoff.
-- **length budget, hard**: hook + all beats + cta must total between 80 and 105
-  words. The voice reads about 2.5 words a second, so that is the 32 to 42
-  second reel this format needs. Four beats of 20 words is the sweet spot. Go
-  over and the reel gets cut; write fewer beats rather than longer ones.
-- **cta**: the last 2 seconds. A "follow for the next one" variant with the
-  persona's voice on it. Max 8 words.
+## Format contract (75 to 110 seconds of speech, total)
+- **hook**: 1 line, spoken in about 2 seconds. Also the first frame of the video
+  as huge static text, so it must read as a thumbnail. Max 9 words. It states
+  the symptom or the weird result. No "did you know".
+- **beats**: 6 to 8 of them, in this shape:
+  1. SYMPTOM: what an engineer actually sees. Dashboards, errors, the bill.
+  2. ANALOGY: one plain-language picture of the mechanism, using everyday
+     objects (a queue at a counter, a locked door, a photocopier). This is the
+     beat that lets a non-expert follow the rest. Never skip it.
+  3-6. MECHANISM: the real steps, in order, one component per beat. Introduce
+     every technical term the first time you use it, in the same breath, in
+     plain words: "the write-ahead log, the file the database appends to before
+     it changes anything".
+  7. CONSEQUENCE: what it costs, with a real number where one exists.
+  8. FIX: what an engineer actually does about it.
+- Each beat is 25 to 40 words. Spoken, not written: short clauses, one idea per
+  sentence, no subordinate clause pile-ups.
+- **length budget, hard**: hook + all beats + cta must total between 230 and 330
+  words. The voice reads about 3 words a second, so that is the 75 to 110 second
+  video this format needs. Prefer more beats over longer beats.
+- **layman rule**: a curious person who does not write code should be able to
+  follow the whole thing, while an engineer should still learn the precise
+  mechanism. If a sentence would lose the first person, add the plain-language
+  clause. If it would bore the second, add the specific noun.
+- **cta**: the last 2 seconds. Max 8 words, names when they will need this.
 - **accent words**: per beat, 1 or 2 words from that beat's own text that carry
   the punch. They get highlighted in the captions. They must appear in the beat
   text verbatim, same spelling, no punctuation attached.
@@ -67,7 +80,7 @@ Return **only** a JSON object, no markdown fence, no commentary:
     { "text": "string", "accent": ["word", "word"], "source": "string" }
   ],
   "cta": "string",
-  "caption": "LONG Instagram caption, 120 to 200 words, structured exactly as: (1) one line naming the symptom an engineer would actually see in production; (2) a blank line; (3) three or four numbered steps walking the mechanism in order, each 1 to 2 sentences, using the real component names from the beats; (4) a blank line; (5) one line starting 'The takeaway:' giving the rule they should remember; (6) a blank line; (7) a save line naming the moment they will need this, e.g. 'Save this for your next incident review.' Plain text only: no markdown, no bullet characters, no emoji except the step numbers if you want them. Never mention brains, dopamine or attention spans.",
+  "caption": "LONG Instagram caption, 150 to 240 words, structured exactly as: (1) one line naming the symptom an engineer would actually see in production; (2) a blank line; (3) four to six numbered steps walking the mechanism in order, each 1 to 2 sentences, using the real component names from the beats; (4) a blank line; (5) one line starting 'The takeaway:' giving the rule they should remember; (6) a blank line; (7) a save line naming the moment they will need this, e.g. 'Save this for your next incident review.' Plain text only: no markdown, no bullet characters, no emoji except the step numbers if you want them. Never mention brains, dopamine or attention spans.",
   "hashtags": ["five", "niche", "tags", "no", "spam"]
 }
 ```

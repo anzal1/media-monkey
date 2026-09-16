@@ -10,6 +10,7 @@
 import { gemini } from '../llm.mjs';
 
 const COLS = 2;
+const MAX_NODES = 8;
 const NODE_W = 345;
 const NODE_H = 170;
 const GAP_X = 160;  // wide enough that an edge label never sits on a node
@@ -37,7 +38,7 @@ const SCHEMA_HINT = `Return ONLY JSON:
   "eyebrow": "SECTION / SUBSECTION, max 4 words, uppercase",
   "headline": "3 to 7 words, the claim, sentence case, may be two short sentences",
   "subhead": "max 6 words, the mechanism named",
-  "nodes": [ { "id": "short_snake", "chip": "where it runs, e.g. browser / redis / aws s3", "title": "2-3 words", "sub": "max 5 words of detail", "accent": false } ],
+  "nodes": [ { "id": "short_snake", "chip": "where it runs, e.g. browser / redis / aws s3", "title": "2-3 words", "sub": "max 4 words of detail, never a sentence", "accent": false } ],
   "edges": [ { "from": "id", "to": "id", "label": "max 3 words, the action" } ]
 }`;
 
@@ -69,7 +70,7 @@ function parseSpec(raw) {
 
 export async function writeDiagram(topic, script, opts = {}) {
   const beats = (script.beats || []).map((b, i) => `${i + 1}. ${b.text}`).join('\n');
-  const n = Math.max(3, Math.min(6, (script.beats || []).length));
+  const n = Math.max(4, Math.min(MAX_NODES, (script.beats || []).length));
   const prompt =
     `You are drawing the architecture diagram that goes behind a short technical video.\n\n` +
     `TOPIC: ${topic}\n\nThe narration, one line per beat:\n${beats}\n\n` +
@@ -99,7 +100,7 @@ export async function writeDiagram(topic, script, opts = {}) {
   if (!spec) throw new Error('diagram: ' + (lastErr?.message || 'no parseable spec'));
   if (!Array.isArray(spec.nodes) || spec.nodes.length < 2) throw new Error('diagram: too few nodes');
 
-  const nodes = layout(spec.nodes.slice(0, 6));
+  const nodes = layout(spec.nodes.slice(0, MAX_NODES));
   const ids = new Set(nodes.map((x) => x.id));
   const edges = (spec.edges || [])
     .filter((e) => ids.has(e.from) && ids.has(e.to) && e.from !== e.to)

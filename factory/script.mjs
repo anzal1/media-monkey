@@ -141,16 +141,16 @@ export function validate(obj, topic, lang = 'en') {
   if (wordsOf(hook).length > 12) err(`hook is ${wordsOf(hook).length} words, max 12`);
 
   if (!Array.isArray(obj.beats)) err('beats is not an array');
-  if (obj.beats.length < 3 || obj.beats.length > 5) {
-    err(`beats has ${obj.beats.length} entries, need 3 to 5`);
+  if (obj.beats.length < 5 || obj.beats.length > 9) {
+    err(`beats has ${obj.beats.length} entries, need 6 to 8`);
   }
 
   const beats = obj.beats.map((b, i) => {
     const text = cleanSpoken(typeof b === 'string' ? b : b.text || '');
     if (!text) err(`beat ${i + 1} has no text`);
     const n = wordsOf(text).length;
-    if (n < 8) err(`beat ${i + 1} is only ${n} words, need 8 to 26`);
-    if (n > 26) err(`beat ${i + 1} is ${n} words, need 8 to 26`);
+    if (n < 14) err(`beat ${i + 1} is only ${n} words, need 14 to 42`);
+    if (n > 42) err(`beat ${i + 1} is ${n} words, need 14 to 42`);
 
     const source = cleanSpoken((b && b.source) || '');
     if (!source) err(`beat ${i + 1} has no source; every claim needs a checkable anchor`);
@@ -195,13 +195,13 @@ export function validate(obj, topic, lang = 'en') {
     + wordsOf(cta).length
     // the Hindi opener is spoken too, so it spends from the same budget
     + (lang === 'mix' ? wordsOf(hookHi).length : 0);
-  if (spokenWords > 108) {
-    err(`script is ${spokenWords} spoken words, about ${(spokenWords / 2.5).toFixed(0)}s. ` +
-        'Cut it to 80 to 105 words: drop a beat or shorten every beat.');
+  if (spokenWords > 350) {
+    err(`script is ${spokenWords} spoken words, about ${(spokenWords / 3).toFixed(0)}s. ` +
+        'Cut it to 230 to 330 words: shorten beats, do not drop the analogy beat.');
   }
-  if (spokenWords < 62) {
-    err(`script is only ${spokenWords} spoken words, about ${(spokenWords / 2.5).toFixed(0)}s. ` +
-        'The format needs 80 to 105 words.');
+  if (spokenWords < 210) {
+    err(`script is only ${spokenWords} spoken words, about ${(spokenWords / 3).toFixed(0)}s. ` +
+        'The format needs 230 to 330 words across 6 to 8 beats.');
   }
 
   return {
