@@ -109,3 +109,24 @@ export function probeSummary(file) {
   ], { encoding: 'utf8' });
   return JSON.parse(out);
 }
+
+/**
+ * How much ink the first frame carries, 0..1.
+ *
+ * Instagram takes the grid cover from the opening frame, so a reel whose first
+ * frame is still fading up gets a blank thumbnail in the profile grid. That is
+ * invisible in the video itself and only shows up on the account, which is
+ * exactly the kind of bug worth asserting on. Returns the fraction of pixels
+ * darker than mid grey on a downscaled greyscale copy of the frame.
+ */
+export function firstFrameInk(file, atSeconds = 0) {
+  const out = execFileSync(ffmpegPath(), [
+    '-nostdin', '-loglevel', 'error',
+    '-ss', String(atSeconds), '-i', file, '-frames:v', '1',
+    '-vf', 'format=gray,scale=64:114', '-f', 'rawvideo', '-',
+  ], { maxBuffer: 1 << 20 });
+  let dark = 0;
+  for (const b of out) if (b < 140) dark++;
+  return out.length ? dark / out.length : 0;
+}
+

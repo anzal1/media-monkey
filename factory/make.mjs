@@ -27,7 +27,7 @@ import { assemble } from './assemble.mjs';
 import { supplyTopics, appendHistory } from './topics.mjs';
 import { writeScenes } from './explainer/scenes.mjs';
 import { renderExplainer } from './explainer/render.mjs';
-import { probeSummary } from './ffmpeg.mjs';
+import { probeSummary, firstFrameInk } from './ffmpeg.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(HERE, '..');
@@ -146,6 +146,14 @@ async function makeOne(topicEntry, args, index, count) {
   const v = probe.streams.find((s) => s.codec_type === 'video');
   const a = probe.streams.find((s) => s.codec_type === 'audio');
   if (!v || !a) throw new Error('rendered reel is missing a video or audio stream');
+  // The profile grid cover comes from the opening frame, so a reel that starts
+  // on a blank page is a dead thumbnail no matter how good the rest is.
+  const ink = firstFrameInk(res.video);
+  if (ink < 0.005) {
+    log(`  WARNING: first frame is blank (${(ink * 100).toFixed(2)}% ink). ` +
+        'The grid thumbnail will be empty. Draw the title card fully at t=0.');
+  }
+
   if (v.width !== CONFIG.video.width || v.height !== CONFIG.video.height) {
     throw new Error(`rendered reel is ${v.width}x${v.height}, expected 1080x1920`);
   }

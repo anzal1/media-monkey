@@ -5,6 +5,7 @@
  * graph.facebook.com content publishing. No passwords, no private API.
  *
  *   node factory/publish.mjs --video-url <public mp4 url> --caption-file <path>
+ *                             [--thumb-offset <ms>]
  *
  * Env: IG_USER_ID (the Instagram professional account id),
  *      IG_ACCESS_TOKEN (long-lived page-linked token with
@@ -23,6 +24,10 @@ let IG_USER_ID = process.env.IG_USER_ID;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
 const videoUrl = arg('--video-url');
 const captionFile = arg('--caption-file');
+// Instagram picks the grid cover itself if we do not name a frame, and its
+// default has landed on frame 0, which was blank. Naming one is the reliable
+// fix; the scene also draws its title card fully at t=0 as a second defence.
+const thumbOffset = arg('--thumb-offset') || '1200';
 
 if (!videoUrl) {
   console.error('usage: publish.mjs --video-url <url> [--caption-file <path>]');
@@ -76,6 +81,7 @@ for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
     video_url: videoUrl,
     caption,
     share_to_feed: 'true',
+    thumb_offset: thumbOffset,
   });
   console.log(`container (attempt ${attempt}/${ATTEMPTS}):`, container.id);
 

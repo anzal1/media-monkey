@@ -397,13 +397,17 @@
       $('title').style.display = inTitle ? 'block' : 'none';
       $('stage').style.display = inTitle ? 'none' : 'block';
       if (inTitle) {
-        const p = spring(clamp01(tSec / 0.8));
+        // Instagram takes the grid cover from the FIRST frame, so the title card
+        // has to be fully drawn at t=0. An entrance that fades up from nothing
+        // renders frame 0 as a blank page and the post gets a dead thumbnail.
+        // The animation therefore only settles the card, it never reveals it.
+        const p = spring(clamp01(tSec / 0.6));
         const big = document.querySelector('#title .big');
-        big.style.opacity = p;
-        big.style.transform = `translateY(${(1 - p) * 22}px)`;
-        document.querySelector('#title .kick').style.opacity = clamp01((tSec - 0.25) / 0.5);
+        big.style.opacity = 1;
+        big.style.transform = `translateY(${(1 - p) * 12}px)`;
+        document.querySelector('#title .kick').style.opacity = 1;
         document.querySelectorAll('#title .ghost').forEach((g, k) => {
-          g.style.opacity = clamp01((tSec - 0.6 - k * 0.18) / 0.5) * 0.9;
+          g.style.opacity = 0.5 + 0.4 * clamp01((tSec - 0.15 - k * 0.15) / 0.5);
         });
         return;
       }
