@@ -63,9 +63,8 @@
     "one of these a day, follow up"
   ],
   "explainerSubtitle": {
-    "fontSize": 54,
-    "hookFontSize": 66,
-    "outline": 12,
+    "fontSize": 46,
+    "outline": 10,
     "shadow": 0,
     "borderStyle": 3,
     "alignment": 2,
@@ -76,7 +75,10 @@
     "maxWordsOnScreen": 4,
     "scrim": false,
     "fontName": "Inter",
-    "bold": true
+    "bold": true,
+    "hookCard": false,
+    "lineY": 0.72,
+    "hookFontSize": 58
   },
   "format": "explainer",
   "handle": ""

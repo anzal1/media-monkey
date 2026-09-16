@@ -127,6 +127,7 @@ async function makeOne(topicEntry, args, index, count) {
       log,
     });
     fs.writeFileSync(path.join(outDir, 'scenes.json'), JSON.stringify(board, null, 2));
+    fs.writeFileSync(path.join(outDir, 'script.json'), JSON.stringify(script, null, 2));
   }
 
   const isExplainer = format === 'explainer';

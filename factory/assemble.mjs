@@ -224,7 +224,9 @@ export function buildAss(script, segments, words, opts = {}) {
   // The hook segments are always first. lang=mix has two of them (Hindi line,
   // then English line) and each gets its own card, so the title on screen is
   // always the line being spoken.
-  const hookSegs = segments.filter((s) => s.kind === 'hook');
+  // The explainer scene draws its own title card in HTML, so burning one in
+  // here too put the same sentence on screen twice, overlapping itself.
+  const hookSegs = sub.hookCard === false ? [] : segments.filter((s) => s.kind === 'hook');
   const hookSpoken = hookSegs.reduce((a, s) => a + s.duration, 0);
   const hookEnd = Math.max(sub.hookTitleSeconds, hookSpoken);
   const titleY = Math.round(height * 0.46);
@@ -248,9 +250,9 @@ export function buildAss(script, segments, words, opts = {}) {
     );
   });
 
-  // 2. karaoke, one event per word: the group is on screen, the spoken word is
-  // lit and scaled, the rest of the group sits back at lower alpha.
-  const y = Math.round(height * 0.66);
+  // 2. the caption line. Its height is a knob because the explainer scene puts
+  // its own footer and progress bar where the brainrot theme wanted captions.
+  const y = Math.round(height * (sub.lineY || 0.66));
 
   // A heavily blurred black slab under the caption line. On the fluid
   // background the white lobes are near-white, and a 6px outline alone is not
@@ -267,33 +269,53 @@ export function buildAss(script, segments, words, opts = {}) {
       'm -540 -140 l 540 -140 l 540 140 l -540 140{\\p0}',
     );
   }
-  // BorderStyle 3 draws the box per span, so any per-word change to the border
-  // or the scale makes the "one clean caption bar" break into a stepped, ragged
-  // shape. With a box theme the emphasis therefore has to be colour only: same
-  // border, same scale, every word fully opaque, and the accent word coloured.
+  // Two caption behaviours, and the box theme is NOT karaoke.
+  //
+  // With BorderStyle 3 the box is drawn per span, so any per-word change to the
+  // border or the scale breaks the bar into a stepped shape. More importantly a
+  // highlight that hops word to word pulls the eye away from the diagram, which
+  // is the thing the viewer is supposed to be reading. So a boxed caption is a
+  // STATIC card: the group appears once, holds for as long as it is spoken, and
+  // carries exactly one coloured word, the accent word for that beat. One event
+  // per group instead of one per word, which also removes the per-word flicker.
   const boxed = borderStyle === 3;
-  for (const w of words) {
-    if (w.kind === 'hook') continue;         // covered by the title card
-    const parts = w.groupWords.map((gw, j) => {
-      const isActive = j === w.indexInGroup;
-      const isAccent = w.groupAccents[j];
-      const col = isAccent ? accent : white;
-      if (boxed) {
-        // the spoken word is the accent colour as it passes; the rest stay ink
-        const c = isActive || isAccent ? accent : white;
-        return `{\\c${c}\\alpha&H00&\\fscx100\\fscy100\\bord${sub.outline}}${assEscape(gw)}`;
+  if (boxed) {
+    // every word carries the id of the group it belongs to, so collapsing to
+    // one card per group is a straight fold over that key
+    const cards = [];
+    for (const w of words) {
+      if (w.kind === 'hook') continue;
+      const last = cards[cards.length - 1];
+      if (last && last.id === w.group) {
+        last.end = Math.max(last.end, w.end);
+        continue;
       }
-      if (isActive) {
-        return `{\\c${col}\\alpha&H00&\\fscx112\\fscy112\\bord${sub.outline}}${assEscape(gw)}`;
-      }
-      return `{\\c${col}\\alpha&H70&\\fscx100\\fscy100\\bord${sub.outline}}${assEscape(gw)}`;
-    });
-    const start = assTime(w.start);
-    const end = assTime(Math.max(w.start + 0.05, w.end));
-    ev.push(
-      `Dialogue: 1,${start},${end},Kara,,0,0,0,,` +
-      `{\\an5\\pos(${width / 2},${y})}${parts.join(' ')}`,
-    );
+      cards.push({ id: w.group, words: w.groupWords, accents: w.groupAccents, start: w.start, end: w.end });
+    }
+    for (const c of cards) {
+      const parts = c.words.map((gw, j) =>
+        `{\\c${c.accents[j] ? accent : white}\\alpha&H00&\\bord${sub.outline}}${assEscape(gw)}`);
+      ev.push(
+        `Dialogue: 1,${assTime(c.start)},${assTime(Math.max(c.start + 0.2, c.end))},Kara,,0,0,0,,` +
+        `{\\an5\\pos(${width / 2},${y})}${parts.join(' ')}`,
+      );
+    }
+  } else {
+    for (const w of words) {
+      if (w.kind === 'hook') continue;       // covered by the title card
+      const parts = w.groupWords.map((gw, j) => {
+        const isActive = j === w.indexInGroup;
+        const col = w.groupAccents[j] ? accent : white;
+        if (isActive) {
+          return `{\\c${col}\\alpha&H00&\\fscx112\\fscy112\\bord${sub.outline}}${assEscape(gw)}`;
+        }
+        return `{\\c${col}\\alpha&H70&\\fscx100\\fscy100\\bord${sub.outline}}${assEscape(gw)}`;
+      });
+      ev.push(
+        `Dialogue: 1,${assTime(w.start)},${assTime(Math.max(w.start + 0.05, w.end))},Kara,,0,0,0,,` +
+        `{\\an5\\pos(${width / 2},${y})}${parts.join(' ')}`,
+      );
+    }
   }
 
   return `${head.join('\n')}\n${ev.join('\n')}\n`;
