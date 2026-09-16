@@ -1,5 +1,5 @@
 {
-  "lane": "working software, explained properly: one real mechanism per reel from AI systems, distributed systems, databases, networks and the infrastructure underneath them",
+  "lane": "everything that makes someone a better engineer: real mechanisms across AI systems, distributed systems, databases, networks, the kernel, the compiler, the tooling and the craft around all of it",
   "backlog": [
     "why your brain cant ignore a loading spinner",
     "the fly connectome has 140000 neurons and we mapped every one",
@@ -80,6 +80,46 @@
     {
       "key": "reliability",
       "hint": "when it breaks: retry storms, circuit breakers, idempotency keys, graceful degradation, timeouts and deadlines, incident patterns"
+    },
+    {
+      "key": "debugging",
+      "hint": "finding the cause: bisecting, core dumps, flame graphs, heisenbugs, strace/dtrace, reproducing race conditions, reading a stack trace properly"
+    },
+    {
+      "key": "code-craft",
+      "hint": "writing code that survives: naming, boundaries, coupling, dependency inversion, when abstraction costs more than duplication, deleting code"
+    },
+    {
+      "key": "testing",
+      "hint": "proving it works: test pyramids vs trophies, flaky tests, property-based testing, contract tests, fixtures vs factories, mutation testing"
+    },
+    {
+      "key": "git-tooling",
+      "hint": "the tools under your hands: git internals (objects, packfiles, reflog), rebase vs merge semantics, bisect, monorepo builds, caching in CI"
+    },
+    {
+      "key": "os-internals",
+      "hint": "what the kernel is doing: page faults, context switches, file descriptors, epoll, memory mapping, signals, cgroups, syscall cost"
+    },
+    {
+      "key": "compilers",
+      "hint": "how your code becomes machine code: JIT warmup, inlining, branch prediction, vectorisation, undefined behaviour, linking, dead code elimination"
+    },
+    {
+      "key": "algorithms",
+      "hint": "algorithms where they actually bite: hash collisions in the wild, big-O lying about constants, bloom filters, consistent hashing, sorting at scale"
+    },
+    {
+      "key": "architecture",
+      "hint": "decisions you defend later: monolith vs services, event-driven tradeoffs, API versioning, ADRs, strangler migrations, build vs buy"
+    },
+    {
+      "key": "cost",
+      "hint": "the bill as an engineering constraint: egress pricing, idle GPU burn, over-provisioned clusters, log retention, storage tiers, cost per request"
+    },
+    {
+      "key": "career",
+      "hint": "the craft around the code: design reviews, RFC writing, on-call practice, estimating, mentoring, reading unfamiliar codebases fast, interview system design"
     }
   ]
 }
