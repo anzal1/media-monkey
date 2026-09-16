@@ -36,5 +36,43 @@
     "_score": 5,
     "blocked": "YOUTUBE_WALLED: ERROR: [youtube] V9FxH9yaBp8: The page needs to be reloaded.. The page needs to be reloaded.",
     "queuedAt": "2026-09-13T09:40:30.202Z"
+  },
+  {
+    "id": "yt-SVvZ5hGsMu4",
+    "url": "https://www.youtube.com/watch?v=SVvZ5hGsMu4",
+    "title": "cutting a block of kinetic sand 💜 | Very satisfying | 391 #kineticsand",
+    "channel": "Serenity In sand",
+    "origin": "YouTube CC BY (Serenity In sand)",
+    "page": "https://www.youtube.com/watch?v=SVvZ5hGsMu4",
+    "license": "Creative Commons Attribution (CC BY 3.0), verified via videos.list status.license",
+    "attribution": "Serenity In sand (CC BY)",
+    "tier": "harvested",
+    "needsYtDlp": true,
+    "duration": 40,
+    "height": 1080,
+    "width": 1920,
+    "query": "kinetic sand cutting",
+    "_score": 5,
+    "blocked": "YOUTUBE_WALLED: ERROR: [youtube] SVvZ5hGsMu4: The page needs to be reloaded.. The page needs to be reloaded.",
+    "queuedAt": "2026-09-13T11:57:09.642Z"
+  },
+  {
+    "id": "yt-WtnoXXOVWmY",
+    "url": "https://www.youtube.com/watch?v=WtnoXXOVWmY",
+    "title": "Drone Highway at Night | Free Footage - Videos for content creators",
+    "channel": "Free Footage - Videos for content creators",
+    "origin": "YouTube CC BY (Free Footage - Videos for content creators)",
+    "page": "https://www.youtube.com/watch?v=WtnoXXOVWmY",
+    "license": "Creative Commons Attribution (CC BY 3.0), verified via videos.list status.license",
+    "attribution": "Free Footage - Videos for content creators (CC BY)",
+    "tier": "harvested",
+    "needsYtDlp": true,
+    "duration": 81,
+    "height": 1080,
+    "width": 1920,
+    "query": "drone flying city night",
+    "_score": 5,
+    "blocked": "YOUTUBE_WALLED: ERROR: [youtube] WtnoXXOVWmY: The page needs to be reloaded.. The page needs to be reloaded.",
+    "queuedAt": "2026-09-15T07:47:41.928Z"
   }
 ]

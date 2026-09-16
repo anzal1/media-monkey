@@ -44,11 +44,16 @@ export function apiKey() {
 export async function gemini({
   prompt,
   system,
-  model = 'gemini-2.5-flash',
+  model = 'gemini-3.8-flash',
   temperature = 0.95,
   json = false,
   tools = null,
   timeoutMs = 60000,
+  maxOutputTokens = 4096,
+  // gemini-2.5 spends "thinking" tokens out of the SAME budget as the answer, so
+  // a long structured prompt can return JSON truncated mid-object. Extraction
+  // tasks set this to 0: no thinking, whole budget for the payload.
+  thinkingBudget = null,
 }) {
   const url =
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
@@ -57,7 +62,8 @@ export async function gemini({
     generationConfig: {
       temperature,
       topP: 0.95,
-      maxOutputTokens: 4096,
+      maxOutputTokens,
+      ...(thinkingBudget !== null ? { thinkingConfig: { thinkingBudget } } : {}),
       ...(json && !tools ? { responseMimeType: 'application/json' } : {}),
     },
   };

@@ -188,6 +188,13 @@ export function buildAss(script, segments, words, opts = {}) {
   const accent = assColor(sub.accentColor);
   const black = '&H00000000&';
   const bold = sub.bold === false ? 0 : -1;
+  // BorderStyle 1 = outlined text (brainrot); 3 = opaque box behind the words,
+  // which is what the light explainer theme uses as its caption bar.
+  const borderStyle = sub.borderStyle ?? 1;
+  const align = sub.alignment ?? 5;
+  const marginV = sub.marginV ?? 60;
+  const shadow = sub.shadow ?? 3;
+  const boxCol = sub.boxColor ? assColor(sub.boxColor) : black;
 
   const head = [
     '[Script Info]',
@@ -202,8 +209,8 @@ export function buildAss(script, segments, words, opts = {}) {
     'Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding',
     // Anton is already a heavy display face, so synthetic bold only smears it.
     // Arial Black and friends still want Bold=-1; config.subtitle.bold decides.
-    `Style: Kara,${sub.fontName},${sub.fontSize},${white},${accent},${black},${black},${bold},0,0,0,100,100,0,0,1,${sub.outline},3,5,60,60,60,1`,
-    `Style: Hook,${sub.fontName},${sub.hookFontSize},${white},${accent},${black},${black},${bold},0,0,0,100,100,0,0,1,${sub.outline + 2},4,5,70,70,70,1`,
+    `Style: Kara,${sub.fontName},${sub.fontSize},${white},${accent},${boxCol},${black},${bold},0,0,0,100,100,0,0,${borderStyle},${sub.outline},${shadow},${align},60,60,${marginV},1`,
+    `Style: Hook,${sub.fontName},${sub.hookFontSize},${white},${accent},${boxCol},${black},${bold},0,0,0,100,100,0,0,${borderStyle},${sub.outline + 2},${shadow},${align},70,70,${marginV},1`,
     '',
     '[Events]',
     'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text',
@@ -248,8 +255,10 @@ export function buildAss(script, segments, words, opts = {}) {
   // A heavily blurred black slab under the caption line. On the fluid
   // background the white lobes are near-white, and a 6px outline alone is not
   // enough there. Blurred, it reads as a shadow pool rather than a box.
+  // ...but a light scene with dark captions needs no shadow pool; there it just
+  // reads as a smudge, so the explainer theme switches it off.
   const karaWords = words.filter((w) => w.kind !== 'hook');
-  if (karaWords.length) {
+  if (karaWords.length && sub.scrim !== false) {
     const from = Math.min(...karaWords.map((w) => w.start)) - 0.2;
     const to = Math.max(...karaWords.map((w) => w.end)) + 0.3;
     ev.push(
@@ -392,8 +401,8 @@ export async function assemble(opts) {
   const offset = bgDur > total + 2 ? +(Math.random() * (bgDur - total - 1)).toFixed(2) : 0;
   log(`  bg: ${path.basename(bg.file)} (${bg.kind}, ${bgDur.toFixed(0)}s) from ${offset}s`);
 
-  const words = timeWords(segments);
-  const ass = buildAss(script, segments, words);
+  const words = timeWords(segments, { maxWordsOnScreen: opts.subtitle?.maxWordsOnScreen });
+  const ass = buildAss(script, segments, words, { subtitle: opts.subtitle });
   const assFile = path.join(outDir, 'subs.ass');
   fs.writeFileSync(assFile, ass, 'utf8');
 
@@ -417,10 +426,13 @@ export async function assemble(opts) {
     `fps=${fps}`,
     `scale=${width}:${height}:force_original_aspect_ratio=increase`,
     `crop=${width}:${height}`,
-    // darken and vignette before burn-in: white captions have to survive the
-    // bright lobes of the fluid background
-    'eq=brightness=-0.10:contrast=1.10:saturation=1.05',
-    'vignette=angle=PI/4.2',
+    // Darken and vignette before burn-in so white captions survive the bright
+    // lobes of a fluid background. The explainer scene is a light, deliberately
+    // composed frame with dark captions, so it passes grade:false and keeps its
+    // own values: this grade would grey it out and vignette the corners.
+    ...(opts.grade === false
+      ? []
+      : ['eq=brightness=-0.10:contrast=1.10:saturation=1.05', 'vignette=angle=PI/4.2']),
     // ffmpeg 9 wants the option named; cwd is outDir so the path needs no escaping
     `subtitles=${subOpt}`,
     'format=yuv420p',

@@ -29,7 +29,7 @@
     font-weight: 800; max-width: 900px;
   }
   .subhead { margin-top: 22px; font-size: 30px; color: #6f6a61; font-weight: 500; }
-  #diagram { position: absolute; left: 70px; top: 520px; width: 940px; height: 800px; transform: scale(1.2); transform-origin: 50% 0; }
+  #diagram { position: absolute; left: 70px; top: 470px; width: 940px; height: 820px; }
   .node {
     position: absolute; background: #fff; border: 2px solid #e2ded5; border-radius: 18px;
     padding: 22px 26px; box-shadow: 0 10px 30px rgba(30,25,15,.06);
@@ -44,8 +44,13 @@
   .node.accent .title { color: #c2410c; }
   svg { position: absolute; inset: 0; width: 940px; height: 800px; overflow: visible; }
   .elabel {
-    position: absolute; font-size: 20px; font-weight: 700; color: #4a453d;
-    background: #f7f5f1; padding: 3px 10px; letter-spacing: .01em;
+    position: absolute; font-size: 19px; font-weight: 700; color: #4a453d;
+    background: #f7f5f1; padding: 3px 8px; letter-spacing: .01em;
+    max-width: 150px; text-align: center; line-height: 1.18; white-space: normal;
+  }
+  #mascot {
+    position: absolute; right: 40px; bottom: 360px; height: 360px;
+    image-rendering: -webkit-optimize-contrast; pointer-events: none;
   }
   footer {
     position: absolute; left: 70px; right: 70px; bottom: 300px;
@@ -60,6 +65,7 @@
     <h1 id="headline"></h1>
     <div class="subhead" id="subhead"></div>
     <div id="diagram"><svg id="wires"></svg></div>
+    <img id="mascot" src="../../assets/brand/mascot-cut.png" alt="" />
     <footer><span id="episode"></span><span id="counter"></span></footer>
   </div>
 <script src="./_harness.js"></script>
@@ -70,9 +76,21 @@
   const FPS = 30;
   window.FPS = FPS;
   const TOTAL_STEPS = Math.max(...S.nodes.map(n => n.step)) + 1;
-  // each step gets an equal slice of the clip; 0.45s of that slice is the animation
+  // Reveal times come from the real TTS segment durations (window.SPEC.stepStarts,
+  // seconds), so a node lands exactly as its beat is spoken. Falls back to equal
+  // slices when the scene is opened by hand in a browser.
   const SECONDS = Number((/[?&]seconds=(\d+)/.exec(location.search) || [])[1] || 30);
-  const stepFrames = (SECONDS * FPS) / TOTAL_STEPS;
+  const starts = Array.isArray(S.stepStarts) && S.stepStarts.length
+    ? S.stepStarts
+    : Array.from({ length: TOTAL_STEPS }, (_, i) => (i * SECONDS) / TOTAL_STEPS);
+  // continuous "step position" for frame i: which reveal are we in, and how far
+  const posAt = (frame) => {
+    const t = frame / FPS;
+    let k = 0;
+    while (k + 1 < starts.length && t >= starts[k + 1]) k++;
+    const span = (starts[k + 1] ?? starts[k] + 3) - starts[k] || 3;
+    return k + Math.min(1, Math.max(0, (t - starts[k]) / span));
+  };
 
   document.getElementById('eyebrow').textContent = S.eyebrow;
   document.getElementById('headline').textContent = S.headline;
@@ -87,6 +105,12 @@
   }
 
   const diagram = document.getElementById('diagram');
+  // headline runs 2 or 3 lines depending on the topic, so pin the diagram under
+  // the real header box instead of a fixed top that sometimes collides
+  requestAnimationFrame(() => {
+    const sub = document.getElementById('subhead');
+    diagram.style.top = Math.round(sub.getBoundingClientRect().bottom + 56) + 'px';
+  });
   const svg = document.getElementById('wires');
   const els = {};
   for (const n of S.nodes) {
@@ -133,7 +157,8 @@
       label = document.createElement('div');
       label.className = 'elabel';
       label.textContent = e.label;
-      const lp = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+      // horizontal wires: lift the label off the line so it never overlaps a node
+      const lp = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 - (horiz ? 26 : 0) };
       label.style.cssText += `left:${lp.x}px;top:${lp.y}px;transform:translate(-50%,-50%)`;
       diagram.appendChild(label);
     }
@@ -144,7 +169,7 @@
 
   window.mmBoot({
     frame(i) {
-      const t = i / stepFrames;            // continuous step position
+      const t = posAt(i);                  // continuous step position, speech-timed
       const step = Math.floor(t);
       const local = t - step;
 

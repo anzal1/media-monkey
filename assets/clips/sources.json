@@ -105,5 +105,803 @@
       "staticEdge": 1.08
     },
     "fetchedAt": "2026-09-13T09:41:45.739Z"
+  },
+  {
+    "id": "pexels-15168379",
+    "file": "pexels-15168379.mp4",
+    "title": "https://www.pexels.com/video/purple-ink-mixing-underwater-in-slow-motion-15168379/",
+    "origin": "Pexels (Dan Cristian Pădureț)",
+    "sourceUrl": "https://www.pexels.com/video/purple-ink-mixing-underwater-in-slow-motion-15168379/",
+    "downloadUrl": "https://videos.pexels.com/video-files/15168379/15168379-hd_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "ink in water",
+    "score": 6,
+    "screen": {
+      "luma": 47.1,
+      "motion": 5.63,
+      "staticEdge": 0.49
+    },
+    "fetchedAt": "2026-09-13T10:04:59.500Z"
+  },
+  {
+    "id": "pexels-9668945",
+    "file": "pexels-9668945.mp4",
+    "title": "https://www.pexels.com/video/colorful-ink-diffusion-in-water-9668945/",
+    "origin": "Pexels (cottonbro studio)",
+    "sourceUrl": "https://www.pexels.com/video/colorful-ink-diffusion-in-water-9668945/",
+    "downloadUrl": "https://videos.pexels.com/video-files/9668945/9668945-hd_1080_1920_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "ink in water",
+    "score": 6,
+    "screen": {
+      "luma": 67.8,
+      "motion": 2.35,
+      "staticEdge": 0.57
+    },
+    "fetchedAt": "2026-09-13T10:05:09.563Z"
+  },
+  {
+    "id": "pexels-6421446",
+    "file": "pexels-6421446.mp4",
+    "title": "https://www.pexels.com/video/pouring-honey-on-a-saucer-6421446/",
+    "origin": "Pexels (ROMAN ODINTSOV)",
+    "sourceUrl": "https://www.pexels.com/video/pouring-honey-on-a-saucer-6421446/",
+    "downloadUrl": "https://videos.pexels.com/video-files/6421446/6421446-uhd_2160_3840_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "macro honey pouring",
+    "score": 6,
+    "screen": {
+      "luma": 91.3,
+      "motion": 4.13,
+      "staticEdge": 0.92
+    },
+    "fetchedAt": "2026-09-13T10:05:17.206Z"
+  },
+  {
+    "id": "pexels-7615784",
+    "file": "pexels-7615784.mp4",
+    "title": "https://www.pexels.com/video/person-holding-honey-7615784/",
+    "origin": "Pexels (Los Muertos Crew)",
+    "sourceUrl": "https://www.pexels.com/video/person-holding-honey-7615784/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7615784/7615784-hd_1080_1920_24fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "macro honey pouring",
+    "score": 6,
+    "screen": {
+      "luma": 114,
+      "motion": 1.84,
+      "staticEdge": 0.57
+    },
+    "fetchedAt": "2026-09-13T10:05:19.579Z"
+  },
+  {
+    "id": "pexels-27936934",
+    "file": "pexels-27936934.mp4",
+    "title": "https://www.pexels.com/video/cnc-27936934/",
+    "origin": "Pexels (Žygintas Urbonas)",
+    "sourceUrl": "https://www.pexels.com/video/cnc-27936934/",
+    "downloadUrl": "https://videos.pexels.com/video-files/27936934/12268338_1080_1920_120fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "cnc machining",
+    "score": 6,
+    "screen": {
+      "luma": 118.2,
+      "motion": 28.39,
+      "staticEdge": 0.53
+    },
+    "fetchedAt": "2026-09-13T10:05:47.855Z"
+  },
+  {
+    "id": "pexels-5161379",
+    "file": "pexels-5161379.mp4",
+    "title": "https://www.pexels.com/video/close-up-footage-of-a-machine-smoothening-a-material-5161379/",
+    "origin": "Pexels (Memory Portraits)",
+    "sourceUrl": "https://www.pexels.com/video/close-up-footage-of-a-machine-smoothening-a-material-5161379/",
+    "downloadUrl": "https://videos.pexels.com/video-files/5161379/5161379-hd_720_1280_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "cnc machining",
+    "score": 5,
+    "screen": {
+      "luma": 113,
+      "motion": 5.56,
+      "staticEdge": 0.59
+    },
+    "fetchedAt": "2026-09-13T10:05:54.767Z"
+  },
+  {
+    "id": "pexels-27048690",
+    "file": "pexels-27048690.mp4",
+    "title": "https://www.pexels.com/video/a-child-is-playing-with-sand-and-other-toys-27048690/",
+    "origin": "Pexels (Lisa Fotios)",
+    "sourceUrl": "https://www.pexels.com/video/a-child-is-playing-with-sand-and-other-toys-27048690/",
+    "downloadUrl": "https://videos.pexels.com/video-files/27048690/12056667_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "kinetic sand cutting",
+    "score": 6,
+    "screen": {
+      "luma": 76.8,
+      "motion": 14.34,
+      "staticEdge": 0.57
+    },
+    "fetchedAt": "2026-09-13T11:57:05.485Z"
+  },
+  {
+    "id": "pexels-37230000",
+    "file": "pexels-37230000.mp4",
+    "title": "https://www.pexels.com/video/slicing-apples-on-wooden-cutting-board-37230000/",
+    "origin": "Pexels (Thanaa Rabbaa)",
+    "sourceUrl": "https://www.pexels.com/video/slicing-apples-on-wooden-cutting-board-37230000/",
+    "downloadUrl": "https://videos.pexels.com/video-files/37230000/15772397_2160_3840_60fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "kinetic sand cutting",
+    "score": 2,
+    "screen": {
+      "luma": 162,
+      "motion": 7.84,
+      "staticEdge": 1.18
+    },
+    "fetchedAt": "2026-09-13T11:57:12.968Z"
+  },
+  {
+    "id": "pexels-8540679",
+    "file": "pexels-8540679.mp4",
+    "title": "https://www.pexels.com/video/a-boy-painting-a-cardboard-cut-out-8540679/",
+    "origin": "Pexels (Ron Lach)",
+    "sourceUrl": "https://www.pexels.com/video/a-boy-painting-a-cardboard-cut-out-8540679/",
+    "downloadUrl": "https://videos.pexels.com/video-files/8540679/8540679-uhd_2160_4096_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "marble run",
+    "score": 4,
+    "screen": {
+      "luma": 146.7,
+      "motion": 8.35,
+      "staticEdge": 0.55
+    },
+    "fetchedAt": "2026-09-13T11:57:28.449Z"
+  },
+  {
+    "id": "pexels-8242984",
+    "file": "pexels-8242984.mp4",
+    "title": "https://www.pexels.com/video/a-man-running-up-stairs-8242984/",
+    "origin": "Pexels (Ana Benet)",
+    "sourceUrl": "https://www.pexels.com/video/a-man-running-up-stairs-8242984/",
+    "downloadUrl": "https://videos.pexels.com/video-files/8242984/8242984-hd_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "marble run",
+    "score": 4,
+    "screen": {
+      "luma": 151.8,
+      "motion": 4.62,
+      "staticEdge": 0.6
+    },
+    "fetchedAt": "2026-09-13T11:57:32.570Z"
+  },
+  {
+    "id": "pexels-8102763",
+    "file": "pexels-8102763.mp4",
+    "title": "https://www.pexels.com/video/woman-arranging-dominoes-8102763/",
+    "origin": "Pexels (cottonbro studio)",
+    "sourceUrl": "https://www.pexels.com/video/woman-arranging-dominoes-8102763/",
+    "downloadUrl": "https://videos.pexels.com/video-files/8102763/8102763-uhd_2160_4096_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "dominoes falling",
+    "score": 6,
+    "screen": {
+      "luma": 173,
+      "motion": 6.46,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-13T11:57:45.211Z"
+  },
+  {
+    "id": "pexels-7270181",
+    "file": "pexels-7270181.mp4",
+    "title": "https://www.pexels.com/video/little-boy-playing-domino-7270181/",
+    "origin": "Pexels (https://kaboompics.com/)",
+    "sourceUrl": "https://www.pexels.com/video/little-boy-playing-domino-7270181/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7270181/7270181-uhd_2160_4096_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "dominoes falling",
+    "score": 4,
+    "screen": {
+      "luma": 133.9,
+      "motion": 7.56,
+      "staticEdge": 0.59
+    },
+    "fetchedAt": "2026-09-13T11:57:48.247Z"
+  },
+  {
+    "id": "pexels-6873167",
+    "file": "pexels-6873167.mp4",
+    "title": "https://www.pexels.com/video/woman-washing-the-car-with-pressurized-water-hose-6873167/",
+    "origin": "Pexels (Tima Miroshnichenko)",
+    "sourceUrl": "https://www.pexels.com/video/woman-washing-the-car-with-pressurized-water-hose-6873167/",
+    "downloadUrl": "https://videos.pexels.com/video-files/6873167/6873167-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "pressure washing",
+    "score": 6,
+    "screen": {
+      "luma": 86.3,
+      "motion": 7.15,
+      "staticEdge": 0.55
+    },
+    "fetchedAt": "2026-09-13T11:57:56.506Z"
+  },
+  {
+    "id": "pexels-6872072",
+    "file": "pexels-6872072.mp4",
+    "title": "https://www.pexels.com/video/man-pressure-washing-a-white-car-6872072/",
+    "origin": "Pexels (Tima Miroshnichenko)",
+    "sourceUrl": "https://www.pexels.com/video/man-pressure-washing-a-white-car-6872072/",
+    "downloadUrl": "https://videos.pexels.com/video-files/6872072/6872072-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "pressure washing",
+    "score": 6,
+    "screen": {
+      "luma": 73.8,
+      "motion": 6.76,
+      "staticEdge": 0.54
+    },
+    "fetchedAt": "2026-09-13T11:58:07.326Z"
+  },
+  {
+    "id": "pexels-7250223",
+    "file": "pexels-7250223.mp4",
+    "title": "https://www.pexels.com/video/a-young-woman-placing-a-stacked-soaps-on-table-7250223/",
+    "origin": "Pexels (Sarah  Chai)",
+    "sourceUrl": "https://www.pexels.com/video/a-young-woman-placing-a-stacked-soaps-on-table-7250223/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7250223/7250223-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "soap cutting",
+    "score": 4,
+    "screen": {
+      "luma": 129.5,
+      "motion": 4.05,
+      "staticEdge": 0.78
+    },
+    "fetchedAt": "2026-09-13T11:58:11.332Z"
+  },
+  {
+    "id": "pexels-7615866",
+    "file": "pexels-7615866.mp4",
+    "title": "https://www.pexels.com/video/people-holding-soaps-7615866/",
+    "origin": "Pexels (Los Muertos Crew)",
+    "sourceUrl": "https://www.pexels.com/video/people-holding-soaps-7615866/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7615866/7615866-hd_1080_1920_24fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "soap cutting",
+    "score": 4,
+    "screen": {
+      "luma": 130.9,
+      "motion": 2.82,
+      "staticEdge": 0.51
+    },
+    "fetchedAt": "2026-09-13T11:58:13.470Z"
+  },
+  {
+    "id": "pexels-9669110",
+    "file": "pexels-9669110.mp4",
+    "title": "https://www.pexels.com/video/colorful-liquids-mixed-with-water-9669110/",
+    "origin": "Pexels (cottonbro studio)",
+    "sourceUrl": "https://www.pexels.com/video/colorful-liquids-mixed-with-water-9669110/",
+    "downloadUrl": "https://videos.pexels.com/video-files/9669110/9669110-hd_1080_1920_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "ink in water",
+    "score": 6,
+    "screen": {
+      "luma": 124.4,
+      "motion": 3.05,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-13T11:58:33.581Z"
+  },
+  {
+    "id": "pexels-6421251",
+    "file": "pexels-6421251.mp4",
+    "title": "https://www.pexels.com/video/a-person-pouring-honey-on-a-saucer-6421251/",
+    "origin": "Pexels (ROMAN ODINTSOV)",
+    "sourceUrl": "https://www.pexels.com/video/a-person-pouring-honey-on-a-saucer-6421251/",
+    "downloadUrl": "https://videos.pexels.com/video-files/6421251/6421251-uhd_2160_4096_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "macro honey pouring",
+    "score": 6,
+    "screen": {
+      "luma": 116.7,
+      "motion": 8.11,
+      "staticEdge": 0.53
+    },
+    "fetchedAt": "2026-09-13T11:58:41.328Z"
+  },
+  {
+    "id": "pexels-34775736",
+    "file": "pexels-34775736.mp4",
+    "title": "https://www.pexels.com/video/automated-industrial-manufacturing-process-34775736/",
+    "origin": "Pexels (Val А)",
+    "sourceUrl": "https://www.pexels.com/video/automated-industrial-manufacturing-process-34775736/",
+    "downloadUrl": "https://videos.pexels.com/video-files/34775736/14742963_1080_1920_60fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "robot arm factory",
+    "score": 6,
+    "screen": {
+      "luma": 114.8,
+      "motion": 25.79,
+      "staticEdge": 0.54
+    },
+    "fetchedAt": "2026-09-15T07:46:58.763Z"
+  },
+  {
+    "id": "pexels-8328148",
+    "file": "pexels-8328148.mp4",
+    "title": "https://www.pexels.com/video/a-robot-giving-a-flower-to-a-woman-8328148/",
+    "origin": "Pexels (Pavel Danilyuk)",
+    "sourceUrl": "https://www.pexels.com/video/a-robot-giving-a-flower-to-a-woman-8328148/",
+    "downloadUrl": "https://videos.pexels.com/video-files/8328148/8328148-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "robot arm factory",
+    "score": 6,
+    "screen": {
+      "luma": 99.8,
+      "motion": 4.7,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-15T07:47:07.097Z"
+  },
+  {
+    "id": "pexels-32259631",
+    "file": "pexels-32259631.mp4",
+    "title": "https://www.pexels.com/video/modern-home-office-desk-setup-with-typing-32259631/",
+    "origin": "Pexels (Jakub Zerdzicki)",
+    "sourceUrl": "https://www.pexels.com/video/modern-home-office-desk-setup-with-typing-32259631/",
+    "downloadUrl": "https://videos.pexels.com/video-files/32259631/13758062_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "mechanical keyboard typing macro",
+    "score": 6,
+    "screen": {
+      "luma": 84.2,
+      "motion": 3.69,
+      "staticEdge": 0.96
+    },
+    "fetchedAt": "2026-09-15T07:47:13.221Z"
+  },
+  {
+    "id": "pexels-5647324",
+    "file": "pexels-5647324.mp4",
+    "title": "https://www.pexels.com/video/close-up-view-of-a-person-s-fingers-using-an-apple-keyboard-for-typing-5647324/",
+    "origin": "Pexels (Tima Miroshnichenko)",
+    "sourceUrl": "https://www.pexels.com/video/close-up-view-of-a-person-s-fingers-using-an-apple-keyboard-for-typing-5647324/",
+    "downloadUrl": "https://videos.pexels.com/video-files/5647324/5647324-hd_1080_1920_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "mechanical keyboard typing macro",
+    "score": 6,
+    "screen": {
+      "luma": 85.5,
+      "motion": 16.57,
+      "staticEdge": 0.02
+    },
+    "fetchedAt": "2026-09-15T07:47:19.195Z"
+  },
+  {
+    "id": "pexels-27616843",
+    "file": "pexels-27616843.mp4",
+    "title": "https://www.pexels.com/video/a-person-is-standing-on-a-bridge-with-a-cross-27616843/",
+    "origin": "Pexels (Teju)",
+    "sourceUrl": "https://www.pexels.com/video/a-person-is-standing-on-a-bridge-with-a-cross-27616843/",
+    "downloadUrl": "https://videos.pexels.com/video-files/27616843/12186252_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "fiber optic cables",
+    "score": 6,
+    "screen": {
+      "luma": 162,
+      "motion": 23.62,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-15T07:49:28.062Z"
+  },
+  {
+    "id": "pexels-34777856",
+    "file": "pexels-34777856.mp4",
+    "title": "https://www.pexels.com/video/dynamic-blue-light-burst-animation-34777856/",
+    "origin": "Pexels (Nicola Narracci)",
+    "sourceUrl": "https://www.pexels.com/video/dynamic-blue-light-burst-animation-34777856/",
+    "downloadUrl": "https://videos.pexels.com/video-files/34777856/14743921_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "fiber optic cables",
+    "score": 4,
+    "screen": {
+      "luma": 59,
+      "motion": 38.13,
+      "staticEdge": 0.61
+    },
+    "fetchedAt": "2026-09-15T07:49:41.009Z"
+  },
+  {
+    "id": "pexels-5377697",
+    "file": "pexels-5377697.mp4",
+    "title": "https://www.pexels.com/video/codes-on-computer-screen-5377697/",
+    "origin": "Pexels (Tima Miroshnichenko)",
+    "sourceUrl": "https://www.pexels.com/video/codes-on-computer-screen-5377697/",
+    "downloadUrl": "https://videos.pexels.com/video-files/5377697/5377697-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "code on screen closeup",
+    "score": 6,
+    "screen": {
+      "luma": 51.9,
+      "motion": 6.91,
+      "staticEdge": 0.53
+    },
+    "fetchedAt": "2026-09-15T07:49:46.057Z"
+  },
+  {
+    "id": "pexels-33314914",
+    "file": "pexels-33314914.mp4",
+    "title": "https://www.pexels.com/video/modern-workspace-with-coding-on-screen-33314914/",
+    "origin": "Pexels (Jakub Zerdzicki)",
+    "sourceUrl": "https://www.pexels.com/video/modern-workspace-with-coding-on-screen-33314914/",
+    "downloadUrl": "https://videos.pexels.com/video-files/33314914/14188117_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "code on screen closeup",
+    "score": 4,
+    "screen": {
+      "luma": 46.9,
+      "motion": 11.6,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-15T07:49:52.037Z"
+  },
+  {
+    "id": "pexels-36991057",
+    "file": "pexels-36991057.mp4",
+    "title": "https://www.pexels.com/video/lunar-surface-with-planet-in-background-36991057/",
+    "origin": "Pexels (Nicola Narracci)",
+    "sourceUrl": "https://www.pexels.com/video/lunar-surface-with-planet-in-background-36991057/",
+    "downloadUrl": "https://videos.pexels.com/video-files/36991057/15670109_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "satellite orbiting earth animation",
+    "score": 4,
+    "screen": {
+      "luma": 65,
+      "motion": 14.07,
+      "staticEdge": 0.54
+    },
+    "fetchedAt": "2026-09-15T07:50:00.652Z"
+  },
+  {
+    "id": "pexels-6755168",
+    "file": "pexels-6755168.mp4",
+    "title": "https://www.pexels.com/video/close-up-shot-of-a-electronic-motherboard-6755168/",
+    "origin": "Pexels (Tima Miroshnichenko)",
+    "sourceUrl": "https://www.pexels.com/video/close-up-shot-of-a-electronic-motherboard-6755168/",
+    "downloadUrl": "https://videos.pexels.com/video-files/6755168/6755168-hd_1080_1920_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "semiconductor wafer",
+    "score": 6,
+    "screen": {
+      "luma": 85.3,
+      "motion": 5.01,
+      "staticEdge": 0.53
+    },
+    "fetchedAt": "2026-09-15T07:50:07.824Z"
+  },
+  {
+    "id": "pexels-18069803",
+    "file": "pexels-18069803.mp4",
+    "title": "https://www.pexels.com/video/an-artist-s-animation-of-artificial-intelligence-ai-this-piece-explores-the-prediction-method-used-in-large-language-models-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-pr-18069803/",
+    "origin": "Pexels (Google DeepMind)",
+    "sourceUrl": "https://www.pexels.com/video/an-artist-s-animation-of-artificial-intelligence-ai-this-piece-explores-the-prediction-method-used-in-large-language-models-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-pr-18069803/",
+    "downloadUrl": "https://videos.pexels.com/video-files/18069803/18069803-uhd_2160_3840_24fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "semiconductor wafer",
+    "score": 6,
+    "screen": {
+      "luma": 148.8,
+      "motion": 12.79,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-15T07:50:13.917Z"
+  },
+  {
+    "id": "pexels-34521511",
+    "file": "pexels-34521511.mp4",
+    "title": "https://www.pexels.com/video/excavator-operating-at-construction-site-34521511/",
+    "origin": "Pexels (Sergei Starostin)",
+    "sourceUrl": "https://www.pexels.com/video/excavator-operating-at-construction-site-34521511/",
+    "downloadUrl": "https://videos.pexels.com/video-files/34521511/14626340_2160_3840_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "hydraulic press crushing",
+    "score": 4,
+    "screen": {
+      "luma": 139.2,
+      "motion": 16.84,
+      "staticEdge": 0.54
+    },
+    "fetchedAt": "2026-09-15T07:50:21.162Z"
+  },
+  {
+    "id": "pexels-5853066",
+    "file": "pexels-5853066.mp4",
+    "title": "https://www.pexels.com/video/faceless-person-working-on-an-orange-juice-press-5853066/",
+    "origin": "Pexels (ROMAN ODINTSOV)",
+    "sourceUrl": "https://www.pexels.com/video/faceless-person-working-on-an-orange-juice-press-5853066/",
+    "downloadUrl": "https://videos.pexels.com/video-files/5853066/5853066-uhd_2160_4096_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "hydraulic press crushing",
+    "score": 4,
+    "screen": {
+      "luma": 97.9,
+      "motion": 14.39,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-15T07:50:27.678Z"
+  },
+  {
+    "id": "pexels-7320724",
+    "file": "pexels-7320724.mp4",
+    "title": "https://www.pexels.com/video/girl-playing-domino-with-her-grandfather-7320724/",
+    "origin": "Pexels (Alena Darmel)",
+    "sourceUrl": "https://www.pexels.com/video/girl-playing-domino-with-her-grandfather-7320724/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7320724/7320724-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "dominoes falling",
+    "score": 4,
+    "screen": {
+      "luma": 126.2,
+      "motion": 14.24,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-15T07:50:56.174Z"
+  },
+  {
+    "id": "pexels-7320717",
+    "file": "pexels-7320717.mp4",
+    "title": "https://www.pexels.com/video/little-girl-with-her-grandfather-7320717/",
+    "origin": "Pexels (Alena Darmel)",
+    "sourceUrl": "https://www.pexels.com/video/little-girl-with-her-grandfather-7320717/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7320717/7320717-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "dominoes falling",
+    "score": 2,
+    "screen": {
+      "luma": 142,
+      "motion": 18.12,
+      "staticEdge": 0.53
+    },
+    "fetchedAt": "2026-09-15T07:50:59.300Z"
+  },
+  {
+    "id": "pexels-8242982",
+    "file": "pexels-8242982.mp4",
+    "title": "https://www.pexels.com/video/a-person-cleaning-the-wall-of-a-building-using-a-pressure-washer-8242982/",
+    "origin": "Pexels (Ana Benet)",
+    "sourceUrl": "https://www.pexels.com/video/a-person-cleaning-the-wall-of-a-building-using-a-pressure-washer-8242982/",
+    "downloadUrl": "https://videos.pexels.com/video-files/8242982/8242982-hd_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "pressure washing",
+    "score": 4,
+    "screen": {
+      "luma": 141.3,
+      "motion": 16.59,
+      "staticEdge": 0.63
+    },
+    "fetchedAt": "2026-09-15T07:51:12.137Z"
+  },
+  {
+    "id": "pexels-7250703",
+    "file": "pexels-7250703.mp4",
+    "title": "https://www.pexels.com/video/soap-in-a-glass-container-7250703/",
+    "origin": "Pexels (Sarah  Chai)",
+    "sourceUrl": "https://www.pexels.com/video/soap-in-a-glass-container-7250703/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7250703/7250703-uhd_2160_3840_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "soap cutting",
+    "score": 4,
+    "screen": {
+      "luma": 108.9,
+      "motion": 9.81,
+      "staticEdge": 0.51
+    },
+    "fetchedAt": "2026-09-15T07:51:17.773Z"
+  },
+  {
+    "id": "pexels-6269003",
+    "file": "pexels-6269003.mp4",
+    "title": "https://www.pexels.com/video/a-person-putting-a-chocolate-syrup-on-a-granola-cereals-6269003/",
+    "origin": "Pexels (Masha Glazova)",
+    "sourceUrl": "https://www.pexels.com/video/a-person-putting-a-chocolate-syrup-on-a-granola-cereals-6269003/",
+    "downloadUrl": "https://videos.pexels.com/video-files/6269003/6269003-hd_1080_2048_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "macro honey pouring",
+    "score": 6,
+    "screen": {
+      "luma": 112.8,
+      "motion": 3.32,
+      "staticEdge": 1.06
+    },
+    "fetchedAt": "2026-09-15T07:51:32.158Z"
+  },
+  {
+    "id": "pexels-34948754",
+    "file": "pexels-34948754.mp4",
+    "title": "https://www.pexels.com/video/precision-motorcycle-engine-assembly-process-34948754/",
+    "origin": "Pexels (Emrul Kausar Emon)",
+    "sourceUrl": "https://www.pexels.com/video/precision-motorcycle-engine-assembly-process-34948754/",
+    "downloadUrl": "https://videos.pexels.com/video-files/34948754/14804706_1080_1920_24fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "cnc machining",
+    "score": 4,
+    "screen": {
+      "luma": 132.9,
+      "motion": 16.72,
+      "staticEdge": 0.5
+    },
+    "fetchedAt": "2026-09-15T07:51:34.938Z"
+  },
+  {
+    "id": "pexels-34948755",
+    "file": "pexels-34948755.mp4",
+    "title": "https://www.pexels.com/video/high-precision-motorcycle-engine-assembly-34948755/",
+    "origin": "Pexels (Emrul Kausar Emon)",
+    "sourceUrl": "https://www.pexels.com/video/high-precision-motorcycle-engine-assembly-34948755/",
+    "downloadUrl": "https://videos.pexels.com/video-files/34948755/14804659_1080_1920_24fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "cnc machining",
+    "score": 4,
+    "screen": {
+      "luma": 140.1,
+      "motion": 9.94,
+      "staticEdge": 0.56
+    },
+    "fetchedAt": "2026-09-15T07:51:37.294Z"
+  },
+  {
+    "id": "pexels-6957793",
+    "file": "pexels-6957793.mp4",
+    "title": "https://www.pexels.com/video/a-person-mixing-paint-using-palette-knife-6957793/",
+    "origin": "Pexels (https://kaboompics.com/)",
+    "sourceUrl": "https://www.pexels.com/video/a-person-mixing-paint-using-palette-knife-6957793/",
+    "downloadUrl": "https://videos.pexels.com/video-files/6957793/6957793-uhd_2160_4096_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "paint mixing",
+    "score": 6,
+    "screen": {
+      "luma": 134,
+      "motion": 8.07,
+      "staticEdge": 0.54
+    },
+    "fetchedAt": "2026-09-15T07:51:44.343Z"
+  },
+  {
+    "id": "pexels-37322215",
+    "file": "pexels-37322215.mp4",
+    "title": "https://www.pexels.com/video/colorful-paints-on-artist-s-palette-37322215/",
+    "origin": "Pexels (Tanha Tamanna  Syed)",
+    "sourceUrl": "https://www.pexels.com/video/colorful-paints-on-artist-s-palette-37322215/",
+    "downloadUrl": "https://videos.pexels.com/video-files/37322215/15808836_1080_1920_30fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "paint mixing",
+    "score": 2,
+    "screen": {
+      "luma": 104.5,
+      "motion": 6.07,
+      "staticEdge": 0.46
+    },
+    "fetchedAt": "2026-09-15T07:51:58.017Z"
+  },
+  {
+    "id": "pexels-7519297",
+    "file": "pexels-7519297.mp4",
+    "title": "https://www.pexels.com/video/blow-torching-a-glass-for-shaping-7519297/",
+    "origin": "Pexels (cottonbro studio)",
+    "sourceUrl": "https://www.pexels.com/video/blow-torching-a-glass-for-shaping-7519297/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7519297/7519297-uhd_2160_4096_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "glass blowing",
+    "score": 6,
+    "screen": {
+      "luma": 77.5,
+      "motion": 7.72,
+      "staticEdge": 0.52
+    },
+    "fetchedAt": "2026-09-15T07:52:06.572Z"
+  },
+  {
+    "id": "pexels-7519299",
+    "file": "pexels-7519299.mp4",
+    "title": "https://www.pexels.com/video/a-man-blow-torching-a-glass-7519299/",
+    "origin": "Pexels (cottonbro studio)",
+    "sourceUrl": "https://www.pexels.com/video/a-man-blow-torching-a-glass-7519299/",
+    "downloadUrl": "https://videos.pexels.com/video-files/7519299/7519299-uhd_2160_4096_25fps.mp4",
+    "license": "Pexels License (free commercial use, no attribution required)",
+    "attribution": null,
+    "tier": "harvested",
+    "query": "glass blowing",
+    "score": 6,
+    "screen": {
+      "luma": 106,
+      "motion": 9.05,
+      "staticEdge": 0.53
+    },
+    "fetchedAt": "2026-09-15T07:52:18.066Z"
   }
 ]

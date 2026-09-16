@@ -25,6 +25,8 @@ import { writeScript, segmentsOf, slugify } from './script.mjs';
 import { synthSegments } from './tts.mjs';
 import { assemble, backgroundPools, rollTier } from './assemble.mjs';
 import { supplyTopics, appendHistory } from './topics.mjs';
+import { writeDiagram } from './explainer/diagram.mjs';
+import { renderExplainer } from './explainer/render.mjs';
 import { probeSummary } from './ffmpeg.mjs';
 import { clipsDir } from './clips.mjs';
 
@@ -43,6 +45,7 @@ function parseArgs(argv) {
     else if (v === '--fresh') a.fresh = 'always';
     else if (v === '--no-fresh') a.fresh = 'never';
     else if (v === '--bg') a.bg = argv[++i];
+    else if (v === '--format') a.format = argv[++i];
     else if (v === '--batch') a.batch = Math.max(1, Number(argv[++i]) || 1);
     else if (v === '--lang') a.lang = argv[++i];
     else if (v === '--voice') a.voice = argv[++i];
@@ -191,7 +194,21 @@ async function makeOne(topicEntry, args, index, count) {
   });
 
   const bgDir = path.join(ROOT, 'assets', 'bg');
-  const bg = await chooseBackground({
+  let bg;
+  if ((args.format || CONFIG.format || 'brainrot') === 'explainer') {
+    // The scene IS the content here, so it replaces the background entirely and
+    // is timed to the narration rather than looped under it.
+    const diagram = await writeDiagram(topic, script, { log });
+    bg = await renderExplainer({
+      diagram,
+      segments,
+      outFile: path.join(outDir, 'scene.mp4'),
+      episode: 'THE PROD MONKEY',
+      log,
+    });
+    fs.writeFileSync(path.join(outDir, 'diagram.json'), JSON.stringify(diagram, null, 2));
+  } else {
+  bg = await chooseBackground({
     args,
     pools: backgroundPools(bgDir, clipsDir()),
     bgSeconds: Math.ceil(
@@ -200,7 +217,9 @@ async function makeOne(topicEntry, args, index, count) {
     spentSoFar: (Date.now() - t0) / 1000,
     outDir,
   });
+  }
 
+  const isExplainer = (args.format || CONFIG.format || 'brainrot') === 'explainer';
   const res = await assemble({
     script,
     segments,
@@ -208,6 +227,9 @@ async function makeOne(topicEntry, args, index, count) {
     bg,
     bgDir,
     clipsDir: clipsDir(),
+    // the light scene needs dark words in a bar, not white words with a black rim
+    subtitle: isExplainer ? CONFIG.explainerSubtitle : undefined,
+    grade: isExplainer ? false : undefined,
     log,
   });
 
