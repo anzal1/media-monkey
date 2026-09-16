@@ -43,6 +43,23 @@ const LANG_RULES = {
 
 // TTS reads text, not punctuation. Strip what would be spoken wrong or would
 // break the ASS subtitle format.
+/**
+ * Captions are read, not spoken, so they keep their paragraph structure. Same
+ * character clean-up as cleanSpoken but newlines survive (cleanSpoken collapses
+ * every run of whitespace, which would flatten the numbered steps into a wall).
+ */
+function cleanCaption(s) {
+  return String(s)
+    .replace(/[\u2014\u2013]/g, ' ')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '')
+    .replace(/[*_#`~]/g, '')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/ *\n */g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function cleanSpoken(s) {
   return String(s)
     .replace(/[—–]/g, ' ')      // em/en dash
@@ -146,17 +163,25 @@ export function validate(obj, topic, lang = 'en') {
     cta = CONFIG.ctaFallbacks[Math.floor(Math.random() * CONFIG.ctaFallbacks.length)];
   }
 
-  const caption = cleanSpoken(obj.caption || '') || hook;
+  const caption = cleanCaption(obj.caption || '') || hook;
 
   let hashtags = (Array.isArray(obj.hashtags) ? obj.hashtags : [])
     .map((t) => String(t).toLowerCase().replace(/[^a-z0-9]/g, ''))
     .filter((t) => t.length > 2 && !BANNED_TAGS.has(t));
   hashtags = [...new Set(hashtags)];
-  for (const fill of ['neuroscience', 'cognitivescience', 'aiexplained', 'brainfacts', 'attention']) {
-    if (hashtags.length >= 5) break;
+  // A reach/niche mix: the broad tags put the reel in front of the feed, the
+  // specific ones land it with people who actually build the thing. Broad tags
+  // are appended (not prepended) so the model's topic-specific ones come first.
+  const BROAD = [
+    'softwareengineering', 'systemdesign', 'backenddeveloper', 'devops',
+    'programming', 'coding', 'webdevelopment', 'computerscience',
+    'techtok', 'developerlife',
+  ];
+  for (const fill of BROAD) {
+    if (hashtags.length >= 12) break;
     if (!hashtags.includes(fill)) hashtags.push(fill);
   }
-  hashtags = hashtags.slice(0, 5);
+  hashtags = hashtags.slice(0, 12);
 
   // Length budget. The format is 30 to 45 seconds and Kokoro reads roughly 2.5
   // words a second including the gaps between segments, so the word count is

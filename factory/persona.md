@@ -67,7 +67,7 @@ Return **only** a JSON object, no markdown fence, no commentary:
     { "text": "string", "accent": ["word", "word"], "source": "string" }
   ],
   "cta": "string",
-  "caption": "2 to 3 sentence Instagram caption in the same voice, ends with a question",
+  "caption": "LONG Instagram caption, 120 to 200 words, structured exactly as: (1) one line naming the symptom an engineer would actually see in production; (2) a blank line; (3) three or four numbered steps walking the mechanism in order, each 1 to 2 sentences, using the real component names from the beats; (4) a blank line; (5) one line starting 'The takeaway:' giving the rule they should remember; (6) a blank line; (7) a save line naming the moment they will need this, e.g. 'Save this for your next incident review.' Plain text only: no markdown, no bullet characters, no emoji except the step numbers if you want them. Never mention brains, dopamine or attention spans.",
   "hashtags": ["five", "niche", "tags", "no", "spam"]
 }
 ```
