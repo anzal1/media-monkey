@@ -1,0 +1,174 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>explainer scene</title>
+<style>
+  @font-face { font-family: Anton; src: local('Anton'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    background: #f7f5f1;
+    font-family: 'Inter', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    color: #171614;
+    -webkit-font-smoothing: antialiased;
+  }
+  #stage { position: relative; width: 1080px; height: 1920px; padding: 96px 70px 0; }
+  .eyebrow {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 21px; letter-spacing: .20em; text-transform: uppercase;
+    font-weight: 600; color: #8a857c;
+  }
+  .dots { display: flex; gap: 12px; }
+  .dot {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 2px solid #ccc7bd; color: #a9a49a;
+    font-size: 15px; font-weight: 700; display: grid; place-items: center;
+  }
+  .dot.on { background: #c2410c; border-color: #c2410c; color: #fff; }
+  h1 {
+    margin-top: 34px; font-size: 92px; line-height: .98; letter-spacing: -.028em;
+    font-weight: 800; max-width: 900px;
+  }
+  .subhead { margin-top: 22px; font-size: 30px; color: #6f6a61; font-weight: 500; }
+  #diagram { position: absolute; left: 70px; top: 520px; width: 940px; height: 800px; transform: scale(1.2); transform-origin: 50% 0; }
+  .node {
+    position: absolute; background: #fff; border: 2px solid #e2ded5; border-radius: 18px;
+    padding: 22px 26px; box-shadow: 0 10px 30px rgba(30,25,15,.06);
+  }
+  .node .chip {
+    display: inline-block; font-size: 17px; letter-spacing: .06em; color: #8a857c;
+    font-weight: 600; margin-bottom: 14px;
+  }
+  .node .title { font-size: 40px; font-weight: 800; letter-spacing: -.02em; }
+  .node .sub { font-size: 24px; color: #6f6a61; margin-top: 8px; font-weight: 500; }
+  .node.accent { border-color: #c2410c; }
+  .node.accent .title { color: #c2410c; }
+  svg { position: absolute; inset: 0; width: 940px; height: 800px; overflow: visible; }
+  .elabel {
+    position: absolute; font-size: 20px; font-weight: 700; color: #4a453d;
+    background: #f7f5f1; padding: 3px 10px; letter-spacing: .01em;
+  }
+  footer {
+    position: absolute; left: 70px; right: 70px; bottom: 300px;
+    border-top: 2px solid #e2ded5; padding-top: 22px;
+    font-size: 20px; letter-spacing: .18em; text-transform: uppercase;
+    color: #8a857c; font-weight: 600; display: flex; justify-content: space-between;
+  }
+</style>
+<body>
+  <div id="stage">
+    <div class="eyebrow"><span id="eyebrow"></span><span class="dots" id="dots"></span></div>
+    <h1 id="headline"></h1>
+    <div class="subhead" id="subhead"></div>
+    <div id="diagram"><svg id="wires"></svg></div>
+    <footer><span id="episode"></span><span id="counter"></span></footer>
+  </div>
+<script src="./_harness.js"></script>
+<script src="./explainer-spec.js"></script>
+<script>
+(function () {
+  const S = window.SPEC;
+  const FPS = 30;
+  window.FPS = FPS;
+  const TOTAL_STEPS = Math.max(...S.nodes.map(n => n.step)) + 1;
+  // each step gets an equal slice of the clip; 0.45s of that slice is the animation
+  const SECONDS = Number((/[?&]seconds=(\d+)/.exec(location.search) || [])[1] || 30);
+  const stepFrames = (SECONDS * FPS) / TOTAL_STEPS;
+
+  document.getElementById('eyebrow').textContent = S.eyebrow;
+  document.getElementById('headline').textContent = S.headline;
+  document.getElementById('subhead').textContent = S.subhead || '';
+  document.getElementById('episode').textContent = S.episode || '';
+
+  const dots = document.getElementById('dots');
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const d = document.createElement('span');
+    d.className = 'dot'; d.textContent = i + 1; d.dataset.step = i;
+    dots.appendChild(d);
+  }
+
+  const diagram = document.getElementById('diagram');
+  const svg = document.getElementById('wires');
+  const els = {};
+  for (const n of S.nodes) {
+    const el = document.createElement('div');
+    el.className = 'node' + (n.accent ? ' accent' : '');
+    el.style.cssText += `left:${n.x}px;top:${n.y}px;width:${n.w}px;min-height:${n.h}px`;
+    el.innerHTML = `<div class="chip">${n.chip || ''}</div><div class="title">${n.title}</div>` +
+                   (n.sub ? `<div class="sub">${n.sub}</div>` : '');
+    diagram.appendChild(el);
+    els[n.id] = { el, n };
+  }
+
+  // orthogonal-ish wire between node edges, plus a floating label
+  const wires = [];
+  for (const e of S.edges) {
+    const a = els[e.from].n, b = els[e.to].n;
+    const ac = { x: a.x + a.w / 2, y: a.y + a.h / 2 };
+    const bc = { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+    const horiz = Math.abs(ac.x - bc.x) > Math.abs(ac.y - bc.y);
+    const p1 = horiz
+      ? { x: ac.x < bc.x ? a.x + a.w : a.x, y: ac.y }
+      : { x: ac.x, y: ac.y < bc.y ? a.y + a.h : a.y };
+    const p2 = horiz
+      ? { x: ac.x < bc.x ? b.x : b.x + b.w, y: bc.y }
+      : { x: bc.x, y: ac.y < bc.y ? b.y : b.y + b.h };
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const mid = horiz ? `${(p1.x + p2.x) / 2},${p1.y} ${(p1.x + p2.x) / 2},${p2.y}` : `${p1.x},${(p1.y + p2.y) / 2} ${p2.x},${(p1.y + p2.y) / 2}`;
+    path.setAttribute('d', `M ${p1.x},${p1.y} L ${mid.split(' ')[0]} L ${mid.split(' ')[1]} L ${p2.x},${p2.y}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', '#c2410c');
+    path.setAttribute('stroke-width', '4');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(path);
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+
+    const head = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    head.setAttribute('r', '9'); head.setAttribute('fill', '#c2410c');
+    svg.appendChild(head);
+
+    let label = null;
+    if (e.label) {
+      label = document.createElement('div');
+      label.className = 'elabel';
+      label.textContent = e.label;
+      const lp = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+      label.style.cssText += `left:${lp.x}px;top:${lp.y}px;transform:translate(-50%,-50%)`;
+      diagram.appendChild(label);
+    }
+    wires.push({ e, path, head, label, len, p2 });
+  }
+
+  const ease = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(1 - t, 3));
+
+  window.mmBoot({
+    frame(i) {
+      const t = i / stepFrames;            // continuous step position
+      const step = Math.floor(t);
+      const local = t - step;
+
+      for (const id in els) {
+        const { el, n } = els[id];
+        const p = ease((t - n.step) / 0.45);
+        el.style.opacity = p;
+        el.style.transform = `translateY(${(1 - p) * 26}px)`;
+      }
+      for (const w of wires) {
+        const p = ease((t - w.e.step) / 0.55);
+        w.path.style.strokeDashoffset = w.len * (1 - p);
+        w.path.style.opacity = p > 0 ? 1 : 0;
+        const pt = p > 0 ? w.path.getPointAtLength(w.len * p) : { x: -50, y: -50 };
+        w.head.setAttribute('cx', pt.x); w.head.setAttribute('cy', pt.y);
+        w.head.style.opacity = p > 0 && p < 1 ? 1 : 0;
+        if (w.label) w.label.style.opacity = ease((t - w.e.step - 0.35) / 0.4);
+      }
+      [...dots.children].forEach((d) => {
+        d.classList.toggle('on', Number(d.dataset.step) <= step);
+      });
+      document.getElementById('counter').textContent =
+        String(Math.min(step + 1, TOTAL_STEPS)).padStart(2, '0') + ' / ' + String(TOTAL_STEPS).padStart(2, '0');
+    },
+  });
+})();
+</script>
