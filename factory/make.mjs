@@ -23,12 +23,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeScript, segmentsOf, slugify } from './script.mjs';
 import { synthSegments } from './tts.mjs';
-import { assemble, backgroundPools, rollTier } from './assemble.mjs';
+import { assemble } from './assemble.mjs';
 import { supplyTopics, appendHistory } from './topics.mjs';
 import { writeDiagram } from './explainer/diagram.mjs';
 import { renderExplainer } from './explainer/render.mjs';
 import { probeSummary } from './ffmpeg.mjs';
-import { clipsDir } from './clips.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(HERE, '..');
@@ -67,116 +66,13 @@ const log = (s) => console.log(s);
 // Fresh capture is frame-stepped, so it costs real wall clock and is only taken
 // when the whole reel still lands inside background.freshBudgetSeconds.
 
-const TIER_ALIASES = {
-  physics: 'physics', sim: 'physics', seeded: 'physics', fresh: 'physics',
-  harvested: 'harvested', harvest: 'harvested', clips: 'harvested', stock: 'harvested',
-  publicdomain: 'publicDomain', pd: 'publicDomain', public: 'publicDomain',
-};
-
 /**
- * --bg <spec> -> { tier, page, candidates }. `page` is set when the spec names
- * a generator (rings/plinko) so a fresh seed of exactly that sim can be cut;
- * `candidates` narrows the pool draw, or is null to mean "the whole tier".
+ * The channel is 100% explainer: every reel draws the mechanism it is talking
+ * about. The old brainrot path (physics loop + karaoke over it) is gone, so
+ * --format brainrot will fail on a missing background, which is intentional.
  */
-function resolveBgSpec(spec, pools) {
-  const raw = String(spec).trim();
-  const tier = TIER_ALIASES[raw.toLowerCase().replace(/[^a-z]/g, '')];
-  if (tier) return { tier, page: null, candidates: null };
-
-  const base = path.basename(raw, '.mp4').toLowerCase();
-  const page = CONFIG.background.physicsPages.find((p) => p.toLowerCase() === base) || null;
-  for (const name of ['physics', 'harvested', 'publicDomain']) {
-    const hits = pools[name].filter(
-      (e) => path.basename(e.file, '.mp4').toLowerCase().startsWith(base),
-    );
-    if (hits.length) return { tier: name, page, candidates: hits };
-  }
-  // a known generator with nothing in the pool yet is still satisfiable: record
-  if (page) return { tier: 'physics', page, candidates: [] };
-  throw new Error(`--bg "${spec}": no tier, generator page or pool file matches`);
-}
-
-/**
- * Wall-clock cost of capturing `seconds` of fresh background, from the rates
- * measured on this machine (config.background.captureFramesPerSecond).
- */
-function freshCostSeconds(seconds) {
-  const b = CONFIG.background;
-  const fps = b.freshFps || CONFIG.video.fps;
-  return (seconds * fps) / (b.captureFramesPerSecond || 30);
-}
-
-/** Decide the background for one reel, recording a fresh seed if that wins. */
-async function chooseBackground(o) {
-  const { args, pools, bgSeconds, spentSoFar, outDir } = o;
-  const b = CONFIG.background;
-
-  let tier;
-  let page = null;
-  let candidates = null;
-  if (args.bg) {
-    ({ tier, page, candidates } = resolveBgSpec(args.bg, pools));
-    log(`  bg override "${args.bg}" -> tier ${tier}${page ? `, page ${page}` : ''}`);
-  } else {
-    tier = rollTier(pools, b.tiers);
-    if (!tier) throw new Error('no backgrounds at all: run "node factory/record-bg.mjs" first');
-  }
-
-  if (tier === 'physics') {
-    const mode = args.fresh ?? b.freshVariant;
-    const budget = b.freshBudgetSeconds ?? 240;
-    const cost = freshCostSeconds(bgSeconds);
-    const encode = (b.encodeRealtimeFactor ?? 1) * bgSeconds;
-    const projected = spentSoFar + cost + encode;
-    const fits = projected <= budget;
-    const wantFresh = mode === 'always' || (mode !== 'never' && fits);
-    log(`  physics tier: fresh capture ~${cost.toFixed(0)}s, reel projected at `
-      + `${projected.toFixed(0)}s vs ${budget}s budget -> ${wantFresh ? 'FRESH' : 'pool'}`
-      + (mode === 'auto' ? '' : ` (--${mode === 'always' ? 'fresh' : 'no-fresh'})`));
-    if (wantFresh) {
-      const pages = page ? [page] : b.physicsPages;
-      const chosenPage = pages[Math.floor(Math.random() * pages.length)];
-      const seed = Math.floor(Math.random() * 1e6) + 1000;
-      try {
-        const { recordPage } = await import('./record-bg.mjs');
-        log(`  fresh bg: ${chosenPage} seed ${seed}, ${bgSeconds}s @${b.freshFps || CONFIG.video.fps}fps`);
-        const t = Date.now();
-        const file = await recordPage(chosenPage, {
-          seconds: bgSeconds, seed, log, fps: b.freshFps || CONFIG.video.fps,
-          outDir: path.join(outDir, 'bg'),
-        });
-        const rate = (bgSeconds * (b.freshFps || CONFIG.video.fps)) / ((Date.now() - t) / 1000);
-        log(`  captured at ${rate.toFixed(1)} frames/s of wall clock`);
-        return { file, kind: `physics-fresh:${chosenPage}-s${seed}`, attribution: null };
-      } catch (e) {
-        log(`  fresh bg failed (${e.message}), falling back to the pool`);
-      }
-    }
-  }
-
-  // pool draw, inside the tier the roll (or the override) settled on
-  let list = candidates && candidates.length ? candidates : pools[tier];
-  if (!list.length) {
-    const alt = ['physics', 'harvested', 'publicDomain'].find((k) => pools[k].length);
-    if (!alt) throw new Error('no backgrounds available in any tier');
-    log(`  tier ${tier} is empty, falling back to ${alt}`);
-    list = pools[alt];
-  }
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-/** --format wins; otherwise roll the house mix from config. */
 function resolveFormat(explicit) {
-  if (explicit) return explicit;
-  const mode = CONFIG.format || 'brainrot';
-  if (mode !== 'mix') return mode;
-  const mix = CONFIG.formatMix || { explainer: 1 };
-  let roll = Math.random() * Object.values(mix).reduce((a, b) => a + b, 0);
-  for (const [name, weight] of Object.entries(mix)) {
-    roll -= weight;
-    if (roll <= 0) return name;
-  }
-  return 'explainer';
+  return explicit || CONFIG.format || 'explainer';
 }
 
 async function makeOne(topicEntry, args, index, count) {
@@ -212,9 +108,8 @@ async function makeOne(topicEntry, args, index, count) {
     log,
   });
 
-  const bgDir = path.join(ROOT, 'assets', 'bg');
   let bg;
-  if (format === 'explainer') {
+  {
     // The scene IS the content here, so it replaces the background entirely and
     // is timed to the narration rather than looped under it.
     const diagram = await writeDiagram(topic, script, { log });
@@ -226,16 +121,6 @@ async function makeOne(topicEntry, args, index, count) {
       log,
     });
     fs.writeFileSync(path.join(outDir, 'diagram.json'), JSON.stringify(diagram, null, 2));
-  } else {
-  bg = await chooseBackground({
-    args,
-    pools: backgroundPools(bgDir, clipsDir()),
-    bgSeconds: Math.ceil(
-      segments.reduce((a, s) => a + s.duration, 0) + CONFIG.background.freshSeconds,
-    ),
-    spentSoFar: (Date.now() - t0) / 1000,
-    outDir,
-  });
   }
 
   const isExplainer = format === 'explainer';
@@ -244,8 +129,6 @@ async function makeOne(topicEntry, args, index, count) {
     segments,
     outDir,
     bg,
-    bgDir,
-    clipsDir: clipsDir(),
     // the light scene needs dark words in a bar, not white words with a black rim
     subtitle: isExplainer ? CONFIG.explainerSubtitle : undefined,
     grade: isExplainer ? false : undefined,

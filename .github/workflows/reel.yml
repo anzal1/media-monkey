@@ -18,7 +18,7 @@ on:
         type: boolean
         default: false
       format:
-        description: "explainer | brainrot | blank = house mix"
+        description: "format override; blank = explainer"
         required: false
 
 permissions:
@@ -46,13 +46,6 @@ jobs:
           key: kokoro-82m-v1-q8
 
       - run: npm ci
-
-      - name: Fetch clip bank (harvested + public-domain tiers)
-        run: |
-          git fetch --depth 1 origin clips 2>/dev/null \
-            && git checkout FETCH_HEAD -- assets/clips \
-            && echo "clip bank: $(ls assets/clips/*.mp4 2>/dev/null | wc -l | tr -d ' ') clips" \
-            || echo "no clips branch yet, physics tier only"
 
       - name: System ffmpeg (for ffprobe)
         run: sudo apt-get update -qq && sudo apt-get install -yqq ffmpeg

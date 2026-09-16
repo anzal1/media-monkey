@@ -39,13 +39,28 @@ export async function renderExplainer({ diagram, segments, outFile, episode, log
   fs.writeFileSync(SPEC_FILE, 'window.SPEC = ' + JSON.stringify(spec) + ';');
   log(`  explainer: ${diagram.nodes.length} nodes, reveals at ${stepStarts.map((x) => x.toFixed(1)).join('s, ')}s`);
 
-  await recordPage('explainer', {
-    out: outFile,
-    outDir: path.dirname(outFile),
-    seconds,
-    fps: 30,
-    stepsPerFrame: 1, // the scene is time-driven, so one page step per video frame
-    log,
-  });
+  // The channel is explainer-only now, so this recording IS the reel: there is no
+  // background pool to fall back on. A transient Chromium or ffmpeg failure must
+  // not cost the whole post, hence the retry.
+  let lastErr = null;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      await recordPage('explainer', {
+        out: outFile,
+        outDir: path.dirname(outFile),
+        seconds,
+        fps: 30,
+        stepsPerFrame: 1, // scene is time-driven: one page step per video frame
+        log,
+      });
+      lastErr = null;
+      break;
+    } catch (e) {
+      lastErr = e;
+      log(`  scene record failed (attempt ${attempt}/2): ${e.message.slice(0, 90)}`);
+      if (attempt < 2) await new Promise((r) => setTimeout(r, 4000));
+    }
+  }
+  if (lastErr) throw lastErr;
   return { file: outFile, seconds, kind: 'explainer' };
 }

@@ -78,9 +78,5 @@
     "maxWordsOnScreen": 4,
     "scrim": false
   },
-  "format": "mix",
-  "formatMix": {
-    "explainer": 0.7,
-    "brainrot": 0.3
-  }
+  "format": "explainer"
 }
