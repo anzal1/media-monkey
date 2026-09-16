@@ -240,7 +240,13 @@ export async function writeScript(topic, opts = {}) {
       : `${base}\n\nYour previous attempt was rejected: ${lastErr}\nFix exactly that and return the corrected JSON object.`;
     let raw;
     try {
-      raw = await gemini({ prompt, system: PERSONA, model, json: true });
+      // The caption alone is 120-200 words now, so the default 4096 budget can
+      // truncate the JSON mid-object; 2.5/3.x also spend that same budget on
+      // thinking tokens, hence thinkingBudget 0 for this structured call.
+      raw = await gemini({
+        prompt, system: PERSONA, model, json: true,
+        maxOutputTokens: 8192, thinkingBudget: 0,
+      });
       const parsed = JSON.parse(stripFence(raw));
       const script = validate(parsed, topic, lang);
       log(`  script ok on attempt ${attempt}: ${script.beats.length} beats, slug ${script.slug}`);

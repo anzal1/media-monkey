@@ -10,7 +10,7 @@
 import { gemini } from '../llm.mjs';
 
 const COLS = 2;
-const NODE_W = 385;
+const NODE_W = 345;
 const NODE_H = 170;
 const GAP_X = 160;  // wide enough that an edge label never sits on a node
 const GAP_Y = 90;

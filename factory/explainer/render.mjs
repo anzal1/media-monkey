@@ -27,7 +27,9 @@ export async function renderExplainer({ diagram, segments, outFile, episode, log
     t += s.duration;
   }
   // the first node lands on the hook so the frame is never empty
-  const stepStarts = [0, ...starts.slice(1)].slice(0, diagram.nodes.length);
+  // -0.6 so the first component is fully drawn on frame 0: Instagram uses an
+  // early frame as the grid cover, and a blank diagram makes a dead thumbnail.
+  const stepStarts = [-0.6, ...starts.slice(1)].slice(0, diagram.nodes.length);
   while (stepStarts.length < diagram.nodes.length) stepStarts.push(t);
 
   const total = segments.reduce((a, s) => a + s.duration, 0);
