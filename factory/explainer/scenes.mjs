@@ -123,7 +123,11 @@ export function normaliseScene(raw, fallbackHeadline) {
   if (!type) return null;
   const d = raw.data && typeof raw.data === 'object' ? raw.data : {};
   const head = clip(clean(raw.headline) || fallbackHeadline, 6);
-  const sub = clip(clean(raw.subhead), 6);   // one line, it is set in wide-tracked mono
+  // Hard-clipping to 6 words lopped the last word off real phrases
+  // ("...scanning uncollected row" from "row versions"). Let it run a
+  // little longer and let the CSS ellipsis do the trimming, which at least
+  // signals that something was cut.
+  const sub = clip(clean(raw.subhead), 9);
   let data = null;
 
   if (type === 'flow') {
