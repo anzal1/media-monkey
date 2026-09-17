@@ -130,3 +130,41 @@ Not possible here, for the record:
 
 `node factory/tts.mjs --sample` renders one wav per entry in `voiceCandidates`
 so a change can be listened to before it ships.
+
+## YouTube Shorts
+
+The same reel goes to YouTube on every CI run, before the Instagram step,
+because the hosting step wipes the working tree and YouTube needs the bytes
+rather than a URL.
+
+A vertical video under three minutes is classified as a Short automatically, so
+there is no separate endpoint: `factory/youtube.mjs` does an ordinary resumable
+`videos.insert`. Title, tags and description come from the `youtube.json` the
+render writes next to `caption.txt`, so nothing has to pick JSON apart in shell.
+No secrets set means a polite skip, same as the Instagram publisher.
+
+One-time setup, which needs a browser and a Google account and therefore cannot
+be done from CI:
+
+1. In Google Cloud console, create a project and enable the **YouTube Data API
+   v3**.
+2. OAuth consent screen: external, add yourself as the owner, and set the
+   publishing status to **In production**. This matters more than it looks:
+   while the screen is in "Testing", Google expires refresh tokens after SEVEN
+   DAYS, so CI would quietly start failing a week later. An unverified personal
+   app can go to production; the consent screen just shows a warning you click
+   past once.
+3. Credentials: create an OAuth client of type **Desktop app**. Google accepts
+   any `http://127.0.0.1:<port>` redirect for that type, which is what the auth
+   helper uses.
+4. Run the helper once locally and click through consent:
+
+       YT_CLIENT_ID=... YT_CLIENT_SECRET=... node factory/youtube-auth.mjs
+
+5. Put `YT_CLIENT_ID`, `YT_CLIENT_SECRET` and `YT_REFRESH_TOKEN` in the repo
+   secrets next to the Meta ones.
+
+Quota is the one real ceiling: `videos.insert` costs 1600 units against a
+default 10,000/day project quota, so **six uploads a day**. The schedule posts
+four, which leaves room for one retry. Going beyond that needs a quota increase
+request, not a code change.

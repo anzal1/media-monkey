@@ -501,6 +501,19 @@ export async function assemble(opts) {
   ];
   if (bg.attribution) lines.push('', `bg: ${bg.attribution}`);
   fs.writeFileSync(caption, `${lines.join('\n')}\n`, 'utf8');
+
+  // Everything the YouTube uploader needs, decided here rather than parsed out
+  // of the caption in a shell step. The hook is already a <=9 word spoken line,
+  // which is exactly the shape a Shorts title wants.
+  fs.writeFileSync(
+    path.join(outDir, 'youtube.json'),
+    JSON.stringify({
+      title: script.hook.replace(/\s+/g, ' ').trim().slice(0, 100),
+      tags: script.hashtags,
+      descriptionFile: 'caption.txt',
+    }, null, 2),
+    'utf8',
+  );
   fs.writeFileSync(
     path.join(outDir, 'script.json'),
     JSON.stringify({

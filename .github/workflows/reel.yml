@@ -74,6 +74,22 @@ jobs:
             ${{ env.REEL }}
             out/**/caption.txt
 
+      - name: Publish to YouTube Shorts (skips politely without YT secrets)
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          # Runs BEFORE the hosting step: that one wipes the working tree, and
+          # out/ is gitignored so it never comes back. YouTube wants the bytes,
+          # not a URL, so it has to read the file while it is still there.
+          DIR="$(dirname "$REEL")"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            node factory/youtube.mjs --file "$REEL" --meta "$DIR/youtube.json" --dry-run
+          else
+            node factory/youtube.mjs --file "$REEL" --meta "$DIR/youtube.json"
+          fi
+
       - name: Host reel at a public raw URL (reels branch)
         run: |
           cp "$REEL" "$RUNNER_TEMP/$SLUG.mp4"
