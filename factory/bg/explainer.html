@@ -40,7 +40,7 @@
   .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
 
   /* ---------- constant page chrome ---------- */
-  #head { position: absolute; left: 70px; top: 300px; width: 840px; }
+  #head { position: absolute; left: 70px; top: 300px; width: 940px; }
   #headrow {
     display: flex; align-items: baseline; justify-content: space-between;
     font-family: 'JetBrains Mono', ui-monospace, monospace;
@@ -50,7 +50,7 @@
   }
   #headline {
     margin-top: 30px; font-size: 76px; line-height: 1.02; letter-spacing: -.03em;
-    font-weight: 800; max-width: 840px;
+    font-weight: 800; max-width: 940px;
   }
   #subhead {
     margin-top: 20px; min-height: 30px;
@@ -62,18 +62,20 @@
 
   /* The hero column clears the mascot on the left and the Reels action strip
      on the right, and stops above the burned-in caption band. */
-  #hero { position: absolute; left: 300px; top: 616px; width: 610px; height: 545px; }
+  /* inset on the right: this band is where the Reels like/comment/share
+     buttons are drawn over the video */
+  #hero { position: absolute; left: 290px; top: 616px; width: 680px; height: 545px; }
   #hero > div { display: flex; flex-direction: column; justify-content: center; }
-  #mascot { position: absolute; left: 22px; top: 770px; height: 270px; }
+  #mascot { position: absolute; left: 22px; top: 928px; height: 270px; }
 
   #foot {
-    position: absolute; left: 70px; top: 1206px; width: 840px;
+    position: absolute; left: 70px; top: 1206px; width: 940px;
     display: flex; align-items: center; justify-content: space-between;
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 19px; letter-spacing: .20em; text-transform: uppercase;
     color: #a09a90;
   }
-  #bar { position: absolute; left: 70px; top: 1246px; width: 840px; height: 3px; background: var(--hair); }
+  #bar { position: absolute; left: 70px; top: 1246px; width: 940px; height: 3px; background: var(--hair); }
   #barfill { height: 100%; width: 0; background: var(--accent); }
 
   /* ---------- shared scene furniture ---------- */
@@ -184,7 +186,7 @@
     letter-spacing: .28em; text-transform: uppercase; color: #8a857c;
   }
   #title .big {
-    position: absolute; left: 70px; top: 520px; width: 840px;
+    position: absolute; left: 70px; top: 520px; width: 940px;
     font-size: 104px; font-weight: 800; line-height: 1.0; letter-spacing: -.035em;
     text-align: center;
   }
