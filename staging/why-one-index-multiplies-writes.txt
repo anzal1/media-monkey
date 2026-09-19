@@ -1,0 +1,22 @@
+Your read queries got twenty times faster.
+Your database disk just caught on fire.
+Your p99 write latency is twenty times worse. 🔥
+
+Write amplification happens when a single logical update forces the database engine to perform multiple physical writes across the storage tier.
+
+Here is where it bites:
+→ Adding an index to a column updated every few seconds
+→ Watching autovacuum fall completely behind on cleanups
+→ Staring at maxed-out IOPS while payload traffic barely moved
+
+Postgres relies on an optimization called Heap-Only Tuples, or HOT. When you update a record without touching an indexed column, the database simply appends the new version of that row onto the existing disk page. The secondary B-trees are not touched. A tiny forward pointer in the page header redirects readers without updating any index structures.
+
+The second you index that changing column, HOT dies. The engine cannot use internal page forwarding anymore. Every single secondary index on that table even the indexes on columns you never altered must now receive a new entry pointing to the new row location.
+
+A single small row update on a table with ten indexes turns into eleven separate tree traversals, page modifications, and write-ahead log flushes.
+
+On write-heavy tables, one index can easily cause a five to ten times explosion in IOPS and crash your write throughput.
+
+Check your HOT update ratio in pgstatusertables before you merge that migration.
+
+#postgresql #databasedesign #backendengineering #softwarearchitecture #systemsengineering #highperformance #softwareengineering #systemdesign #backenddeveloper #devops #programming #coding
