@@ -75,6 +75,11 @@ jobs:
             out/**/caption.txt
 
       - name: Publish to YouTube Shorts (skips politely without YT secrets)
+        # Never let YouTube cost us the Instagram post. This step runs before
+        # hosting and publishing, so a hard failure here used to abort the job
+        # with the reel already rendered and nothing posted anywhere. Four runs
+        # were lost that way to a single rejected character.
+        continue-on-error: true
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}

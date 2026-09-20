@@ -66,6 +66,22 @@ if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
   process.exit(0);
 }
 
+/**
+ * YouTube rejects any description or title containing an ASCII angle bracket,
+ * and says only "invalid video description" without naming the character. That
+ * cost four days of uploads before it was traced to the model writing its
+ * scenario bullets as "->" instead of an arrow.
+ *
+ * Comparisons like "p99 > 10ms" are legitimate content, so the brackets are
+ * swapped for lookalikes that read identically rather than stripped.
+ */
+function ytSafe(s) {
+  return String(s || '')
+    .replace(/->/g, '\u2192').replace(/<-/g, '\u2190')
+    .replace(/<=/g, '\u2264').replace(/>=/g, '\u2265')
+    .replace(/</g, '\uFF1C').replace(/>/g, '\uFF1E');
+}
+
 /** YouTube truncates silently; better to trim deliberately and say so. */
 function fit(s, max, what) {
   const t = String(s || '').trim();
@@ -75,7 +91,7 @@ function fit(s, max, what) {
 }
 
 const description = descFile && fs.existsSync(descFile)
-  ? fit(fs.readFileSync(descFile, 'utf8'), 4900, 'description')
+  ? ytSafe(fit(fs.readFileSync(descFile, 'utf8'), 4900, 'description'))
   : '';
 
 async function accessToken() {
@@ -98,7 +114,7 @@ async function accessToken() {
 
 const body = {
   snippet: {
-    title: fit(title, 100, 'title'),
+    title: ytSafe(fit(title, 100, 'title')),
     description,
     // total tag length is capped at 500 characters, not by count
     tags: tags.reduce((acc, t) => (acc.join('').length + t.length < 480 ? [...acc, t] : acc), []),

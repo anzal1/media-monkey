@@ -50,6 +50,13 @@ const LANG_RULES = {
  */
 function cleanCaption(s) {
   return String(s)
+    // The model writes the scenario bullets as "->" about half the time and
+    // "\u2192" the other half. The ASCII form contains ">", and YouTube rejects any
+    // angle bracket in a description with a bare "invalid video description"
+    // that never says which character. Normalise here so both platforms get
+    // the same, nicer, arrow.
+    .replace(/(^|\s)->(\s)/g, '$1\u2192$2')
+    .replace(/(^|\s)<-(\s)/g, '$1\u2190$2')
     .replace(/[\u2014\u2013]/g, ' ')
     .replace(/[\u2018\u2019]/g, "'")
     .replace(/[\u201C\u201D]/g, '')
