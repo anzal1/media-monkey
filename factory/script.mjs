@@ -157,7 +157,7 @@ function headlineOf(b, text, i) {
 }
 
 /** throws with a human-readable reason; the reason is fed back on retry. */
-export function validate(obj, topic, lang = 'en') {
+export function validate(obj, topic, lang = 'en', opts = {}) {
   const err = (m) => { throw new Error(m); };
   if (!obj || typeof obj !== 'object') err('not a JSON object');
 
@@ -227,6 +227,10 @@ export function validate(obj, topic, lang = 'en') {
   // trusted to the prompt, because the model reliably overshoots.
   const hookHi = cleanSpoken(obj.hook_hi || obj.hookHi || '');
   if (lang === 'mix' && !hookHi) err('lang=mix needs a hook_hi field with the Hindi hook line');
+  // On the last attempt the word budget stops being fatal. A 150 second reel
+  // is worth having; a lost day is not. Structure (beats, sources, hook) stays
+  // hard, because a malformed script cannot be rendered at all.
+  const lenient = opts.lenientLength === true;
 
   const spokenWords = wordsOf(hook).length
     + beats.reduce((a, b) => a + wordsOf(b.text).length, 0)
@@ -237,15 +241,27 @@ export function validate(obj, topic, lang = 'en') {
   // the only real lever on runtime. Enforced here because the model overshoots
   // in one direction and undershoots in the other depending on the topic.
   const WPS = 3.1;
-  if (spokenWords > 470) {
-    err(`script is ${spokenWords} spoken words, about ${(spokenWords / WPS).toFixed(0)}s. ` +
-        'Cut it to 350 to 470 words: shorten beats, do not drop the analogy beat ' +
-        'and do not drop beats.');
+  const LOW = 330, HIGH = 470;          // what we ask for
+  const HARD_LOW = 280, HARD_HIGH = 540; // what we will still ship
+  const secs = (n) => (n / WPS).toFixed(0);
+  // Telling the model "use 350 to 470 words" after it wrote 490 is weak
+  // feedback: it swings to the other side and fails again. Give it the delta.
+  if (lenient && spokenWords >= HARD_LOW && spokenWords <= HARD_HIGH) {
+    if (spokenWords < LOW || spokenWords > HIGH) {
+      (opts.log || (() => {}))(`  script length ${spokenWords} words (~${secs(spokenWords)}s) is outside ` +
+        `${LOW}-${HIGH} but inside tolerance; shipping it rather than losing the reel`);
+    }
+  } else if (spokenWords > HIGH) {
+    const cut = spokenWords - 430;
+    err(`script is ${spokenWords} spoken words, about ${secs(spokenWords)}s, which is ${spokenWords - HIGH} over the limit. ` +
+        `Remove about ${cut} words to land near 430. Shorten the wordiest beats; ` +
+        'do not drop the analogy beat and do not reduce the number of beats.');
   }
-  if (spokenWords < 330) {
-    err(`script is only ${spokenWords} spoken words, about ${(spokenWords / WPS).toFixed(0)}s. ` +
-        'The format needs 350 to 470 words across 10 to 14 beats. Add beats, ' +
-        'one component each, rather than padding the ones you have.');
+  if (spokenWords < LOW) {
+    const add = 430 - spokenWords;
+    err(`script is only ${spokenWords} spoken words, about ${secs(spokenWords)}s, which is ${LOW - spokenWords} under the minimum. ` +
+        `Add about ${add} words to land near 430, as ${Math.max(1, Math.round(add / 35))} more beat(s) ` +
+        'of one component each rather than padding the beats you have.');
   }
 
   return {
@@ -277,8 +293,12 @@ export async function writeScript(topic, opts = {}) {
     'Return only the JSON object.' +
     (LANG_RULES[lang] || '');
 
+  // Two attempts was too few. The length constraint is the one the model is
+  // worst at, and it tends to overshoot in the opposite direction on the
+  // retry: a real run went 325 words, then 490, then died with nothing.
+  const ATTEMPTS = 4;
   let lastErr = null;
-  for (let attempt = 1; attempt <= 2; attempt++) {
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
     const prompt = attempt === 1
       ? base
       : `${base}\n\nYour previous attempt was rejected: ${lastErr}\nFix exactly that and return the corrected JSON object.`;
@@ -292,7 +312,8 @@ export async function writeScript(topic, opts = {}) {
         maxOutputTokens: 8192, thinkingBudget: 0,
       });
       const parsed = JSON.parse(stripFence(raw));
-      const script = validate(parsed, topic, lang);
+      // the final attempt ships whatever it gets, within tolerance
+      const script = validate(parsed, topic, lang, { lenientLength: attempt === ATTEMPTS, log });
       log(`  script ok on attempt ${attempt}: ${script.beats.length} beats, slug ${script.slug}`);
       return script;
     } catch (e) {
@@ -300,7 +321,7 @@ export async function writeScript(topic, opts = {}) {
       log(`  script attempt ${attempt} rejected: ${lastErr}`);
     }
   }
-  throw new Error(`script generation failed twice: ${lastErr}`);
+  throw new Error(`script generation failed after ${ATTEMPTS} attempts: ${lastErr}`);
 }
 
 /**
