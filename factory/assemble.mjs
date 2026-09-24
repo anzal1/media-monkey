@@ -94,6 +94,87 @@ function weightOf(word) {
 /**
  * @returns {Array<{word,start,end,accent,group,indexInGroup}>} absolute seconds
  */
+// Words a caption card should never end on: a card reading "When you change a"
+// makes the eye wait for the next card to find out what the sentence was about.
+const WEAK_TAIL = new Set([
+  'a', 'an', 'the', 'to', 'of', 'in', 'on', 'at', 'for', 'with', 'by', 'from',
+  'into', 'onto', 'and', 'or', 'but', 'nor', 'so', 'that', 'which', 'who',
+  'your', 'my', 'our', 'their', 'its', 'his', 'her', 'this', 'these', 'those',
+  'is', 'are', 'was', 'were', 'be', 'been', 'has', 'have', 'had', 'will',
+  'can', 'could', 'would', 'should', 'it', 'as', 'than', 'if', 'when', 'every',
+  'you', 'we', 'they', 'i', 'he', 'she', 'one', 'two', 'three', 'very', 'just',
+  'under', 'over', 'past', 'across', 'through', 'behind', 'between', 'without', 'against', 'about', 'around', 'like', 'per', 'via', 'during', 'inside', 'within', 'after', 'before',
+]);
+
+// Words that open a new phrase. Breaking just BEFORE one of these reads
+// naturally; breaking between two content words usually splits a compound
+// noun ("disk | miss") or a verb from its object.
+const PHRASE_START = new Set([
+  'the', 'a', 'an', 'to', 'of', 'in', 'on', 'at', 'for', 'with', 'by', 'from',
+  'and', 'or', 'but', 'so', 'that', 'which', 'who', 'when', 'while', 'because',
+  'if', 'then', 'until', 'before', 'after', 'it', 'this', 'every', 'your',
+  'is', 'are', 'was', 'were', 'will', 'can', 'into', 'than', 'instead',
+  'under', 'over', 'past', 'across', 'through', 'behind', 'between', 'without', 'against', 'about', 'around', 'like', 'per', 'via', 'during', 'inside', 'within', 'after', 'before',
+]);
+
+/**
+ * Split a spoken segment into caption cards at phrase boundaries.
+ *
+ * Cutting every N words put breaks mid-phrase ("hundred points, it forces").
+ * This scores every way of splitting the segment and keeps the cheapest: cards
+ * of three or four words are ideal, a card never spans a sentence end, it is
+ * rewarded for ending on a comma and penalised for crossing one, and it is
+ * penalised for ending on a word like "the" or "your" that leans forward into
+ * the next card. Segments are ~40 words, so the O(n * maxGroup) table is tiny.
+ *
+ * @returns {number[][]} groups of word indices
+ */
+export function phraseGroups(words, maxGroup = 4) {
+  const n = words.length;
+  if (!n) return [];
+  const MAX = maxGroup + 1;                  // one over, when it avoids a bad break
+  const bare = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
+  const endsSentence = (w) => /[.!?]["')\]]*$/.test(w);
+  const endsClause = (w) => /[,;:]["')\]]*$/.test(w);
+
+  function cost(i, j) {                      // words i..j-1 as one card
+    const size = j - i;
+    let c = size === 1 ? 7 : size === 2 ? 2 : size <= maxGroup ? 0 : 4;
+    for (let k = i; k < j - 1; k++) {
+      if (endsSentence(words[k])) return Infinity;   // never across a full stop
+      if (endsClause(words[k])) c += 3;
+    }
+    const last = words[j - 1];
+    if (endsClause(last)) c -= 1;
+    if (j < n && !endsClause(last)) {
+      if (WEAK_TAIL.has(bare(last))) c += 6;
+      else if (PHRASE_START.has(bare(words[j]))) c -= 1.5;
+      else c += 2.5;                         // content | content: a compound
+    }
+    return c;
+  }
+
+  const best = new Array(n + 1).fill(Infinity);
+  const from = new Array(n + 1).fill(-1);
+  best[0] = 0;
+  for (let j = 1; j <= n; j++) {
+    for (let i = Math.max(0, j - MAX); i < j; i++) {
+      const c = best[i] + cost(i, j);
+      if (c < best[j]) { best[j] = c; from[j] = i; }
+    }
+  }
+  if (!Number.isFinite(best[n])) {            // pathological input: fall back
+    const g = [];
+    for (let i = 0; i < n; i += maxGroup) g.push([...Array(Math.min(maxGroup, n - i)).keys()].map((k) => i + k));
+    return g;
+  }
+  const out = [];
+  for (let j = n; j > 0; j = from[j]) {
+    out.unshift([...Array(j - from[j]).keys()].map((k) => from[j] + k));
+  }
+  return out;
+}
+
 export function timeWords(segments, opts = {}) {
   const maxGroup = opts.maxWordsOnScreen || CONFIG.subtitle.maxWordsOnScreen;
   const out = [];
@@ -105,16 +186,7 @@ export function timeWords(segments, opts = {}) {
     const total = weights.reduce((a, b) => a + b, 0) || 1;
     const accentSet = new Set((seg.accent || []).map((a) => a.toLowerCase()));
 
-    // groups of up to maxGroup words, broken early at sentence punctuation
-    const groups = [];
-    let cur = [];
-    words.forEach((w, i) => {
-      cur.push(i);
-      const hardBreak = /[.!?]$/.test(w);
-      if (cur.length >= maxGroup || hardBreak || i === words.length - 1) {
-        groups.push(cur); cur = [];
-      }
-    });
+    const groups = phraseGroups(words, maxGroup);
 
     let acc = 0;
     const times = words.map((w, i) => {

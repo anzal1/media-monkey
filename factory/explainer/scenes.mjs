@@ -294,10 +294,12 @@ export async function writeScenes(topic, script, opts = {}) {
   // which held one scene for nine or ten seconds. It gets its own card instead.
   if (script.cta) {
     scenes.push({
+      // The whole line is the headline. Clipping it to five words produced
+      // "Save this before your next" and then repeated it in full underneath.
       type: 'note', beat: beats.length, half: 0, of: 1,
-      headline: clip(clean(script.cta), 5),
+      headline: clean(script.cta),
       subhead: '',
-      data: { lead: clean(script.cta), body: '' },
+      data: { lead: '', body: '' },
     });
   }
 

@@ -50,7 +50,7 @@
   }
   #headline {
     margin-top: 30px; font-size: 76px; line-height: 1.02; letter-spacing: -.03em;
-    font-weight: 800; max-width: 940px;
+    font-weight: 800; max-width: 940px; text-wrap: balance;
   }
   #subhead {
     margin-top: 20px; min-height: 30px;
@@ -93,12 +93,12 @@
   .el { opacity: 0; will-change: transform, opacity; }
 
   /* flow */
-  .flow { display: flex; flex-direction: column; gap: 26px; align-items: stretch; }
-  .fnode { display: flex; align-items: center; gap: 22px; padding: 24px 28px; }
+  .flow { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+  .fnode { display: flex; align-items: center; gap: 22px; padding: 20px 28px; }
   .fnode .ico { width: 54px; height: 54px; flex: 0 0 54px; }
   .fnode .lab { font-size: 34px; font-weight: 700; letter-spacing: -.01em; }
   .fnode .sub { font-size: 23px; color: var(--mute); margin-top: 4px; }
-  .wire { position: relative; height: 54px; }
+  .wire { position: relative; height: 44px; }
   .wire .line { position: absolute; left: 50%; top: 0; width: 3px; height: 100%; background: var(--hair); transform: translateX(-50%); }
   .wire .lit { position: absolute; left: 50%; top: 0; width: 3px; height: 0; background: var(--accent); transform: translateX(-50%); }
   /* a document travelling the wire, not an abstract dot: the reference uses a
@@ -113,7 +113,7 @@
   }
 
   /* compare */
-  .cmp { display: flex; flex-direction: column; height: 100%; }
+  .cmp { display: flex; flex-direction: column; }
   .cmptop { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
   .cmpside { flex: 1; text-align: center; }
   .cmpside .ico { width: 90px; height: 90px; margin: 0 auto 16px; }
@@ -188,13 +188,15 @@
   #title .big {
     position: absolute; left: 70px; top: 520px; width: 940px;
     font-size: 104px; font-weight: 800; line-height: 1.0; letter-spacing: -.035em;
-    text-align: center;
+    text-align: center; text-wrap: balance;
   }
-  #title .ghosts { position: absolute; left: 340px; top: 900px; width: 400px; }
-  #title .ghost {
-    height: 96px; border: 3px dashed #cfc9be; border-radius: 22px; margin-bottom: 26px;
-  }
-  #title .ghost:nth-child(2) { border-radius: 999px; }
+  /* The title card is frame 0, which makes it the profile-grid cover. The
+     dashed placeholder boxes borrowed from the reference read as broken empty
+     UI at thumbnail size, so the cover is headline, accent rule and mascot. */
+  #title .rule { position: absolute; left: 480px; width: 120px; height: 10px;
+    border-radius: 5px; background: var(--accent); }
+  #title .tmascot { position: absolute; left: 50%; transform: translateX(-50%);
+    top: 1010px; height: 360px; }
 </style>
 
 <div id="grid"></div>
@@ -212,7 +214,8 @@
 <div id="title">
   <div class="kick"></div>
   <div class="big"></div>
-  <div class="ghosts"><div class="ghost"></div><div class="ghost"></div></div>
+  <div class="rule"></div>
+  <img class="tmascot" src="../../assets/brand/mascot-cut.png" alt="" />
 </div>
 
 <script src="_harness.js"></script>
@@ -370,6 +373,32 @@
   });
 
   /**
+   * Sparse scenes used about half their column and dense ones could spill out
+   * of it. Each scene is zoomed once, at build time, to the largest size that
+   * still fits. CSS zoom rather than a transform: zoom re-lays out and
+   * re-rasterises the text, where a scaled layer renders soft. Stat scenes are
+   * left alone, they are already sized to be the loudest thing on screen.
+   */
+  const FIT = { flow: 1, compare: 1, window: 1, card: 1, list: 1, diff: 1, note: 1 };
+  function fitScene(wrap, type) {
+    const child = wrap.firstElementChild;
+    if (!child || !FIT[type]) return 1;
+    const prev = wrap.style.display;
+    wrap.style.display = 'flex';
+    const maxH = hero.clientHeight * 0.94;
+    const spills = () => [child, ...child.querySelectorAll('.win, .diff, .ln, .drow, .fnode, .card1, .cmprow, .lrow')]
+      .some((e) => e.scrollWidth > e.clientWidth + 1);
+    let z = 1.45;
+    for (; z > 0.7; z -= 0.05) {
+      child.style.zoom = z.toFixed(2);
+      if (child.getBoundingClientRect().height <= maxH && !spills()) break;
+    }
+    child.style.zoom = z.toFixed(2);
+    wrap.style.display = prev;
+    return z;
+  }
+
+  /**
    * Count-ups only work on a value that really is a number, so the leading
    * numeric group is animated and everything around it is preserved verbatim:
    * "40ms" counts, "$0" counts, "ONE LOCK" is left alone.
@@ -390,7 +419,7 @@
   const clamp01 = (t) => (t < 0 ? 0 : t > 1 ? 1 : t);
 
   let shown = -2;
-  window.mmBoot({
+  const MMDEF = {
     frame(i) {
       const tSec = i / FPS;
 
@@ -408,9 +437,11 @@
         big.style.opacity = 1;
         big.style.transform = `translateY(${(1 - p) * 12}px)`;
         document.querySelector('#title .kick').style.opacity = 1;
-        document.querySelectorAll('#title .ghost').forEach((g, k) => {
-          g.style.opacity = 0.5 + 0.4 * clamp01((tSec - 0.15 - k * 0.15) / 0.5);
-        });
+        // the rule sits under the headline's real bottom edge, which depends on
+        // how many lines the hook wrapped to
+        const rule = document.querySelector('#title .rule');
+        rule.style.top = Math.round(big.getBoundingClientRect().bottom + 46) + 'px';
+        rule.style.transform = 'none';
         return;
       }
 
@@ -424,7 +455,9 @@
 
       if (k !== shown) {
         if (built[shown]) built[shown].wrap.style.display = 'none';
-        built[k].wrap.style.display = 'block';
+        // 'flex', not 'block': an inline block here silently overrode the
+        // centring rule on #hero > div, so every hero sat at the top
+        built[k].wrap.style.display = 'flex';
         const h = sc.headline || '';
         $('headline').textContent = h;
         // one line wherever possible: a two-line headline pushes nothing, but
@@ -516,6 +549,15 @@
       // ---- progress
       $('barfill').style.width = (clamp01(tSec / (ends[TOTAL - 1] || 1)) * 100).toFixed(2) + '%';
     },
-  });
+  };
+
+  const faces = ['400 20px Inter', '600 20px Inter', '800 20px Inter',
+    '400 20px "JetBrains Mono"', '500 20px "JetBrains Mono"', '700 20px "JetBrains Mono"'];
+  Promise.all(faces.map((f) => document.fonts.load(f).catch(() => null)))
+    .then(() => document.fonts.ready)
+    .then(() => {
+      window.MM_FIT = built.map((b, i) => +fitScene(b.wrap, scenes[i].type).toFixed(2));
+      window.mmBoot(MMDEF);
+    });
 })();
 </script>
