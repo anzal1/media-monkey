@@ -17,7 +17,7 @@
 import { gemini } from '../llm.mjs';
 
 /** The closed menu. Adding a type here means adding a renderer in explainer.html. */
-export const SCENE_TYPES = ['flow', 'compare', 'window', 'card', 'list', 'stat', 'diff', 'note'];
+export const SCENE_TYPES = ['flow', 'compare', 'window', 'card', 'list', 'stat', 'chart', 'diff', 'note'];
 
 /*
  * Icon keys the renderer can draw, baked into assets/icons/icons.json by
@@ -53,9 +53,15 @@ const MENU = `SCENE TYPES. Pick the one that actually fits what the beat says.
 Never pick "note" twice in a row, and never use it when a real artifact exists.
 
 "flow"    two to four components wired in order. The default for "A calls B".
-          data: { "nodes": [ { "label": "2 words", "sub": "max 3 words", "kind": "<kind>" } ],
+          data: { "nodes": [ { "label": "2 words", "sub": "max 3 words", "kind": "<kind>",
+                               "state": "ok|busy|blocked|dead",
+                               "becomes": "ok|busy|blocked|dead or omit" } ],
                   "edge": "max 3 words, the action on the wire",
-                  "packet": true|false }
+                  "traffic": "flowing|slow|blocked|none" }
+          "state" is how a node looks when the scene opens. "becomes" makes it change
+          halfway through the scene, while the narration says it: use it whenever the
+          beat is ABOUT something breaking, filling up, or recovering. "traffic" is what
+          the requests on the wire are doing: "blocked" stops them mid-wire.
 "compare" two things side by side. Use for "X versus Y" and for before/after.
           data: { "left": { "label": "", "sub": "", "kind": "<kind>" },
                   "right": { "label": "", "sub": "", "kind": "<kind>" },
@@ -72,7 +78,18 @@ Never pick "note" twice in a row, and never use it when a real artifact exists.
           data: { "title": "max 4 words", "items": [ { "label": "max 5 words", "tone": "good|bad|plain" } ] }
 "stat"    ONE number or one phrase, printed huge. Use for the moment that lands.
           data: { "value": "40ms" | "$0" | "ONE LOCK", "label": "MAX 5 WORDS, UPPERCASE",
-                  "tone": "good|bad|plain" }
+                  "tone": "good|bad|plain",
+                  "from": "optional starting number, e.g. 40ms; the value counts up or down from it" }
+"chart"   a measurement moving, drawn while it is spoken. Use when the beat says a
+          number climbs, spikes, drops or saturates, or compares two to four values.
+          data: { "kind": "line", "shape": "rise|spike|fall|cliff|sawtooth|plateau",
+                  "from": "40ms", "to": "3,000ms", "label": "P99 LATENCY, UPPERCASE" }
+             or { "kind": "bar", "bars": [ { "label": "max 3 words", "value": 10 } ], "unit": "ms" }
+             or { "kind": "meter", "value": 10, "max": 10, "label": "POOL SLOTS IN USE", "tone": "good|bad|plain" }
+          HONESTY: a line chart shows the SHAPE the narration describes. It never plots
+          invented data points. Only "from" and "to" are printed, both must be numbers the
+          narration actually says, and either may be left empty. Bars and meters use real
+          numbers from the narration only.
 "diff"    lines changing: a patch, a conflict, a log before and after.
           data: { "title": "max 5 words", "rows": [ { "text": "one line, max 36 characters", "tone": "add|del|plain" } ] }
 "note"    a plain statement pair when there is genuinely nothing to draw.
@@ -131,10 +148,18 @@ export function normaliseScene(raw, fallbackHeadline) {
   let data = null;
 
   if (type === 'flow') {
+    const STATES = ['ok', 'busy', 'blocked', 'dead'];
     const nodes = (Array.isArray(d.nodes) ? d.nodes : []).slice(0, 4)
-      .map((n) => ({ label: clip(n && n.label, 3), sub: clip(n && n.sub, 4), kind: kindOf(n && n.kind) }))
+      .map((n) => ({
+        label: clip(n && n.label, 3), sub: clip(n && n.sub, 4), kind: kindOf(n && n.kind),
+        state: toneOf(n && n.state, STATES, 'ok'),
+        becomes: toneOf(n && n.becomes, STATES, ''),
+      }))
       .filter((n) => n.label);
-    if (nodes.length >= 2) data = { nodes, edge: clip(d.edge, 3), packet: d.packet !== false };
+    // a "becomes" that changes nothing is noise
+    nodes.forEach((n) => { if (n.becomes === n.state) n.becomes = ''; });
+    const traffic = toneOf(d.traffic, ['flowing', 'slow', 'blocked', 'none'], d.packet === false ? 'none' : 'flowing');
+    if (nodes.length >= 2) data = { nodes, edge: clip(d.edge, 3), traffic };
   } else if (type === 'compare') {
     const side = (s) => ({ label: clip(s && s.label, 3), sub: clip(s && s.sub, 4), kind: kindOf(s && s.kind) });
     const left = side(d.left), right = side(d.right);
@@ -168,7 +193,37 @@ export function normaliseScene(raw, fallbackHeadline) {
     if (items.length >= 2) data = { title: clip(d.title, 5), items };
   } else if (type === 'stat') {
     const value = clean(d.value).slice(0, 14);
-    if (value) data = { value, label: clip(d.label, 5).toUpperCase(), tone: toneOf(d.tone, ['good', 'bad', 'plain'], 'plain') };
+    if (value) {
+      data = {
+        value, label: clip(d.label, 5).toUpperCase(),
+        tone: toneOf(d.tone, ['good', 'bad', 'plain'], 'plain'),
+        from: clean(d.from).slice(0, 14),
+      };
+    }
+  } else if (type === 'chart') {
+    const kind = toneOf(d.kind, ['line', 'bar', 'meter'], '');
+    if (kind === 'line') {
+      data = {
+        kind,
+        shape: toneOf(d.shape, ['rise', 'spike', 'fall', 'cliff', 'sawtooth', 'plateau'], 'rise'),
+        from: clean(d.from).slice(0, 12), to: clean(d.to).slice(0, 12),
+        label: clip(d.label, 5).toUpperCase(),
+      };
+    } else if (kind === 'bar') {
+      const bars = (Array.isArray(d.bars) ? d.bars : []).slice(0, 4)
+        .map((b) => ({ label: clip(b && b.label, 3), value: Number(b && b.value) }))
+        .filter((b) => b.label && Number.isFinite(b.value) && b.value >= 0);
+      if (bars.length >= 2 && bars.some((b) => b.value > 0)) data = { kind, bars, unit: clean(d.unit).slice(0, 8) };
+    } else if (kind === 'meter') {
+      const value = Number(d.value), max = Number(d.max);
+      if (Number.isFinite(value) && Number.isFinite(max) && max > 0 && value >= 0) {
+        data = {
+          kind, value: Math.min(value, max), max,
+          label: clip(d.label, 5).toUpperCase(),
+          tone: toneOf(d.tone, ['good', 'bad', 'plain'], 'plain'),
+        };
+      }
+    }
   } else if (type === 'diff') {
     const rows = (Array.isArray(d.rows) ? d.rows : []).slice(0, 6)
       .map((r) => (typeof r === 'string'
@@ -197,7 +252,7 @@ function fallbackScenes(beat) {
   ].filter((s) => (s.type !== 'stat' || s.data.value));
 }
 
-async function scenesForBatch(topic, batch, offset, opts) {
+async function scenesForBatch(topic, batch, offset, opts, cast = []) {
   const lines = batch.map((b, i) =>
     `BEAT ${offset + i + 1} (${b.want} scenes)\nheadline: ${b.headline}\nnarration: ${b.text}`).join('\n\n');
   const prompt =
@@ -208,15 +263,33 @@ async function scenesForBatch(topic, batch, offset, opts) {
     `changing or the viewer leaves.\n\n` +
     `The first scene sets up what the beat is about. The last is the payoff: the ` +
     `thing that actually happens, or the number that lands. A middle scene, when ` +
-    `there is one, is the step between them. Consecutive scenes must be visually ` +
-    `different: never the same type twice in a row, and never two "note" scenes.\n\n` +
+    `there is one, is the step between them. Consecutive scenes should usually look ` +
+    `different, with ONE important exception: when the payoff is the same system ` +
+    `changing, repeat the same flow with the same labels and show the change through ` +
+    `"state", "becomes" and "traffic". A diagram the viewer already understands, now ` +
+    `breaking, is the strongest pair of scenes there is. Aim for about a third of the ` +
+    `beats to use it. Never two "note" scenes in a ` +
+    `row and never two "stat" scenes in a row.\n\n` +
     `The first scene keeps the beat's own headline verbatim. Every later scene needs ` +
     `a NEW headline you write: max 5 words, sentence case, a spoken fragment usually ` +
     `ending in a full stop ("The lock never releases.", "Now it costs you."). ` +
     `Never a chapter title.\n\n` +
+    `METAPHORS STAY IN THEIR BEAT: the analogy beat may label things in everyday ` +
+    `words (a bank teller, a queue at a counter), but every other scene is about the ` +
+    `real system and uses real component names only (Kubelet, Postgres, the pod). ` +
+    `Never put a metaphor label into a technical diagram.\n\n` +
+    `CONTINUITY: when the same component appears in consecutive scenes, give it the ` +
+    `EXACT same label both times. It then glides to its new place on screen instead of ` +
+    `being redrawn, and the viewer keeps track of the system. Prefer building on the ` +
+    `previous scene, the same node in a new state, over starting a fresh picture.\n\n` +
     `Everything on screen must be technically real: real commands, real file names, ` +
     `real log lines, real numbers from the narration. Never invent a number the ` +
     `narration does not contain.\n\n${MENU}\n\n${KIND_LINE}\n\n` +
+    (cast.length
+      ? `COMPONENTS ALREADY ON SCREEN in earlier scenes of this same video. When you ` +
+        `mean one of these, use EXACTLY this label, character for character, so the ` +
+        `viewer sees the same box and it can carry over: ${cast.map((c) => `"${c}"`).join(', ')}.\n\n`
+      : '') +
     `THE BEATS:\n${lines}\n\n` +
     `Return ONLY JSON, with exactly the requested number of scenes per beat:\n` +
     `{ "eyebrow": "the field this reel is about, 1 to 3 words, uppercase, e.g. ` +
@@ -250,13 +323,22 @@ export async function writeScenes(topic, script, opts = {}) {
   const BATCH = 4;
   const byBeat = new Map();
   let eyebrow = '';
+  // Each batch is generated separately, so without this the same service was
+  // called "App Server", then "App Worker", then "App Pods" at exactly the batch
+  // boundaries, and nothing could carry across. Later batches get the names the
+  // earlier ones settled on.
+  const cast = [];
+  const remember = (label) => {
+    const l = clean(label);
+    if (l && !cast.some((c) => c.toLowerCase() === l.toLowerCase())) cast.push(l);
+  };
 
   for (let i = 0; i < beats.length; i += BATCH) {
     const batch = beats.slice(i, i + BATCH);
     let parsed = null;
     for (let attempt = 1; attempt <= 2 && !parsed; attempt++) {
       try {
-        parsed = await scenesForBatch(topic, batch, i, opts);
+        parsed = await scenesForBatch(topic, batch, i, opts, [...cast]);
       } catch (e) {
         log(`  scenes: batch ${i / BATCH + 1} attempt ${attempt} failed (${e.message.slice(0, 60)})`);
       }
@@ -273,6 +355,14 @@ export async function writeScenes(topic, script, opts = {}) {
         .filter(Boolean)
         .slice(0, beats[idx].want);
       if (got.length) byBeat.set(idx, got);
+      // The persona puts the everyday analogy in beat 2. Its labels ("Bank
+      // Teller", "The Manager") must never join the cast, or later batches are
+      // told they are real components and put them into the technical diagram.
+      if (idx === 1) continue;
+      for (const sc of got) {
+        if (sc.type === 'flow') sc.data.nodes.forEach((n) => remember(n.label));
+        if (sc.type === 'compare') { remember(sc.data.left.label); remember(sc.data.right.label); }
+      }
     }
   }
 

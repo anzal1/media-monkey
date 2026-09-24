@@ -66,7 +66,7 @@
      buttons are drawn over the video */
   #hero { position: absolute; left: 290px; top: 616px; width: 680px; height: 545px; }
   #hero > div { display: flex; flex-direction: column; justify-content: center; }
-  #mascot { position: absolute; left: 22px; top: 928px; height: 270px; }
+  #mascot { position: absolute; left: 22px; top: 928px; height: 270px; transform-origin: 50% 100%; }
 
   #foot {
     position: absolute; left: 70px; top: 1206px; width: 940px;
@@ -111,6 +111,44 @@
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 19px; letter-spacing: .10em; text-transform: uppercase; color: var(--mute);
   }
+
+  /* live node state: a status pill and border that can change mid-scene */
+  .fnode .st {
+    margin-left: auto; display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 18px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px;
+  }
+  .fnode .st i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; display: block; }
+  .fnode.s-ok .st      { color: var(--good); background: #e8f5ec; }
+  .fnode.s-busy .st    { color: #b45309;     background: #fdf2e0; }
+  .fnode.s-blocked .st { color: var(--bad);  background: #fdeaea; }
+  .fnode.s-dead .st    { color: #8a857c;     background: #efece6; }
+  .fnode.s-blocked { border-color: #f1b3b3; }
+  .fnode.s-dead { filter: grayscale(1); }
+  .fnode.s-dead .lab { text-decoration: line-through; text-decoration-thickness: 3px; }
+  .wire .stop { position: absolute; left: 50%; top: 50%; width: 30px; height: 30px;
+    margin: -15px 0 0 -15px; opacity: 0; color: var(--bad); }
+
+  /* chart: line, bars, meter */
+  .chart { width: 100%; }
+  .chart .hd { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 22px;
+    letter-spacing: .18em; color: var(--mute); margin-bottom: 14px; }
+  .chart svg.line { width: 100%; height: 300px; display: block; overflow: visible; }
+  .chart .ends { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; }
+  .chart .ends .a { font-size: 40px; font-weight: 700; color: var(--mute); letter-spacing: -.02em; }
+  .chart .ends .b { font-size: 76px; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+  .bars { display: flex; align-items: flex-end; gap: 30px; height: 400px; }
+  .bar { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+  .bar .val { font-size: 44px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 12px; }
+  .bar .fill { width: 100%; height: 0; border-radius: 14px 14px 4px 4px; background: #d8d2c7; }
+  .bar.top .fill { background: var(--accent); }
+  .bar .lab { margin-top: 16px; font-size: 25px; text-align: center; line-height: 1.2; }
+  .meter .cells { display: grid; gap: 10px; }
+  .meter .cell { height: 70px; border-radius: 10px; background: #e7e2d9; }
+  .meter .read { margin-top: 30px; font-size: 104px; font-weight: 800; letter-spacing: -.045em; line-height: 1; }
+  .meter .read small { font-size: 48px; color: var(--mute); font-weight: 700; }
+  .meter .l { margin-top: 14px; font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 23px; letter-spacing: .18em; color: var(--mute); }
 
   /* compare */
   .cmp { display: flex; flex-direction: column; }
@@ -278,6 +316,12 @@
   const CHECK = 'M20 6L9 17l-5-5';
   const CROSS = 'M6 6l12 12M18 6L6 18';
 
+  const STATE_LABEL = { ok: 'OK', busy: 'BUSY', blocked: 'BLOCKED', dead: 'DOWN' };
+  // keys decide which element in the next scene IS this one, so they ignore
+  // case and punctuation: "Postgres" and "postgres." are the same box
+  const keyOf = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const fmtNum = (n) => Number(n).toLocaleString('en-US', { maximumFractionDigits: 1 });
+
   const esc = (s) => String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -291,19 +335,26 @@
         if (i) {
           parts.push(
             `<div class="wire el"><span class="line"></span><span class="lit"></span>` +
-            `<span class="pkt">${PACKET}</span>` +
+            `<span class="pkt">${PACKET}</span><span class="stop">${mark(CROSS, 'var(--bad)')}</span>` +
             (i === 1 && d.edge ? `<span class="lbl">${esc(d.edge)}</span>` : '') +
             `</div>`);
         }
+        const state = n.state || 'ok';
+        // the pill only appears when state is part of the story; an OK badge on
+        // every node would be noise
+        const pill = (state !== 'ok' || n.becomes)
+          ? `<span class="st"><i></i><b>${STATE_LABEL[state]}</b></span>` : '';
         parts.push(
-          `<div class="fnode panel el"><span class="ico">${icon(n.kind)}</span>` +
+          `<div class="fnode panel el s-${state}" data-key="${keyOf(n.label)}"` +
+          (n.becomes ? ` data-becomes="${n.becomes}"` : '') + `>` +
+          `<span class="ico">${icon(n.kind)}</span>` +
           `<span><span class="lab">${esc(n.label)}</span>` +
-          (n.sub ? `<div class="sub">${esc(n.sub)}</div>` : '') + `</span></div>`);
+          (n.sub ? `<div class="sub">${esc(n.sub)}</div>` : '') + `</span>${pill}</div>`);
       });
       return `<div class="flow">${parts.join('')}</div>`;
     },
     compare(d) {
-      const side = (s) => `<div class="cmpside el"><div class="ico">${icon(s.kind)}</div>` +
+      const side = (s) => `<div class="cmpside el" data-key="${keyOf(s.label)}"><div class="ico">${icon(s.kind)}</div>` +
         `<div class="lab">${esc(s.label)}</div>` +
         (s.sub ? `<div class="sub">${esc(s.sub)}</div>` : '') + `</div>`;
       const rows = (d.rows || []).map((r) =>
@@ -314,14 +365,14 @@
       const lines = d.lines.map((l, i) =>
         `<div class="ln el ${l.tone}" data-tx="${esc(l.text)}"><span class="no">${i + 1}</span>` +
         `<span class="tx">${esc(l.text)}</span></div>`).join('');
-      return `<div class="win el">` +
+      return `<div class="win el" data-key="${keyOf((d.file || '') + ' ' + (d.app || ''))}">` +
         `<div class="wintitle"><span class="lights"><i style="background:#f05b4f"></i><i style="background:#f9bd2e"></i><i style="background:#57c354"></i></span>` +
         `<span>${esc(d.file || '')}${d.file && d.app ? ' - ' : ''}${esc(d.app || '')}</span></div>` +
         `<div class="winbody">${lines}</div>` +
         `<div class="winstatus"><span>${esc(d.status.left)}</span><span>${esc(d.status.right)}</span></div></div>`;
     },
     card(d) {
-      return `<div class="card1 panel el"><div class="top"><span class="ico">${icon(d.kind)}</span>` +
+      return `<div class="card1 panel el" data-key="${keyOf(d.title)}"><div class="top"><span class="ico">${icon(d.kind)}</span>` +
         (d.pill ? `<span class="pill">${esc(d.pill)}</span>` : '') + `</div>` +
         `<div class="title">${esc(d.title)}</div>` +
         (d.sub ? `<div class="sub">${esc(d.sub)}</div>` : '') + `</div>`;
@@ -337,7 +388,7 @@
     },
     stat(d) {
       const colour = d.tone === 'good' ? 'var(--good)' : d.tone === 'bad' ? 'var(--bad)' : 'var(--accent)';
-      return `<div class="stat"><div class="v el" data-v="${esc(d.value)}" style="color:${colour}">${esc(d.value)}</div>` +
+      return `<div class="stat"><div class="v el" data-v="${esc(d.value)}" data-from="${esc(d.from || '')}" style="color:${colour}">${esc(d.value)}</div>` +
         (d.label ? `<div class="l el">${esc(d.label)}</div>` : '') + `</div>`;
     },
     diff(d) {
@@ -346,6 +397,36 @@
       return `<div class="diff panel el" style="overflow:hidden">` +
         (d.title ? `<div class="hd">${esc(d.title)}</div>` : '') + rows +
         `<div style="height:20px"></div></div>`;
+    },
+    chart(d) {
+      const colour = d.tone === 'good' ? 'var(--good)' : d.tone === 'bad' ? 'var(--bad)' : 'var(--accent)';
+      if (d.kind === 'bar') {
+        const top = Math.max(...d.bars.map((b) => b.value));
+        const bars = d.bars.map((b) =>
+          `<div class="bar${b.value === top ? ' top' : ''}" data-value="${b.value}">` +
+          `<div class="val">0</div><div class="fill"></div><div class="lab">${esc(b.label)}</div></div>`).join('');
+        return `<div class="chart">` + (d.unit ? `<div class="hd">${esc(d.unit.toUpperCase())}</div>` : '') +
+          `<div class="bars">${bars}</div></div>`;
+      }
+      if (d.kind === 'meter') {
+        // one cell per unit up to 20, otherwise 20 cells standing in for the range
+        const cells = Math.min(20, Math.max(2, Math.round(d.max)));
+        const cols = cells <= 10 ? cells : Math.ceil(cells / 2);
+        return `<div class="chart meter" data-cells="${cells}">` +
+          `<div class="cells" style="grid-template-columns:repeat(${cols},1fr)">` +
+          Array.from({ length: cells }, () => '<div class="cell"></div>').join('') + `</div>` +
+          `<div class="read" style="color:${colour}"><span class="n">0</span><small> / ${esc(fmtNum(d.max))}</small></div>` +
+          (d.label ? `<div class="l">${esc(d.label)}</div>` : '') + `</div>`;
+      }
+      // line: the SHAPE the narration describes. Only the two real endpoints are
+      // printed, so the chart never implies measured data it does not have.
+      return `<div class="chart">` + (d.label ? `<div class="hd">${esc(d.label)}</div>` : '') +
+        `<svg class="line" viewBox="0 0 600 300" preserveAspectRatio="none">` +
+        [60, 150, 240].map((y) => `<line x1="0" x2="600" y1="${y}" y2="${y}" stroke="#e4dfd6" stroke-width="2"/>`).join('') +
+        `<path class="area" fill="${colour}" opacity=".09"/>` +
+        `<path class="curve" fill="none" stroke="${colour}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>` +
+        `<circle class="head" r="11" fill="${colour}"/></svg>` +
+        `<div class="ends"><span class="a">${esc(d.from || '')}</span><span class="b" style="color:${colour}">${esc(d.to || '')}</span></div></div>`;
     },
     note(d) {
       return `<div class="note"><div class="lead el">${esc(d.lead)}</div>` +
@@ -369,6 +450,8 @@
       lines: [...wrap.querySelectorAll('.winbody .ln')],
       draws: [...wrap.querySelectorAll('.draw')],
       stat: wrap.querySelector('.stat .v'),
+      nodes: [...wrap.querySelectorAll('.fnode')],
+      morph: new Map(),
     };
   });
 
@@ -418,6 +501,160 @@
   };
   const clamp01 = (t) => (t < 0 ? 0 : t > 1 ? 1 : t);
 
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+  /*
+   * Line shapes, as normalised height (0 bottom, 1 top) over x in 0..1. These
+   * are the shapes a narration describes ("climbs", "spikes", "falls off a
+   * cliff"), not data. Only the two endpoint labels are real numbers.
+   */
+  const SHAPES = {
+    rise:     (x) => 0.08 + 0.84 * Math.pow(x, 2.1),
+    fall:     (x) => 0.92 - 0.84 * (1 - Math.pow(1 - x, 2.1)),
+    plateau:  (x) => 0.08 + 0.76 * (1 - Math.exp(-5 * x)),
+    cliff:    (x) => (x < 0.6 ? 0.8 + 0.025 * Math.sin(x * 22) : 0.8 - 0.7 * (1 - Math.exp(-(x - 0.6) * 16))),
+    spike:    (x) => 0.12 + 0.8 * Math.exp(-Math.pow((x - 0.68) / 0.075, 2)) + 0.06 * x,
+    sawtooth: (x) => 0.14 + 0.68 * ((x * 3) % 1),
+  };
+  const RISING = { rise: 1, plateau: 1, spike: 1, sawtooth: 1 };
+
+  function initLine(B, d, k) {
+    const svg = B.wrap.querySelector('svg.line');
+    const f = SHAPES[d.shape] || SHAPES.rise;
+    const rnd = window.rng(7919 * (k + 1));
+    const N = 72;
+    const ys = [];
+    const pts = [];
+    for (let i = 0; i < N; i++) {
+      const x = i / (N - 1);
+      const jitter = (rnd() - 0.5) * 0.035;            // a little texture, never a trend
+      const yn = Math.min(0.97, Math.max(0.03, f(x) + (i && i < N - 1 ? jitter : 0)));
+      ys.push(yn);
+      pts.push(`${(x * 600).toFixed(1)} ${(300 - yn * 300).toFixed(1)}`);
+    }
+    const dpath = 'M ' + pts.join(' L ');
+    const curve = svg.querySelector('.curve');
+    curve.setAttribute('d', dpath);
+    svg.querySelector('.area').setAttribute('d', dpath + ' L 600 300 L 0 300 Z');
+    const len = curve.getTotalLength();
+    curve.style.strokeDasharray = `${len}`;
+    const a = statParts(d.from), b = statParts(d.to);
+    const y0 = ys[0];
+    const yExt = RISING[d.shape] ? Math.max(...ys) : Math.min(...ys);
+    B.line = { curve, area: svg.querySelector('.area'), head: svg.querySelector('.head'),
+      len, ys, a, b, y0, yExt, rising: !!RISING[d.shape],
+      aEl: B.wrap.querySelector('.ends .a'), bEl: B.wrap.querySelector('.ends .b') };
+  }
+
+  function animateChart(B, d, local, span, k, tSec) {
+    const colourOf = (tone) => (tone === 'good' ? 'var(--good)' : tone === 'bad' ? 'var(--bad)' : 'var(--accent)');
+    if (d.kind === 'line') {
+      if (!B.line) initLine(B, d, k);
+      const L = B.line;
+      const p = easeInOut(clamp01((local - 0.25) / Math.min(span * 0.7, 4)));
+      L.curve.style.strokeDashoffset = (L.len * (1 - p)).toFixed(1);
+      L.area.style.clipPath = `inset(0 ${(100 - p * 100).toFixed(2)}% 0 0)`;
+      const pt = L.curve.getPointAtLength(L.len * p);
+      L.head.setAttribute('cx', pt.x.toFixed(1));
+      L.head.setAttribute('cy', pt.y.toFixed(1));
+      L.head.style.opacity = p > 0 ? 1 : 0;
+      // the far label is a live readout that follows the line, when both ends
+      // are real numbers; otherwise it simply lands with the line
+      if (L.a && L.b) {
+        const seen = L.ys.slice(0, Math.max(1, Math.round(p * (L.ys.length - 1)) + 1));
+        const ext = L.rising ? Math.max(...seen) : Math.min(...seen);
+        const f = clamp01((ext - L.y0) / ((L.yExt - L.y0) || 1));
+        const v = L.a.n + (L.b.n - L.a.n) * f;
+        L.bEl.textContent = L.b.pre + Math.round(v).toLocaleString('en-US') + (p >= 1 ? L.b.frac : '') + L.b.post;
+        L.bEl.style.opacity = p > 0.02 ? 1 : 0;
+      } else {
+        L.bEl.style.opacity = clamp01((p - 0.8) / 0.2);
+      }
+      L.aEl.style.opacity = clamp01((local - 0.2) / 0.4);
+      return;
+    }
+    if (d.kind === 'bar') {
+      const bars = B.bars || (B.bars = [...B.wrap.querySelectorAll('.bar')]);
+      const top = Math.max(...bars.map((b) => +b.dataset.value)) || 1;
+      bars.forEach((b, i) => {
+        const q = easeInOut(clamp01((local - 0.3 - i * 0.4) / 0.8));
+        const v = +b.dataset.value;
+        b.querySelector('.fill').style.height = `${((v / top) * 100 * q).toFixed(2)}%`;
+        b.querySelector('.val').textContent = fmtNum(Math.round(v * q * 10) / 10);
+        b.style.opacity = clamp01((local - 0.2 - i * 0.4) / 0.3);
+      });
+      return;
+    }
+    if (d.kind === 'meter') {
+      const cells = B.cells || (B.cells = [...B.wrap.querySelectorAll('.cell')]);
+      const q = easeInOut(clamp01((local - 0.3) / Math.min(span * 0.55, 3)));
+      const lit = Math.round(cells.length * (d.value / d.max) * q);
+      const full = lit >= cells.length;
+      const pulse = full && d.tone === 'bad' ? 0.78 + 0.22 * Math.sin(tSec * 6) : 1;
+      cells.forEach((c, i) => {
+        c.style.background = i < lit ? colourOf(d.tone) : '';
+        c.style.opacity = i < lit ? pulse : 1;
+      });
+      B.wrap.querySelector('.meter .n').textContent = fmtNum(Math.round(d.value * q));
+    }
+  }
+
+  /*
+   * Continuity. After layout, every keyed element (a flow node, card, compare
+   * side or window) has its on-screen rect recorded. When the same key appears
+   * in two consecutive scenes, the new element starts exactly where the old one
+   * was drawn and glides to its own place, instead of vanishing and re-entering.
+   * Translation is divided by the scene's zoom because a transform inside a
+   * zoomed subtree is scaled by that zoom.
+   */
+  function measureKeys(b) {
+    const out = {};
+    const prev = b.wrap.style.display;
+    b.wrap.style.display = 'flex';
+    b.wrap.querySelectorAll('[data-key]').forEach((e) => {
+      if (!e.dataset.key) return;
+      const r = e.getBoundingClientRect();
+      out[e.dataset.key] = { x: r.left, y: r.top, w: r.width, el: e };
+    });
+    b.wrap.style.display = prev;
+    return out;
+  }
+  function linkScenes() {
+    built.forEach((b, i) => {
+      const prev = built[i - 1];
+      if (!prev) return;
+      // The usual rhythm is a diagram, a number or a log, then the diagram
+      // again. Look back up to three scenes (about fifteen seconds) for the most
+      // recent appearance of each component, so the system returns already in
+      // place instead of being drawn from scratch. Further back than that and
+      // nobody remembers where it was, so it is simply redrawn.
+      const recent = [built[i - 1], built[i - 2], built[i - 3]].filter(Boolean);
+      // Returning to the exact same diagram (the same set of components) is
+      // continuity however long ago it was shown: its layout has not changed,
+      // so it simply comes back in place and the state changes carry the story.
+      const mine = Object.keys(b.keys).sort().join('|');
+      let same = null;
+      if (Object.keys(b.keys).length >= 2) {
+        for (let j = i - 1; j >= 0 && !same; j--) {
+          if (Object.keys(built[j].keys).sort().join('|') === mine) same = built[j];
+        }
+      }
+      for (const [key, cur] of Object.entries(b.keys)) {
+        const hit = recent.find((r) => r.keys[key]) || same;
+        const old = hit ? hit.keys[key] : null;
+        if (!old || !cur.w) continue;
+        b.morph.set(cur.el, {
+          dx: (old.x - cur.x) / (b.zoom || 1),
+          dy: (old.y - cur.y) / (b.zoom || 1),
+          s: old.w / cur.w,
+        });
+      }
+    });
+  }
+
+  const mascot = $('mascot');
+  const tmascot = document.querySelector('#title .tmascot');
+
   let shown = -2;
   const MMDEF = {
     frame(i) {
@@ -442,6 +679,8 @@
         const rule = document.querySelector('#title .rule');
         rule.style.top = Math.round(big.getBoundingClientRect().bottom + 46) + 'px';
         rule.style.transform = 'none';
+        const tb = Math.sin(tSec * Math.PI * 2 / 3.4);
+        tmascot.style.transform = `translateX(-50%) translateY(${(tb * 3).toFixed(2)}px)`;
         return;
       }
 
@@ -484,13 +723,34 @@
       // spread the stagger across the first 55% of the scene, capped so a long
       // scene does not leave the last row arriving after the narration moved on
       const step = Math.min(0.34, (span * 0.55) / Math.max(1, els.length));
+      const B = built[k];
       els.forEach((el, n) => {
+        const mv = B.morph.get(el);
+        if (mv) {
+          // carried over from the previous scene: fully present from the first
+          // frame, gliding from where it was drawn a moment ago
+          const m = spring(clamp01(local / 0.55));
+          el.style.opacity = 1;
+          el.style.transformOrigin = m < 1 ? '0 0' : '';
+          const sc2 = mv.s + (1 - mv.s) * m;
+          el.style.transform = `translate(${(mv.dx * (1 - m)).toFixed(2)}px, ${(mv.dy * (1 - m)).toFixed(2)}px) scale(${sc2.toFixed(4)})`;
+          return;
+        }
         const p = spring(clamp01((local - 0.18 - n * step) / 0.5));
         el.style.opacity = p;
         el.style.transform = `translateY(${(1 - p) * 20}px) scale(${0.985 + 0.015 * p})`;
       });
 
-      const B = built[k];
+      // ---- the mascot breathes, and hops when a number lands
+      {
+        const bob = Math.sin(tSec * Math.PI * 2 / 3.4);
+        let hop = 0;
+        if (sc.type === 'stat' || sc.type === 'chart') {
+          const q = clamp01((local - 0.1) / 0.45);
+          if (q < 1) hop = Math.sin(q * Math.PI) * 22;
+        }
+        mascot.style.transform = `translateY(${(bob * 3 - hop).toFixed(2)}px) scaleY(${(1 + bob * 0.006).toFixed(4)})`;
+      }
 
       // ---- check and cross marks draw themselves rather than popping in
       B.draws.forEach((d, n) => {
@@ -500,21 +760,64 @@
 
       // ---- flow wires draw, then carry a document along the live wire
       if (sc.type === 'flow') {
-        B.wires.forEach((w, n) => {
-          const p = clamp01((local - 0.34 - n * step * 2) / 0.45);
-          w.querySelector('.lit').style.height = (p * 100) + '%';
-          const pkt = w.querySelector('.pkt');
-          if (p >= 1 && sc.data.packet) {
-            // one packet per wire, offset so they chase each other down the
-            // chain instead of moving in lockstep
-            const at = (((tSec * 0.8) - n * 0.22) % 1 + 1) % 1;
-            pkt.style.top = `calc(${(at * 100).toFixed(1)}% - 16px)`;
-            pkt.style.opacity = Math.min(1, Math.sin(at * Math.PI) * 2.2);
-          } else {
-            pkt.style.opacity = 0;
+        // a node's state can change halfway through, while the line is spoken
+        const flipAt = span * 0.5;
+        const stateNow = B.nodes.map((nd) => {
+          if (!nd.dataset.s0) nd.dataset.s0 = ([...nd.classList].find((c) => c.startsWith('s-')) || 's-ok').slice(2);
+          const to = nd.dataset.becomes;
+          const cur = to && local >= flipAt ? to : nd.dataset.s0;
+          if (!nd.classList.contains('s-' + cur)) {
+            nd.classList.remove('s-ok', 's-busy', 's-blocked', 's-dead');
+            nd.classList.add('s-' + cur);
+            const lbl = nd.querySelector('.st b');
+            if (lbl) lbl.textContent = STATE_LABEL[cur];
           }
+          if (to) {
+            const q = clamp01((local - flipAt) / 0.4);
+            if (q > 0 && q < 1) nd.style.transform += ` scale(${(1 + 0.05 * Math.sin(q * Math.PI)).toFixed(4)})`;
+          }
+          nd.style.boxShadow = cur === 'blocked'
+            ? `0 0 0 ${(4 + 5 * (0.5 + 0.5 * Math.sin(tSec * 5))).toFixed(1)}px rgba(185,28,28,.16), 0 14px 34px rgba(30,25,15,.055)`
+            : '';
+          return { cur, flipped: !!to };
+        });
+
+        const traffic = sc.data.traffic || (sc.data.packet === false ? 'none' : 'flowing');
+        B.wires.forEach((w, n) => {
+          const ready = 0.34 + n * step * 2;
+          const p = clamp01((local - ready) / 0.45);
+          const lit = w.querySelector('.lit');
+          const pkt = w.querySelector('.pkt');
+          const stop = w.querySelector('.stop');
+          lit.style.height = (p * 100) + '%';
+          lit.style.background = '';
+          stop.style.opacity = 0;
+          if (p < 1 || traffic === 'none') { pkt.style.opacity = 0; return; }
+          // requests stop dead at a wire whose downstream node is blocked or
+          // down, from the moment it becomes so
+          const dn = stateNow[n + 1];
+          const downBad = dn && (dn.cur === 'blocked' || dn.cur === 'dead');
+          let blockedFrom = null;
+          if (downBad) blockedFrom = dn.flipped ? Math.max(flipAt, ready + 0.45) : ready + 0.45;
+          else if (traffic === 'blocked') blockedFrom = ready + 0.45;
+          if (blockedFrom !== null && local >= blockedFrom) {
+            const q = clamp01((local - blockedFrom) / 0.9);
+            const at = 0.5 * (1 - Math.pow(1 - q, 3));
+            pkt.style.top = `calc(${(at * 100).toFixed(1)}% - 16px)`;
+            pkt.style.opacity = 1;
+            stop.style.opacity = clamp01((q - 0.8) / 0.2);
+            if (q >= 1) lit.style.background = 'var(--bad)';
+            return;
+          }
+          // otherwise one packet per wire, offset so they chase each other
+          const speed = traffic === 'slow' ? 0.28 : 0.8;
+          const at = (((tSec * speed) - n * 0.22) % 1 + 1) % 1;
+          pkt.style.top = `calc(${(at * 100).toFixed(1)}% - 16px)`;
+          pkt.style.opacity = Math.min(1, Math.sin(at * Math.PI) * 2.2) * (traffic === 'slow' ? 0.7 : 1);
         });
       }
+
+      if (sc.type === 'chart') animateChart(B, sc.data, local, span, k, tSec);
 
       // ---- window lines type themselves, with a caret on the newest line
       if (sc.type === 'window') {
@@ -537,11 +840,15 @@
       // ---- the number counts up to itself
       if (sc.type === 'stat' && B.stat) {
         const parts = statParts(B.stat.dataset.v);
+        const fromP = statParts(B.stat.dataset.from);
         if (parts) {
-          const p = clamp01((local - 0.2) / 0.7);
-          // ease-out so it slams toward the final value rather than crawling
-          const eased = 1 - Math.pow(1 - p, 3);
-          const n = Math.round(parts.n * eased);
+          // with a starting value the number travels while it is being talked
+          // about ("climbs from 40 to 3,000"); without one it slams into place
+          const dur = fromP ? Math.min(span * 0.6, 3.2) : 0.7;
+          const p = clamp01((local - 0.2) / dur);
+          const eased = fromP ? easeInOut(p) : 1 - Math.pow(1 - p, 3);
+          const a0 = fromP ? fromP.n : 0;
+          const n = Math.round(a0 + (parts.n - a0) * eased);
           B.stat.textContent = parts.pre + n.toLocaleString('en-US') + (p >= 1 ? parts.frac : '') + parts.post;
         }
       }
@@ -556,7 +863,11 @@
   Promise.all(faces.map((f) => document.fonts.load(f).catch(() => null)))
     .then(() => document.fonts.ready)
     .then(() => {
-      window.MM_FIT = built.map((b, i) => +fitScene(b.wrap, scenes[i].type).toFixed(2));
+      built.forEach((b, i) => { b.zoom = fitScene(b.wrap, scenes[i].type); });
+      built.forEach((b) => { b.keys = measureKeys(b); });
+      linkScenes();
+      window.MM_FIT = built.map((b) => +(+b.zoom).toFixed(2));
+      window.MM_MORPHS = built.map((b) => b.morph.size);
       window.mmBoot(MMDEF);
     });
 })();

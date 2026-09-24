@@ -3,49 +3,192 @@
   "accent": "#2563eb",
   "episode": "THE PROD MONKEY",
   "handle": "",
-  "title": { "kicker": "DATABASES", "title": "Your pool is not too small." },
+  "title": {
+    "kicker": "DATABASES",
+    "title": "Your pool is not too small."
+  },
   "titleUntil": 3,
-  "starts": [3, 8, 13, 18, 23, 28, 33, 38, 43],
+  "starts": [
+    3,
+    8,
+    13,
+    18,
+    23,
+    28,
+    33,
+    38,
+    43
+  ],
   "scenes": [
-    { "beat": 0, "half": 0, "type": "flow", "headline": "Every request wants one.",
-      "subhead": "Where the connection comes from",
-      "data": { "nodes": [
-        { "label": "API", "sub": "40 workers", "kind": "server" },
-        { "label": "Pool", "sub": "max 10", "kind": "queue" },
-        { "label": "Postgres", "sub": "one backend each", "kind": "database" } ],
-        "edge": "checkout", "packet": true } },
-    { "beat": 0, "half": 1, "type": "stat", "headline": "Four waiting per slot.",
-      "subhead": "", "data": { "value": "40:10", "label": "WORKERS TO CONNECTIONS", "tone": "bad" } },
-    { "beat": 1, "half": 0, "type": "window", "headline": "The wait shows up here.",
-      "subhead": "What the log actually says",
-      "data": { "app": "psql", "file": "app_prod", "lines": [
-        { "text": "SELECT * FROM pg_stat_activity", "tone": "plain" },
-        { "text": " state    | wait_event_type", "tone": "dim" },
-        { "text": " idle in transaction | Client", "tone": "bad" },
-        { "text": " active   | Lock", "tone": "bad" } ],
-        "status": { "left": "app_prod", "right": "12 rows" } } },
-    { "beat": 1, "half": 1, "type": "card", "headline": "One holder blocks all.",
-      "subhead": "", "data": { "kind": "lock", "title": "pid 40231", "pill": "idle in tx", "sub": "held for four minutes" } },
-    { "beat": 2, "half": 0, "type": "compare", "headline": "Bigger pool, same wall.",
-      "subhead": "Two ways to size it",
-      "data": { "left": { "label": "Pool 10", "sub": "queue at the app", "kind": "queue" },
-                "right": { "label": "Pool 100", "sub": "queue in the database", "kind": "database" },
-                "rows": [ { "left": "waits are visible", "right": "waits are hidden" },
-                          { "left": "one backend each", "right": "memory per backend" } ] } },
-    { "beat": 2, "half": 1, "type": "list", "headline": "What actually helps.",
-      "subhead": "", "data": { "title": "Fixes that hold", "items": [
-        { "label": "Shorten the transaction", "tone": "good" },
-        { "label": "Set idle_in_transaction_session_timeout", "tone": "good" },
-        { "label": "Raise the pool blindly", "tone": "bad" } ] } },
-    { "beat": 3, "half": 0, "type": "diff", "headline": "Two lines of config.",
-      "subhead": "", "data": { "title": "postgresql.conf", "rows": [
-        { "text": "- idle_in_transaction_session_timeout = 0", "tone": "del" },
-        { "text": "+ idle_in_transaction_session_timeout = 30s", "tone": "add" },
-        { "text": "  statement_timeout = 10s", "tone": "plain" } ] } },
-    { "beat": 3, "half": 1, "type": "note", "headline": "That is the whole trick.",
-      "subhead": "", "data": { "lead": "The pool is a queue.",
-        "body": "Make the work shorter, not the queue longer." } },
-    { "beat": 4, "half": 0, "type": "stat", "headline": "Back under control.",
-      "subhead": "", "data": { "value": "40ms", "label": "P99 CHECKOUT WAIT", "tone": "good" } }
+    {
+      "type": "flow",
+      "headline": "Every request wants one.",
+      "subhead": "where the connection comes from",
+      "data": {
+        "nodes": [
+          {
+            "label": "API",
+            "sub": "40 workers",
+            "kind": "server",
+            "state": "ok",
+            "becomes": ""
+          },
+          {
+            "label": "Pool",
+            "sub": "max 10",
+            "kind": "queue",
+            "state": "busy",
+            "becomes": ""
+          },
+          {
+            "label": "Postgres",
+            "sub": "one backend each",
+            "kind": "postgres",
+            "state": "ok",
+            "becomes": "blocked"
+          }
+        ],
+        "edge": "checkout",
+        "traffic": "flowing"
+      },
+      "beat": 0,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "flow",
+      "headline": "The pool fills up.",
+      "subhead": "",
+      "data": {
+        "nodes": [
+          {
+            "label": "Pool",
+            "sub": "10 of 10 taken",
+            "kind": "queue",
+            "state": "busy",
+            "becomes": "dead"
+          },
+          {
+            "label": "Postgres",
+            "sub": "waiting on a lock",
+            "kind": "postgres",
+            "state": "blocked",
+            "becomes": ""
+          }
+        ],
+        "edge": "acquire",
+        "traffic": "flowing"
+      },
+      "beat": 1,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "card",
+      "headline": "One holder blocks all.",
+      "subhead": "",
+      "data": {
+        "kind": "postgres",
+        "title": "Postgres",
+        "pill": "blocked",
+        "sub": "idle in transaction, four minutes"
+      },
+      "beat": 2,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "chart",
+      "headline": "Then p99 explodes.",
+      "subhead": "checkout latency",
+      "data": {
+        "kind": "line",
+        "shape": "spike",
+        "from": "40ms",
+        "to": "3,000ms",
+        "label": "P99 LATENCY"
+      },
+      "beat": 3,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "chart",
+      "headline": "Ten times the cost.",
+      "subhead": "",
+      "data": {
+        "kind": "bar",
+        "bars": [
+          {
+            "label": "buffer hit",
+            "value": 1
+          },
+          {
+            "label": "disk read",
+            "value": 10
+          }
+        ],
+        "unit": "cost points"
+      },
+      "beat": 4,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "chart",
+      "headline": "Every slot is taken.",
+      "subhead": "",
+      "data": {
+        "kind": "meter",
+        "value": 10,
+        "max": 10,
+        "label": "POOL SLOTS IN USE",
+        "tone": "bad"
+      },
+      "beat": 5,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stat",
+      "headline": "Latency climbs.",
+      "subhead": "",
+      "data": {
+        "value": "3,000ms",
+        "from": "40ms",
+        "label": "P99 CHECKOUT",
+        "tone": "bad"
+      },
+      "beat": 6,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "chart",
+      "headline": "Cleanup never catches up.",
+      "subhead": "",
+      "data": {
+        "kind": "line",
+        "shape": "sawtooth",
+        "from": "",
+        "to": "",
+        "label": "DEAD TUPLES"
+      },
+      "beat": 7,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "note",
+      "headline": "That is the whole trick.",
+      "subhead": "",
+      "data": {
+        "lead": "The pool is a queue.",
+        "body": "Make the work shorter, not the queue longer."
+      },
+      "beat": 8,
+      "half": 0,
+      "of": 1
+    }
   ]
 }
