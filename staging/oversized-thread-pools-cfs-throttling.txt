@@ -1,0 +1,22 @@
+Your CPU usage sits at twenty percent.
+Your P99 latency is suddenly three seconds.
+Your pods are healthy on paper.
+
+CFS quota throttling is the Linux kernel stopping your container mid-flight because you used your time slice too fast.
+
+Here is where it bites:
+→ Java or Go spins up dozens of threads by host core count
+→ A burst lands and wakes forty worker threads in parallel
+→ Your CPU quota runs dry in three milliseconds flat
+
+Kubernetes controls CPU limits using the Completely Fair Scheduler bandwidth controller. It chops execution into hundred-millisecond slices. If you give a container one core of limit, it gets exactly one hundred milliseconds of CPU time per slice.
+
+Run forty threads at the exact same moment on a big forty-eight core node, and they consume forty milliseconds of CPU time for every single millisecond of real-world time. Your entire hundred-millisecond budget disappears in two and a half milliseconds. The kernel throttles the whole cgroup, freezing every thread for the next ninety-seven milliseconds.
+
+Your monitoring looks innocent because average utilization over sixty seconds is tiny. But requests freeze, database connections time out, and tail latency explodes.
+
+Match your worker pools to your actual CPU limits or drop CPU limits entirely and rely on CPU requests.
+
+Keep this handy next time your tail latency goes vertical.
+
+#kubernetes #linuxkernel #sre #devops #cloudnative #sysadmin #softwareengineering #systemdesign #backenddeveloper #programming #coding #webdevelopment
