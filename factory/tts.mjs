@@ -155,7 +155,52 @@ export function isHindiVoice(v) {
   return /^h[fm]_/.test(String(v || ''));
 }
 
+/*
+ * How jargon should SOUND. TTS engines read "nginx", "kubectl" or "40ms"
+ * unpredictably, and a mangled term in the middle of an explanation sounds
+ * like a strange accent, which was the viewer complaint. Applied to the
+ * spoken text only; captions and the screen keep the real spelling.
+ */
+const SAY = [
+  [/\bnginx\b/gi, 'engine x'],
+  [/\bkubectl\b/gi, 'cube control'],
+  [/\bk8s\b/gi, 'kubernetes'],
+  [/\bPostgreSQL\b/g, 'Postgres'],
+  [/\bMySQL\b/g, 'my sequel'],
+  [/\bSQLite\b/g, 'sequel lite'],
+  [/\bNoSQL\b/g, 'no sequel'],
+  [/\bSQL\b/g, 'sequel'],
+  [/\bJSON\b/g, 'jason'],
+  [/\bYAML\b/g, 'yammel'],
+  [/\betcd\b/gi, 'et see dee'],
+  [/\bgRPC\b/g, 'G R P C'],
+  [/\bJWT\b/g, 'J W T'],
+  [/\bIOPS\b/g, 'eye ops'],
+  [/\bLRU\b/g, 'L R U'],
+  [/\bKV\b/g, 'K V'],
+  [/\bTTFT\b/g, 'T T F T'],
+  [/\bTPOT\b/g, 'T P O T'],
+  [/\bLLMs?\b/g, (m) => (m.endsWith('s') ? 'L L Ms' : 'L L M')],
+  [/\bRAG\b/g, 'rag'],
+  [/\bp(50|90|95|99|999)\b/gi, (_, n) => `P ${{ 50: 'fifty', 90: 'ninety', 95: 'ninety five', 99: 'ninety nine', 999: 'three nines' }[n]}`],
+  [/\bx86\b/gi, 'x eighty six'],
+  [/(\d)\s?ms\b/g, '$1 milliseconds'],
+  [/(\d)\s?(us|µs)\b/g, '$1 microseconds'],
+  [/(\d)\s?ns\b/g, '$1 nanoseconds'],
+  [/(\d)\s?GHz\b/g, '$1 gigahertz'],
+  [/(\d)\s?GB\b/g, '$1 gigabytes'],
+  [/(\d)\s?MB\b/g, '$1 megabytes'],
+  [/(\d)\s?KB\b/g, '$1 kilobytes'],
+  [/(\d)\s?TB\b/g, '$1 terabytes'],
+];
+export function speakable(text) {
+  let t = String(text);
+  for (const [re, to] of SAY) t = t.replace(re, to);
+  return t;
+}
+
 async function generate(text, voice, speed) {
+  if (!isHindiVoice(voice)) text = speakable(text);
   const tts = await getTTS();
   let audio;
   const mix = parseVoice(voice);

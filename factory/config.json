@@ -1,7 +1,6 @@
 {
-  "voice": "bf_emma",
+  "voice": "af_heart",
   "voiceCandidates": [
-    "bf_emma",
     "af_heart",
     "am_fenrir"
   ],
@@ -84,5 +83,5 @@
   },
   "format": "explainer",
   "handle": "",
-  "wordsPerSecond": 2.77
+  "wordsPerSecond": 2.62
 }
