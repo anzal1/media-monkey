@@ -546,10 +546,16 @@ export async function assemble(opts) {
     '-y', '-hide_banner', '-loglevel', 'error',
     '-stream_loop', '-1', '-ss', String(offset), '-i', bg.file,
     '-i', narration,
+    ...(bg.sfx ? ['-i', bg.sfx] : []),
     // loudnorm to -14 LUFS: raw Kokoro output sits around -25 dB mean, which
-    // reads as low-energy next to everything else in the feed.
+    // reads as low-energy next to everything else in the feed. The voice is
+    // normalised on its own and the effects are laid under it afterwards, so
+    // they can never pull the voice level down.
     '-filter_complex',
-    `[0:v]${vf}[v];[1:a]apad=pad_dur=${tailSeconds},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[a]`,
+    bg.sfx
+      ? `[0:v]${vf}[v];[1:a]apad=pad_dur=${tailSeconds},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[n];` +
+        `[2:a]aresample=44100[s];[n][s]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95:level=disabled[a]`
+      : `[0:v]${vf}[v];[1:a]apad=pad_dur=${tailSeconds},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[a]`,
     '-map', '[v]', '-map', '[a]',
     '-t', String(total),
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '21',
@@ -581,6 +587,7 @@ export async function assemble(opts) {
     path.join(outDir, 'youtube.json'),
     JSON.stringify({
       title: script.hook.replace(/\s+/g, ' ').trim().slice(0, 100),
+      coverMs: bg.coverMs ?? null,
       tags: script.hashtags,
       descriptionFile: 'caption.txt',
     }, null, 2),

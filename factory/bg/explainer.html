@@ -38,6 +38,20 @@
     background-size: 90px 90px;
   }
   .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
+  /* a soft accent glow that drifts behind whatever is active: depth, not decor */
+  #glow { position: absolute; width: 900px; height: 900px; border-radius: 50%; left: 90px; top: 440px;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 13%, transparent), transparent 72%);
+    pointer-events: none; will-change: transform; }
+  #hero > div { will-change: transform, opacity, filter; }
+  #headline .w { display: inline-block; will-change: transform, opacity; }
+  #title .big .w { display: inline-block; opacity: 0; will-change: transform, opacity; }
+  #title .big .w.key { color: var(--accent); }
+  /* stat impact */
+  .stat { position: relative; }
+  .stat .ring { position: absolute; left: 0; top: 50%; width: 360px; height: 360px; margin-top: -180px;
+    border-radius: 50%; border: 6px solid currentColor; opacity: 0; pointer-events: none; }
+  .stat .rays { position: absolute; left: -60px; top: 50%; width: 520px; height: 520px; margin-top: -260px;
+    opacity: 0; pointer-events: none; }
 
   /* ---------- constant page chrome ---------- */
   #head { position: absolute; left: 70px; top: 300px; width: 940px; }
@@ -238,6 +252,7 @@
 </style>
 
 <div id="grid"></div>
+<div id="glow"></div>
 <div id="stage">
   <div id="head">
     <div id="headrow"><span id="eyebrow"></span><span id="counter"></span></div>
@@ -282,9 +297,25 @@
   $('eyebrow').textContent = S.eyebrow || '';
   $('episode').textContent = S.episode || '';
   $('handle').textContent = S.handle || '';
+  // The hook lands word by word, timed to the narration: proportional to word
+  // length across the first 80% of the spoken hook. The first word is up on
+  // frame 0, and the whole hook is up by the cover frame render.mjs chooses.
+  let titleWords = [];
   if (S.title) {
     document.querySelector('#title .kick').textContent = S.title.kicker || '';
-    document.querySelector('#title .big').textContent = S.title.title || '';
+    const big = document.querySelector('#title .big');
+    const words = String(S.title.title || '').split(/\s+/).filter(Boolean);
+    const key = words.findIndex((w) => /\d/.test(w)) >= 0 ? words.findIndex((w) => /\d/.test(w))
+      : words.reduce((b, w, i) => (w.replace(/\W/g, '').length > words[b].replace(/\W/g, '').length ? i : b), 0);
+    big.innerHTML = words.map((w, i) => `<span class="w${i === key ? ' key' : ''}">${esc(w)}</span>`).join(' ');
+    const weights = words.map((w) => w.length + 2);
+    const tot = weights.reduce((a, b) => a + b, 0) || 1;
+    let acc = 0;
+    titleWords = [...big.querySelectorAll('.w')].map((el, i) => {
+      const at = (acc / tot) * Math.max(0.6, titleUntil * 0.8);
+      acc += weights[i];
+      return { el, at };
+    });
   }
 
   // ---------- icons ----------
@@ -322,8 +353,8 @@
   const keyOf = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
   const fmtNum = (n) => Number(n).toLocaleString('en-US', { maximumFractionDigits: 1 });
 
-  const esc = (s) => String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  function esc(s) { return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
   // ---------- scene builders ----------
   // Each returns HTML for #hero. Every animatable element carries class "el";
@@ -335,7 +366,8 @@
         if (i) {
           parts.push(
             `<div class="wire el"><span class="line"></span><span class="lit"></span>` +
-            `<span class="pkt">${PACKET}</span><span class="stop">${mark(CROSS, 'var(--bad)')}</span>` +
+            `<span class="pkt">${PACKET}</span><span class="pkt">${PACKET}</span><span class="pkt">${PACKET}</span>` +
+            `<span class="stop">${mark(CROSS, 'var(--bad)')}</span>` +
             (i === 1 && d.edge ? `<span class="lbl">${esc(d.edge)}</span>` : '') +
             `</div>`);
         }
@@ -388,7 +420,15 @@
     },
     stat(d) {
       const colour = d.tone === 'good' ? 'var(--good)' : d.tone === 'bad' ? 'var(--bad)' : 'var(--accent)';
-      return `<div class="stat"><div class="v el" data-v="${esc(d.value)}" data-from="${esc(d.from || '')}" style="color:${colour}">${esc(d.value)}</div>` +
+      const rays = Array.from({ length: 14 }, (_, i) => {
+        const a = (i / 14) * Math.PI * 2;
+        const x1 = 260 + Math.cos(a) * 150, y1 = 260 + Math.sin(a) * 150;
+        const x2 = 260 + Math.cos(a) * 250, y2 = 260 + Math.sin(a) * 250;
+        return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>`;
+      }).join('');
+      return `<div class="stat" style="color:${colour}"><span class="ring"></span>` +
+        `<svg class="rays" viewBox="0 0 520 520">${rays}</svg>` +
+        `<div class="v el" data-v="${esc(d.value)}" data-from="${esc(d.from || '')}" style="color:${colour}">${esc(d.value)}</div>` +
         (d.label ? `<div class="l el">${esc(d.label)}</div>` : '') + `</div>`;
     },
     diff(d) {
@@ -656,6 +696,8 @@
   const tmascot = document.querySelector('#title .tmascot');
 
   let shown = -2;
+  let outgoing = null;
+  let headWords = [];
   const MMDEF = {
     frame(i) {
       const tSec = i / FPS;
@@ -663,16 +705,24 @@
       // ---- title card owns the opening seconds outright
       const inTitle = tSec < titleUntil;
       $('title').style.display = inTitle ? 'block' : 'none';
+      if (!inTitle) $('title').style.opacity = 1;
       $('stage').style.display = inTitle ? 'none' : 'block';
       if (inTitle) {
         // Instagram takes the grid cover from the FIRST frame, so the title card
         // has to be fully drawn at t=0. An entrance that fades up from nothing
         // renders frame 0 as a blank page and the post gets a dead thumbnail.
         // The animation therefore only settles the card, it never reveals it.
-        const p = spring(clamp01(tSec / 0.6));
         const big = document.querySelector('#title .big');
         big.style.opacity = 1;
-        big.style.transform = `translateY(${(1 - p) * 12}px)`;
+        // slow push-in, then a zoom-through into the first scene
+        const out = clamp01((tSec - (titleUntil - 0.22)) / 0.22);
+        big.style.transform = `scale(${(1 + 0.035 * (tSec / Math.max(1, titleUntil)) + 0.18 * out * out).toFixed(4)})`;
+        $('title').style.opacity = (1 - out * out).toFixed(3);
+        titleWords.forEach(({ el, at }, i) => {
+          const q = i === 0 ? 1 : spring(clamp01((tSec - at) / 0.3));
+          el.style.opacity = i === 0 ? 1 : clamp01(q * 1.6).toFixed(3);
+          el.style.transform = `translateY(${((1 - q) * 22).toFixed(1)}px) scale(${(1.3 - 0.3 * q).toFixed(4)})`;
+        });
         document.querySelector('#title .kick').style.opacity = 1;
         // the rule sits under the headline's real bottom edge, which depends on
         // how many lines the hook wrapped to
@@ -693,12 +743,16 @@
       const span = Math.max(0.6, ends[k] - starts[k]);
 
       if (k !== shown) {
-        if (built[shown]) built[shown].wrap.style.display = 'none';
+        // the old scene stays up for a beat so it can leave instead of vanishing
+        if (outgoing && built[outgoing.k]) built[outgoing.k].wrap.style.display = 'none';
+        outgoing = built[shown] ? { k: shown, t0: starts[k] } : null;
+        if (built[shown] && !outgoing) built[shown].wrap.style.display = 'none';
         // 'flex', not 'block': an inline block here silently overrode the
         // centring rule on #hero > div, so every hero sat at the top
         built[k].wrap.style.display = 'flex';
         const h = sc.headline || '';
-        $('headline').textContent = h;
+        $('headline').innerHTML = h.split(/\s+/).filter(Boolean).map((w) => `<span class="w">${esc(w)}</span>`).join(' ');
+        headWords = [...$('headline').querySelectorAll('.w')];
         // one line wherever possible: a two-line headline pushes nothing, but
         // three lines would collide with the hero column
         $('headline').style.fontSize = h.length > 42 ? '58px' : h.length > 26 ? '66px' : '76px';
@@ -709,10 +763,13 @@
       }
 
       // ---- header enters on every cut, so the cut reads as a cut
-      const hp = spring(clamp01(local / 0.42));
-      const headEl = $('headline');
-      headEl.style.opacity = hp;
-      headEl.style.transform = `translateY(${(1 - hp) * 16}px)`;
+      $('headline').style.opacity = 1;
+      $('headline').style.transform = '';
+      headWords.forEach((w, i) => {
+        const q = spring(clamp01((local - i * 0.045) / 0.38));
+        w.style.opacity = clamp01(q * 1.4).toFixed(3);
+        w.style.transform = `translateY(${((1 - q) * 26).toFixed(1)}px)`;
+      });
       const subEl = $('subhead');
       const sp = spring(clamp01((local - 0.12) / 0.42));
       subEl.style.opacity = sp * 0.95;
@@ -787,12 +844,12 @@
           const ready = 0.34 + n * step * 2;
           const p = clamp01((local - ready) / 0.45);
           const lit = w.querySelector('.lit');
-          const pkt = w.querySelector('.pkt');
+          const pkts = [...w.querySelectorAll('.pkt')];
           const stop = w.querySelector('.stop');
           lit.style.height = (p * 100) + '%';
           lit.style.background = '';
           stop.style.opacity = 0;
-          if (p < 1 || traffic === 'none') { pkt.style.opacity = 0; return; }
+          if (p < 1 || traffic === 'none') { pkts.forEach((x) => { x.style.opacity = 0; }); return; }
           // requests stop dead at a wire whose downstream node is blocked or
           // down, from the moment it becomes so
           const dn = stateNow[n + 1];
@@ -801,19 +858,27 @@
           if (downBad) blockedFrom = dn.flipped ? Math.max(flipAt, ready + 0.45) : ready + 0.45;
           else if (traffic === 'blocked') blockedFrom = ready + 0.45;
           if (blockedFrom !== null && local >= blockedFrom) {
-            const q = clamp01((local - blockedFrom) / 0.9);
-            const at = 0.5 * (1 - Math.pow(1 - q, 3));
-            pkt.style.top = `calc(${(at * 100).toFixed(1)}% - 16px)`;
-            pkt.style.opacity = 1;
+            // requests pile up in front of the blocked node: a visible queue
+            const q = clamp01((local - blockedFrom) / 1.1);
+            pkts.forEach((x, j) => {
+              const qj = clamp01(q * 1.3 - j * 0.2);
+              const at = (0.62 - j * 0.2) * (1 - Math.pow(1 - qj, 3));
+              x.style.top = `calc(${(at * 100).toFixed(1)}% - 16px)`;
+              x.style.marginLeft = `${-13 + (j - 1) * 5}px`;
+              x.style.opacity = qj > 0 ? 1 : 0;
+            });
             stop.style.opacity = clamp01((q - 0.8) / 0.2);
             if (q >= 1) lit.style.background = 'var(--bad)';
             return;
           }
-          // otherwise one packet per wire, offset so they chase each other
+          // otherwise a stream: three requests per wire, evenly spaced
           const speed = traffic === 'slow' ? 0.28 : 0.8;
-          const at = (((tSec * speed) - n * 0.22) % 1 + 1) % 1;
-          pkt.style.top = `calc(${(at * 100).toFixed(1)}% - 16px)`;
-          pkt.style.opacity = Math.min(1, Math.sin(at * Math.PI) * 2.2) * (traffic === 'slow' ? 0.7 : 1);
+          pkts.forEach((x, j) => {
+            const at = (((tSec * speed) - n * 0.22 - j / 3) % 1 + 1) % 1;
+            x.style.top = `calc(${(at * 100).toFixed(1)}% - 16px)`;
+            x.style.marginLeft = '-13px';
+            x.style.opacity = Math.min(1, Math.sin(at * Math.PI) * 2.2) * (traffic === 'slow' ? 0.7 : 1);
+          });
         });
       }
 
@@ -850,7 +915,63 @@
           const a0 = fromP ? fromP.n : 0;
           const n = Math.round(a0 + (parts.n - a0) * eased);
           B.stat.textContent = parts.pre + n.toLocaleString('en-US') + (p >= 1 ? parts.frac : '') + parts.post;
+          B.land = 0.2 + dur;
+        } else {
+          B.land = 0.6;
         }
+        const q = clamp01((local - B.land) / 0.65);
+        const ring = B.wrap.querySelector('.ring'), rays = B.wrap.querySelector('.rays');
+        if (ring) {
+          ring.style.opacity = q > 0 && q < 1 ? (0.5 * (1 - q)).toFixed(3) : 0;
+          ring.style.transform = `scale(${(0.5 + 1.9 * q).toFixed(3)})`;
+        }
+        const tone = sc.data.tone;
+        if (rays) {
+          rays.style.opacity = tone !== 'plain' && q > 0 && q < 1 ? (0.55 * (1 - q)).toFixed(3) : 0;
+          rays.style.transform = `scale(${(0.75 + 0.45 * q).toFixed(3)}) rotate(${(q * 8).toFixed(2)}deg)`;
+        }
+        // bad news lands with a short shake
+        B.shake = tone === 'bad' && q > 0 && q < 0.4 ? Math.sin(local * 85) * 9 * (1 - q / 0.4) : 0;
+      }
+
+      // ---- camera: every scene drifts and pushes in slowly, so nothing on
+      // screen is ever a still frame; transitions ride on the same transform
+      {
+        const T = 0.32;
+        const kind = ['slide', 'rise', 'zoom'][k % 3];
+        const carried = B.morph.size > 0;
+        const tin = carried ? 1 : 1 - Math.pow(1 - clamp01(local / T), 3);
+        const prog = clamp01(local / span);
+        let tf = `translateY(${(-10 * prog).toFixed(2)}px) scale(${(1 + 0.045 * prog).toFixed(4)})`;
+        if (!carried) {
+          if (kind === 'slide') tf = `translateX(${((1 - tin) * 160).toFixed(1)}px) ` + tf;
+          if (kind === 'rise') tf = `translateY(${((1 - tin) * 130).toFixed(1)}px) ` + tf;
+          if (kind === 'zoom') tf = `scale(${(0.86 + 0.14 * tin).toFixed(4)}) ` + tf;
+        }
+        if (B.shake) tf = `translateX(${B.shake.toFixed(2)}px) ` + tf;
+        B.wrap.style.transform = tf;
+        B.wrap.style.opacity = carried ? 1 : clamp01(tin * 1.6).toFixed(3);
+        B.wrap.style.filter = !carried && tin < 1 ? `blur(${((1 - tin) * 7).toFixed(1)}px)` : '';
+
+        if (outgoing) {
+          const O = built[outgoing.k];
+          const q = clamp01((tSec - outgoing.t0) / T);
+          if (q >= 1 || carried) { O.wrap.style.display = 'none'; outgoing = null; }
+          else {
+            O.wrap.style.display = 'flex';
+            const e = q * q;
+            O.wrap.style.opacity = (1 - e).toFixed(3);
+            O.wrap.style.filter = `blur(${(e * 8).toFixed(1)}px)`;
+            O.wrap.style.transform = kind === 'slide' ? `translateX(${(-170 * e).toFixed(1)}px)`
+              : kind === 'rise' ? `translateY(${(-110 * e).toFixed(1)}px)` : `scale(${(1 + 0.12 * e).toFixed(4)})`;
+          }
+        }
+
+        // the glow drifts behind the action, a little faster on stat scenes
+        const g = $('glow');
+        const sp = sc.type === 'stat' || sc.type === 'chart' ? 1.6 : 1;
+        g.style.transform = `translate(${(Math.sin(tSec * 0.45 * sp) * 70).toFixed(1)}px, ${(Math.cos(tSec * 0.33 * sp) * 50).toFixed(1)}px)`;
+        $('grid').style.backgroundPosition = `${(tSec * 7).toFixed(1)}px ${(tSec * 11).toFixed(1)}px`;
       }
 
       // ---- progress

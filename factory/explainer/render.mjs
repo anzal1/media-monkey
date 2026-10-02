@@ -9,6 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { recordPage } from '../record-bg.mjs';
+import { cuesFor, buildTrack } from '../sfx.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SPEC_FILE = path.join(ROOT, 'factory', 'bg', 'explainer-spec.js');
@@ -90,5 +91,15 @@ export async function renderExplainer({ board, segments, outFile, log = () => {}
     }
   }
   if (lastErr) throw lastErr;
-  return { file: outFile, seconds, kind: 'explainer' };
+
+  // sound design, cued from the same timings the page animated with
+  const cues = cuesFor(board, starts, titleUntil, total);
+  const sfx = buildTrack(cues, seconds, path.join(path.dirname(outFile), 'sfx.wav'));
+  log(`  sound design: ${cues.length} cues (${[...new Set(cues.map((c) => c.kind))].join(', ')})`);
+
+  // The hook now builds word by word, so frame 0 is not the finished cover.
+  // Words are placed across the first 80% of the hook and take about 0.3 s to
+  // settle, so this is the first moment the whole hook is up.
+  const coverMs = Math.round(Math.min(titleUntil - 0.05, titleUntil * 0.8 + 0.34) * 1000);
+  return { file: outFile, seconds, kind: 'explainer', sfx, coverMs: Math.max(0, coverMs) };
 }
