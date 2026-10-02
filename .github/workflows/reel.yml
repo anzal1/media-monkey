@@ -58,6 +58,11 @@ jobs:
       - name: System ffmpeg (for ffprobe)
         run: sudo apt-get update -qq && sudo apt-get install -yqq ffmpeg
 
+      - name: Scene renderer self-test
+        # every fixture through every frame; seconds, and it fails the run
+        # before a render can die halfway
+        run: node factory/explainer/selftest.mjs
+
       - name: Slot and memory
         id: slot
         run: |

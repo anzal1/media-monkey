@@ -35,7 +35,7 @@ const RECIPES = {
   buzz: ['-f', 'lavfi', '-i', "aevalsrc='0.35*(sin(2*PI*98*t)+sin(2*PI*104*t))*exp(-t*7)':s=44100:d=0.32",
     '-af', 'lowpass=f=600,afade=t=in:d=0.02'],
 };
-const GAIN = { whoosh: 0.32, thud: 0.55, pop: 0.22, buzz: 0.2 };
+const GAIN = { whoosh: 0.22, thud: 0.55, pop: 0.14, buzz: 0.2 };
 
 export function ensureBank() {
   fs.mkdirSync(BANK, { recursive: true });
@@ -78,8 +78,8 @@ export function buildTrack(cues, seconds, outFile) {
 /*
  * Cues from the scene track, mirroring the renderer's own timings:
  * a whoosh on every cut that is a real cut (not a component carried over),
- * a thud when a stat lands, a pop when a node changes state, a buzz when that
- * change is to blocked or down.
+ * a quiet pop when a node changes state or a message arrives; nothing on
+ * stats, which land silently (a thud there read as cheap).
  */
 export function cuesFor(board, starts, titleUntil, total) {
   const key = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
@@ -99,14 +99,12 @@ export function cuesFor(board, starts, titleUntil, total) {
     const recent = [board.scenes[i - 1], board.scenes[i - 2], board.scenes[i - 3]].filter(Boolean).flatMap(keys);
     const carried = mine.length && mine.some((k) => recent.includes(k));
     if (i > 0 && !carried) cues.push({ kind: 'whoosh', t: start - 0.12, gain: 0.8 });
-    if (sc.type === 'stat') {
-      const dur = sc.data.from ? Math.min(span * 0.6, 3.2) : 0.7;
-      cues.push({ kind: 'thud', t: start + 0.2 + dur - 0.03 });
-    }
+    // no thud on stats: with the visual blast gone it was the audio version of the same thing
+
     // the new scene types, on the same timings as the renderer's animateNew()
     if (sc.type === 'sequence') {
       const every = (span * 0.72) / Math.max(1, sc.data.steps.length);
-      sc.data.steps.forEach((st, k) => cues.push({ kind: st.tone === 'bad' ? 'buzz' : 'pop', t: start + 0.8 + k * every, gain: st.tone === 'bad' ? 1 : 0.6 }));
+      sc.data.steps.forEach((st, k) => cues.push({ kind: 'pop', t: start + 0.8 + k * every, gain: 0.45 }));
     }
     if (sc.type === 'cells' && sc.data.after) cues.push({ kind: 'pop', t: start + span * 0.5 });
     if (sc.type === 'tree' && sc.data.path && sc.data.path.length) {
@@ -117,7 +115,6 @@ export function cuesFor(board, starts, titleUntil, total) {
       for (const n of sc.data.nodes) {
         if (!n.becomes) continue;
         cues.push({ kind: 'pop', t: start + span * 0.5 });
-        if (n.becomes === 'blocked' || n.becomes === 'dead') cues.push({ kind: 'buzz', t: start + span * 0.5 + 0.04 });
         break; // one cue per flip moment, however many nodes flip together
       }
     }
