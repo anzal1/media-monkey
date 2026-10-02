@@ -804,5 +804,20 @@
     "episodeId": null,
     "igMediaId": "18149073844478749",
     "at": "2026-10-01T22:02:31+0000"
+  },
+  {
+    "slug": "twos-complement-and-integer-overflow",
+    "topic": "two's complement and integer overflow",
+    "hook": "Why taking an absolute value can crash your server.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-01",
+    "length": "deep",
+    "seconds": 150,
+    "lang": "en",
+    "at": "2026-10-02T17:45:44.947Z",
+    "ytVideoId": "R-TC04lNxeo",
+    "slot": "2026-10-02T17:30:00.000Z"
   }
 ]

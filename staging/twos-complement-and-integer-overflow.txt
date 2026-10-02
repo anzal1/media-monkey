@@ -1,0 +1,25 @@
+Understanding two's complement and integer overflow explains why code fails.
+A counter crosses its threshold at 3 AM.
+The absolute value function returns a negative number.
+The entire cluster enters a crash loop. 💥
+
+Two's complement is the hardware standard that lets processors add and subtract signed numbers using the exact same silicon adder circuit.
+
+Here is where it bites:
+→ Running abs() on INT_MIN returns INT_MIN
+→ An uptime counter flips negative and trips safe mode
+→ A cast from a larger variable truncates the sign bit
+
+Because zero takes up one slot on the positive side of a signed integer, the negative side can represent one value further down than the positive side can reach up. In a 32-bit register, the scale spans from -2,147,483,648 up to 2,147,483,647. There is simply no positive 2,147,483,648.
+
+When a program tries to negate that minimum number, the hardware flips the bits, adds one, and overflows straight back into the exact negative number you started with. Any array bounds or permission check relying on that output will shatter.
+
+A single 16-bit integer overflow destroyed the Ariane 5 rocket thirty-seven seconds after launch, costing 370 million dollars.
+
+Keep this in mind during your next low-level system design.
+
+What is the nastiest silent overflow bug you have personally found in production?
+
+From the root, part 1. Follow for part 2.
+
+#computerscience #lowlevel #softwareengineering #programming #systems
