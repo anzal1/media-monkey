@@ -47,13 +47,14 @@ export async function shoot(outDir, times, { zones = false } = {}) {
   }
 
   const files = [];
-  for (const t of times) {
-    // frames are drawn in order from 0, so step up to the target rather than
-    // jumping: the scene builders assume monotonic time.
+  // Step through EVERY frame in order up to each target. Jumping ahead left
+  // the previous-scene and transition state wrong in the shot (a diagram
+  // appearing behind a stat it never shared a frame with).
+  let next = 0;
+  for (const t of [...times].sort((a, b) => a - b)) {
     const target = Math.round(t * 30);
-    await page.evaluate((n) => {
-      for (let i = Math.max(0, n - 3); i <= n; i++) window.MM.frame(i);
-    }, target);
+    await page.evaluate((a, z) => { for (let i = a; i <= z; i++) window.MM.frame(i); }, next, target);
+    next = target + 1;
     const file = path.join(outDir, `t${String(t).padStart(3, '0')}.png`);
     await page.screenshot({ path: file });
     files.push(file);

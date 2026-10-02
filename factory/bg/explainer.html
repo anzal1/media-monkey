@@ -164,6 +164,62 @@
   .meter .l { margin-top: 14px; font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 23px; letter-spacing: .18em; color: var(--mute); }
 
+  /* sequence: actors and the messages between them */
+  .seq svg { width: 100%; height: 520px; overflow: visible; display: block; }
+  .seq .actor rect { fill: #fff; stroke: #e0dbd2; stroke-width: 2; }
+  .seq .actor text { font: 700 26px Inter, sans-serif; fill: var(--ink); }
+  .seq .life { stroke: #d8d2c7; stroke-width: 2; stroke-dasharray: 7 9; }
+  .seq .msg { fill: none; stroke-width: 4; stroke-linecap: round; }
+  .seq .lbl { font: 500 21px 'JetBrains Mono', monospace; letter-spacing: .04em; }
+
+  /* cells: bits, bytes, array slots */
+  .cellsw { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .cells-row { display: flex; gap: 8px; justify-content: center; position: relative; padding-top: 70px; }
+  .cell { position: relative; display: flex; flex-direction: column; align-items: center; }
+  .cell .b { display: grid; place-items: center; border-radius: 10px; background: #fff; border: 2px solid #e0dbd2;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ink); transform-style: preserve-3d; }
+  .cell.hot .b { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, #fff); color: var(--accent); }
+  .cell.changed .b { color: var(--accent); }
+  .cell .i { margin-top: 10px; font: 400 17px 'JetBrains Mono', monospace; color: #a9a49a; }
+  .cells-ptr { position: absolute; top: 20px; width: 0; height: 0; border-left: 14px solid transparent;
+    border-right: 14px solid transparent; border-top: 22px solid var(--accent); margin-left: -14px; opacity: 0; }
+  .cells-grp { position: absolute; top: 0; height: 52px; border: 3px solid var(--accent); border-bottom: none;
+    border-radius: 10px 10px 0 0; opacity: 0; }
+  .cells-grp span { position: absolute; left: 50%; top: -6px; transform: translate(-50%, -100%); white-space: nowrap;
+    font: 500 20px 'JetBrains Mono', monospace; letter-spacing: .06em; color: var(--accent); }
+  .cellsw .cl { margin-top: 34px; font: 500 22px 'JetBrains Mono', monospace; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--mute); }
+
+  /* tree */
+  .treew svg { width: 100%; height: 500px; display: block; overflow: visible; }
+  .treew .edge { stroke: #d8d2c7; stroke-width: 4; }
+  .treew .edge.on { stroke: var(--accent); }
+  .treew .node circle { fill: #fff; stroke: #d8d2c7; stroke-width: 3; }
+  .treew .node text { font: 700 26px 'JetBrains Mono', monospace; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+  .treew .node.on circle { fill: var(--accent); stroke: var(--accent); }
+  .treew .node.on text { fill: #fff; }
+  .treew .tl { font: 500 22px 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); text-align: center; margin-top: 6px; }
+
+  /* stack: layers on a log scale */
+  .stackw { width: 100%; }
+  .stackw .hd { font-size: 27px; font-weight: 700; margin-bottom: 24px; }
+  .srow { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 18px; margin-bottom: 22px; }
+  .srow .lab { font-size: 25px; font-weight: 600; }
+  .srow .track { position: relative; height: 52px; }
+  .srow .bar { position: absolute; left: 0; top: 0; height: 100%; width: 0; border-radius: 8px; background: #d8d2c7; }
+  .srow.top .bar { background: var(--accent); }
+  .srow .val { position: absolute; top: 50%; transform: translateY(-50%); white-space: nowrap;
+    font: 700 23px 'JetBrains Mono', monospace; color: var(--ink); opacity: 0; }
+
+  /* code: syntax colour, spotlight, flagged line */
+  .code .winbody { font-size: 23px; line-height: 1.8; }
+  .code .ln { border-left: 4px solid transparent; padding-left: 10px; margin-left: -14px; border-radius: 4px; }
+  .code .ln.focus { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .code .ln.badl { border-left-color: var(--bad); background: #fdeaea; }
+  .code .ln.badl .tx { text-decoration: underline wavy var(--bad); text-decoration-thickness: 2px; text-underline-offset: 7px; }
+  .tk-k { color: #7c3aed; font-weight: 700; } .tk-s { color: #15803d; } .tk-n { color: #c2410c; }
+  .tk-c { color: #a9a49a; font-style: italic; } .tk-f { color: #2563eb; }
+
   /* compare */
   .cmp { display: flex; flex-direction: column; }
   .cmptop { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
@@ -247,6 +303,9 @@
      UI at thumbnail size, so the cover is headline, accent rule and mascot. */
   #title .rule { position: absolute; left: 480px; width: 120px; height: 10px;
     border-radius: 5px; background: var(--accent); }
+  #title .kw { position: absolute; left: 70px; width: 940px; text-align: center;
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 30px; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
   #title .tmascot { position: absolute; left: 50%; transform: translateX(-50%);
     top: 1010px; height: 360px; }
 </style>
@@ -268,6 +327,7 @@
   <div class="kick"></div>
   <div class="big"></div>
   <div class="rule"></div>
+  <div class="kw"></div>
   <img class="tmascot" src="../../assets/brand/mascot-cut.png" alt="" />
 </div>
 
@@ -303,8 +363,15 @@
   let titleWords = [];
   if (S.title) {
     document.querySelector('#title .kick').textContent = S.title.kicker || '';
+    document.querySelector('#title .kw').textContent = S.title.keyword || '';
     const big = document.querySelector('#title .big');
-    const words = String(S.title.title || '').split(/\s+/).filter(Boolean);
+    // a bracketed group like "abs(INT MIN)" is one unit: never break inside it
+    const words = [];
+    for (const w of String(S.title.title || '').split(/\s+/).filter(Boolean)) {
+      const last = words[words.length - 1];
+      if (last && (last.match(/\(/g) || []).length > (last.match(/\)/g) || []).length) words[words.length - 1] = last + '\u00a0' + w;
+      else words.push(w);
+    }
     const key = words.findIndex((w) => /\d/.test(w)) >= 0 ? words.findIndex((w) => /\d/.test(w))
       : words.reduce((b, w, i) => (w.replace(/\W/g, '').length > words[b].replace(/\W/g, '').length ? i : b), 0);
     big.innerHTML = words.map((w, i) => `<span class="w${i === key ? ' key' : ''}">${esc(w)}</span>`).join(' ');
@@ -468,6 +535,105 @@
         `<circle class="head" r="11" fill="${colour}"/></svg>` +
         `<div class="ends"><span class="a">${esc(d.from || '')}</span><span class="b" style="color:${colour}">${esc(d.to || '')}</span></div></div>`;
     },
+    sequence(d) {
+      const W = 680, n = d.actors.length;
+      const xs = d.actors.map((_, i) => n === 2 ? [130, 550][i] : [95, 340, 585][i]);
+      const top = 20, y0 = 120, y1 = 470;
+      const dy = d.steps.length > 1 ? (y1 - y0) / (d.steps.length - 1) : 0;
+      const actors = d.actors.map((a, i) =>
+        `<g class="actor el"><rect x="${xs[i] - 90}" y="${top}" width="180" height="56" rx="14"/>` +
+        `<text x="${xs[i]}" y="${top + 37}" text-anchor="middle">${esc(a)}</text></g>` +
+        `<line class="life" x1="${xs[i]}" x2="${xs[i]}" y1="${top + 64}" y2="512"/>`).join('');
+      const msgs = d.steps.map((st, i) => {
+        const y = y0 + i * dy, xa = xs[st.from], xb = xs[st.to];
+        const dir = Math.sign(xb - xa);
+        const x1 = xa + dir * 10, x2 = xb - dir * 16;
+        const col = st.tone === 'bad' ? 'var(--bad)' : st.tone === 'good' ? 'var(--good)' : 'var(--accent)';
+        // a lost message only gets 60% of the way before it dies
+        const xe = st.tone === 'bad' ? x1 + (x2 - x1) * 0.62 : x2;
+        const head = st.tone === 'bad'
+          ? `<g class="hd" opacity="0"><path d="M${xe - 11},${y + 4} l22,22 M${xe + 11},${y + 4} l-22,22" stroke="var(--bad)" stroke-width="5" stroke-linecap="round" transform="translate(0,-15)"/></g>`
+          : `<path class="hd" opacity="0" d="M${x2},${y + 14} l${-dir * 22},-12 l0,24 z" fill="${col}" transform="translate(${dir * 6},-14)"/>`;
+        return `<g class="step" data-i="${i}"><path class="msg" d="M${x1},${y} L${xe},${y + 14}" stroke="${col}"` +
+          (st.tone === 'bad' ? ' stroke-dasharray="10 9"' : '') + `/>` + head +
+          `<text class="lbl" x="${(x1 + xe) / 2}" y="${y - 12}" text-anchor="middle" fill="${col}" opacity="0">${esc(st.label)}</text></g>`;
+      }).join('');
+      return `<div class="seq"><svg viewBox="0 0 ${W} 520">${actors}${msgs}</svg></div>`;
+    },
+    cells(d) {
+      const n = d.cells.length;
+      const rows = n > 10 ? 2 : 1;
+      const per = Math.ceil(n / rows);
+      const size = Math.min(84, Math.floor((660 - (per - 1) * 8) / per));
+      const font = Math.round(size * (Math.max(...d.cells.map((c) => c.length)) > 2 ? 0.34 : 0.48));
+      const cell = (c, i) => `<div class="cell" data-i="${i}"><div class="b" style="width:${size}px;height:${Math.round(size * 1.15)}px;font-size:${font}px">${esc(c)}</div>` +
+        (d.index ? `<div class="i">${i}</div>` : '') + `</div>`;
+      const chunks = [];
+      for (let r = 0; r < rows; r++) chunks.push(d.cells.slice(r * per, (r + 1) * per).map((c, j) => cell(c, r * per + j)).join(''));
+      const grp = d.group ? `<div class="cells-grp"><span>${esc(d.group.label || '')}</span></div>` : '';
+      return `<div class="cellsw" data-size="${size}" data-per="${per}">` +
+        chunks.map((c, r) => `<div class="cells-row el">${r === 0 ? '<div class="cells-ptr"></div>' + grp : ''}${c}</div>`).join('') +
+        (d.label ? `<div class="cl el">${esc(d.label)}</div>` : '') + `</div>`;
+    },
+    tree(d) {
+      const W = 680, levels = Math.ceil(Math.log2(d.nodes.length + 1));
+      const R = levels >= 4 ? 27 : 36, gapY = levels >= 4 ? 118 : 150;
+      const pos = d.nodes.map((_, i) => {
+        const L = Math.floor(Math.log2(i + 1)), j = i - (2 ** L - 1);
+        return { x: ((j + 0.5) / 2 ** L) * W, y: 50 + L * gapY };
+      });
+      let edges = '', nodes = '';
+      d.nodes.forEach((v, i) => {
+        if (!v) return;
+        if (i > 0) { const pi = Math.floor((i - 1) / 2); edges += `<line class="edge" data-c="${i}" x1="${pos[pi].x}" y1="${pos[pi].y}" x2="${pos[i].x}" y2="${pos[i].y}"/>`; }
+        nodes += `<g class="node" data-i="${i}" data-lv="${Math.floor(Math.log2(i + 1))}"><circle cx="${pos[i].x}" cy="${pos[i].y}" r="${R}"/>` +
+          `<text x="${pos[i].x}" y="${pos[i].y}" style="font-size:${R >= 36 ? 26 : 21}px">${esc(v)}</text></g>`;
+      });
+      return `<div class="treew"><svg viewBox="0 0 ${W} ${50 + (levels - 1) * gapY + R + 20}">${edges}${nodes}</svg>` +
+        (d.label ? `<div class="tl el">${esc(d.label)}</div>` : '') + `</div>`;
+    },
+    stack(d) {
+      const ns = d.layers.map((l) => l.n);
+      const lo = Math.log10(Math.min(...ns)), hi = Math.log10(Math.max(...ns));
+      const top = Math.max(...ns);
+      const rows = d.layers.map((l) => {
+        const f = hi > lo ? (Math.log10(l.n) - lo) / (hi - lo) : 1;
+        return `<div class="srow el${l.n === top ? ' top' : ''}" data-w="${(10 + 82 * f).toFixed(1)}">` +
+          `<div class="lab">${esc(l.label)}</div><div class="track"><div class="bar"></div><div class="val">${esc(l.value)}</div></div></div>`;
+      }).join('');
+      return `<div class="stackw">` + (d.title ? `<div class="hd el">${esc(d.title)}</div>` : '') + rows + `</div>`;
+    },
+    code(d) {
+      const K = {
+        c: 'int|char|void|return|if|else|for|while|struct|static|const|unsigned|long|size_t|int32_t|int64_t|uint8_t|uint32_t|uint64_t|NULL|sizeof|break|switch|case',
+        python: 'def|return|if|elif|else|for|while|in|import|from|as|class|None|True|False|with|try|except|await|async|lambda|not|and|or',
+        js: 'const|let|var|function|return|if|else|for|while|await|async|new|class|import|from|export|null|undefined|true|false|try|catch',
+        go: 'func|return|if|else|for|range|go|chan|select|defer|var|const|type|struct|interface|nil|map|package|import',
+        rust: 'fn|let|mut|return|if|else|for|while|loop|match|impl|struct|enum|pub|use|unsafe|move|async|await|Some|None|Ok|Err',
+        java: 'public|private|static|final|void|int|long|return|if|else|for|while|new|class|synchronized|null|true|false|try|catch',
+        sql: 'SELECT|FROM|WHERE|UPDATE|SET|INSERT|INTO|VALUES|DELETE|BEGIN|COMMIT|ROLLBACK|FOR|AND|OR|JOIN|ON|CREATE|INDEX|TABLE|LIMIT|ORDER|BY|NOT|NULL|LOCK',
+        bash: 'if|then|fi|for|do|done|echo|export|sudo|cd|while',
+      }[d.lang] || '';
+      const kw = new RegExp(`^(${K})$`);
+      const hl = (line) => {
+        const cm = d.lang === 'python' || d.lang === 'bash' ? '#' : d.lang === 'sql' ? '--' : '//';
+        const ci = line.indexOf(cm);
+        const body = ci >= 0 ? line.slice(0, ci) : line, tail = ci >= 0 ? line.slice(ci) : '';
+        const html = body.replace(/("[^"]*"|'[^']*'|[A-Za-z_][A-Za-z0-9_]*|\d[\d_.xXa-fA-F]*|[^A-Za-z0-9_"']+)/g, (t, _x, off) => {
+          if (/^["']/.test(t)) return `<span class="tk-s">${esc(t)}</span>`;
+          if (/^\d/.test(t)) return `<span class="tk-n">${esc(t)}</span>`;
+          if (kw.test(t)) return `<span class="tk-k">${esc(t)}</span>`;
+          if (/^[A-Za-z_]/.test(t) && body.slice(off + t.length).startsWith('(')) return `<span class="tk-f">${esc(t)}</span>`;
+          return esc(t);
+        });
+        return html + (tail ? `<span class="tk-c">${esc(tail)}</span>` : '');
+      };
+      const lines = d.lines.map((l, i) =>
+        `<div class="ln el" data-n="${i + 1}"><span class="no">${i + 1}</span><span class="tx">${hl(l) || '&nbsp;'}</span></div>`).join('');
+      return `<div class="win code el" data-key="${keyOf(d.file)}">` +
+        `<div class="wintitle"><span class="lights"><i style="background:#f05b4f"></i><i style="background:#f9bd2e"></i><i style="background:#57c354"></i></span>` +
+        `<span>${esc(d.file || d.lang)}</span></div><div class="winbody">${lines}</div></div>`;
+    },
     note(d) {
       return `<div class="note"><div class="lead el">${esc(d.lead)}</div>` +
         (d.body ? `<div class="body el">${esc(d.body)}</div>` : '') + `</div>`;
@@ -502,7 +668,7 @@
    * re-rasterises the text, where a scaled layer renders soft. Stat scenes are
    * left alone, they are already sized to be the loudest thing on screen.
    */
-  const FIT = { flow: 1, compare: 1, window: 1, card: 1, list: 1, diff: 1, note: 1 };
+  const FIT = { flow: 1, compare: 1, window: 1, card: 1, list: 1, diff: 1, note: 1, cells: 1, stack: 1, code: 1 };
   /*
    * Big numbers are sized to the column too. A stat is set at 150px to be the
    * loudest thing on screen, but "-2,147,483,648" at 150px is wider than the
@@ -715,6 +881,120 @@
     });
   }
 
+  /* ---- animation for sequence, cells, tree, stack and code ----
+   * Timings here are mirrored in factory/sfx.mjs so the sound lands on the
+   * frame the thing happens: sequence step i arrives at 0.8 + i*(0.72*span/n),
+   * cells flip at span/2, tree path node k lights at 0.9 + k*(0.6*span/len). */
+  function animateNew(B, sc, local, span, tSec) {
+    const d = sc.data;
+    if (sc.type === 'sequence') {
+      const steps = B.steps || (B.steps = [...B.wrap.querySelectorAll('.step')].map((g) => {
+        const path = g.querySelector('.msg');
+        const m = /M([\d.-]+),([\d.-]+) L([\d.-]+),([\d.-]+)/.exec(path.getAttribute('d'));
+        return { g, path, head: g.querySelector('.hd'), lbl: g.querySelector('.lbl'), x1: +m[1], y1: +m[2], x2: +m[3], y2: +m[4] };
+      }));
+      const every = (span * 0.72) / Math.max(1, steps.length);
+      steps.forEach((st, i) => {
+        const q = easeInOut(clamp01((local - 0.35 - i * every) / 0.45));
+        st.path.setAttribute('d', `M${st.x1},${st.y1} L${(st.x1 + (st.x2 - st.x1) * q).toFixed(1)},${(st.y1 + (st.y2 - st.y1) * q).toFixed(1)}`);
+        st.path.style.opacity = q > 0 ? 1 : 0;
+        st.head.setAttribute('opacity', q >= 1 ? 1 : 0);
+        st.lbl.setAttribute('opacity', clamp01((q - 0.3) / 0.5).toFixed(3));
+      });
+      return;
+    }
+    if (sc.type === 'cells') {
+      if (!B.cellsInit) {
+        B.cellsInit = true;
+        B.cellEls = [...B.wrap.querySelectorAll('.cell')];
+        B.ptr = B.wrap.querySelector('.cells-ptr');
+        B.grp = B.wrap.querySelector('.cells-grp');
+        const per = +B.wrap.querySelector('.cellsw').dataset.per;
+        const box = (i) => { const e = B.cellEls[i]; return { x: e.offsetLeft, w: e.offsetWidth, row: Math.floor(i / per) }; };
+        B.cellBox = box;
+        if (B.grp && d.group) {
+          const a = box(d.group.from), b = box(Math.min(d.group.to, per - 1));
+          B.grp.style.left = a.x + 'px'; B.grp.style.width = (b.x + b.w - a.x) + 'px';
+        }
+      }
+      if (B.grp) B.grp.style.opacity = clamp01((local - 0.6) / 0.4).toFixed(3);
+      // the pointer visits its indices across the middle of the scene
+      const P = d.pointer || [];
+      B.cellEls.forEach((e) => e.classList.remove('hot'));
+      if (P.length && B.ptr) {
+        const t0 = 0.7, t1 = Math.max(t0 + 0.5, span * 0.8);
+        const f = clamp01((local - t0) / (t1 - t0)) * (P.length - 1);
+        const k = Math.min(P.length - 1, Math.floor(f)), frac = easeInOut(f - k);
+        const a = B.cellBox(P[k]), b = B.cellBox(P[Math.min(k + 1, P.length - 1)]);
+        if (a.row === 0) {
+          B.ptr.style.left = ((a.x + a.w / 2) + ((b.x + b.w / 2) - (a.x + a.w / 2)) * frac).toFixed(1) + 'px';
+          B.ptr.style.opacity = local > t0 ? 1 : 0;
+        }
+        if (local > t0) B.cellEls[frac > 0.5 ? P[Math.min(k + 1, P.length - 1)] : P[k]].classList.add('hot');
+      }
+      // values change mid-scene with a flip, one cell after another
+      if (d.after) {
+        const flip = span * 0.5;
+        let j = 0;
+        B.cellEls.forEach((e, i) => {
+          if (d.after[i] === d.cells[i]) return;
+          const q = clamp01((local - flip - (j++) * 0.06) / 0.32);
+          const b = e.querySelector('.b');
+          b.textContent = q < 0.5 ? d.cells[i] : d.after[i];
+          b.style.transform = `rotateX(${(q < 0.5 ? q : 1 - q) * 180}deg)`;
+          e.classList.toggle('changed', q >= 0.5);
+        });
+      }
+      return;
+    }
+    if (sc.type === 'tree') {
+      const nodes = B.tnodes || (B.tnodes = [...B.wrap.querySelectorAll('.node')]);
+      const edges = B.tedges || (B.tedges = [...B.wrap.querySelectorAll('.edge')]);
+      nodes.forEach((g) => {
+        const q = spring(clamp01((local - 0.2 - (+g.dataset.lv) * 0.22) / 0.4));
+        g.style.opacity = clamp01(q * 1.5);
+        g.style.transformOrigin = 'center'; g.style.transformBox = 'fill-box';
+        g.style.transform = `scale(${(0.6 + 0.4 * q).toFixed(3)})`;
+      });
+      edges.forEach((e) => { e.style.opacity = clamp01((local - 0.35) / 0.5); });
+      const path = d.path || [];
+      const every = (span * 0.6) / Math.max(1, path.length);
+      const lit = new Set(path.filter((_, k) => local >= 0.9 + k * every));
+      nodes.forEach((g) => g.classList.toggle('on', lit.has(+g.dataset.i)));
+      edges.forEach((e) => {
+        const c = +e.dataset.c, pi = Math.floor((c - 1) / 2);
+        e.classList.toggle('on', lit.has(c) && lit.has(pi));
+      });
+      return;
+    }
+    if (sc.type === 'stack') {
+      const rows = B.srows || (B.srows = [...B.wrap.querySelectorAll('.srow')]);
+      rows.forEach((r, i) => {
+        const q = easeInOut(clamp01((local - 0.4 - i * 0.45) / 0.7));
+        const w = +r.dataset.w * q;
+        r.querySelector('.bar').style.width = w.toFixed(2) + '%';
+        const v = r.querySelector('.val');
+        v.style.left = `calc(${w.toFixed(2)}% + 14px)`;
+        v.style.opacity = clamp01((q - 0.75) / 0.25).toFixed(3);
+      });
+      return;
+    }
+    if (sc.type === 'code') {
+      const lines = B.clines || (B.clines = [...B.wrap.querySelectorAll('.ln')]);
+      const focusAt = Math.max(1.2, span * 0.35), badAt = Math.max(focusAt + 0.6, span * 0.6);
+      const focus = new Set(d.focus || []);
+      lines.forEach((ln) => {
+        const n = +ln.dataset.n;
+        const on = local >= focusAt && (focus.has(n) || n === d.bad);
+        ln.classList.toggle('focus', on && n !== d.bad);
+        ln.classList.toggle('badl', d.bad === n && local >= badAt);
+        if (local >= focusAt && (focus.size || d.bad) && !on) {
+          ln.style.opacity = Math.min(+ln.style.opacity || 1, 1 - 0.62 * clamp01((local - focusAt) / 0.4)).toFixed(3);
+        }
+      });
+    }
+  }
+
   const mascot = $('mascot');
   const tmascot = document.querySelector('#title .tmascot');
 
@@ -751,6 +1031,8 @@
         // how many lines the hook wrapped to
         const rule = document.querySelector('#title .rule');
         rule.style.top = Math.round(big.getBoundingClientRect().bottom + 46) + 'px';
+        // the keyword sits under the rule and is fully drawn from frame 0
+        document.querySelector('#title .kw').style.top = Math.round(big.getBoundingClientRect().bottom + 84) + 'px';
         rule.style.transform = 'none';
         const tb = Math.sin(tSec * Math.PI * 2 / 3.4);
         tmascot.style.transform = `translateX(-50%) translateY(${(tb * 3).toFixed(2)}px)`;
@@ -906,6 +1188,7 @@
       }
 
       if (sc.type === 'chart') animateChart(B, sc.data, local, span, k, tSec);
+      animateNew(B, sc, local, span, tSec);
 
       // ---- window lines type themselves, with a caret on the newest line
       if (sc.type === 'window') {

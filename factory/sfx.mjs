@@ -103,6 +103,16 @@ export function cuesFor(board, starts, titleUntil, total) {
       const dur = sc.data.from ? Math.min(span * 0.6, 3.2) : 0.7;
       cues.push({ kind: 'thud', t: start + 0.2 + dur - 0.03 });
     }
+    // the new scene types, on the same timings as the renderer's animateNew()
+    if (sc.type === 'sequence') {
+      const every = (span * 0.72) / Math.max(1, sc.data.steps.length);
+      sc.data.steps.forEach((st, k) => cues.push({ kind: st.tone === 'bad' ? 'buzz' : 'pop', t: start + 0.8 + k * every, gain: st.tone === 'bad' ? 1 : 0.6 }));
+    }
+    if (sc.type === 'cells' && sc.data.after) cues.push({ kind: 'pop', t: start + span * 0.5 });
+    if (sc.type === 'tree' && sc.data.path && sc.data.path.length) {
+      const every = (span * 0.6) / sc.data.path.length;
+      sc.data.path.forEach((_, k) => cues.push({ kind: 'pop', t: start + 0.9 + k * every, gain: 0.5 }));
+    }
     if (sc.type === 'flow') {
       for (const n of sc.data.nodes) {
         if (!n.becomes) continue;

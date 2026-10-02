@@ -1,0 +1,256 @@
+{
+  "eyebrow": "FROM THE ROOT \u00b7 01",
+  "accent": "#c2410c",
+  "episode": "THE PROD MONKEY",
+  "handle": "",
+  "title": {
+    "kicker": "FROM THE ROOT \u00b7 PART 1",
+    "title": "Why abs(INT MIN) returns a negative number.",
+    "keyword": "two's complement"
+  },
+  "titleUntil": 3,
+  "starts": [
+    3,
+    9,
+    15,
+    21,
+    27,
+    33
+  ],
+  "scenes": [
+    {
+      "type": "cells",
+      "headline": "Eight bits, one sign.",
+      "subhead": "an 8-bit signed byte",
+      "data": {
+        "label": "-128 in two's complement",
+        "cells": [
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "after": [
+          "0",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "pointer": [
+          0,
+          7,
+          0
+        ],
+        "group": {
+          "from": 0,
+          "to": 0,
+          "label": "sign bit"
+        },
+        "index": true
+      },
+      "beat": 0,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "sequence",
+      "headline": "Two requests race.",
+      "subhead": "",
+      "data": {
+        "actors": [
+          "Thread A",
+          "DB",
+          "Thread B"
+        ],
+        "steps": [
+          {
+            "from": 0,
+            "to": 1,
+            "label": "SELECT order",
+            "tone": "plain"
+          },
+          {
+            "from": 2,
+            "to": 1,
+            "label": "SELECT order",
+            "tone": "plain"
+          },
+          {
+            "from": 1,
+            "to": 0,
+            "label": "not found",
+            "tone": "plain"
+          },
+          {
+            "from": 1,
+            "to": 2,
+            "label": "not found",
+            "tone": "plain"
+          },
+          {
+            "from": 0,
+            "to": 1,
+            "label": "INSERT",
+            "tone": "good"
+          },
+          {
+            "from": 2,
+            "to": 1,
+            "label": "INSERT dup",
+            "tone": "bad"
+          }
+        ]
+      },
+      "beat": 1,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "tree",
+      "headline": "Halve it every step.",
+      "subhead": "",
+      "data": {
+        "nodes": [
+          "50",
+          "25",
+          "75",
+          "12",
+          "37",
+          "62",
+          "88",
+          "6",
+          "18",
+          "31",
+          "43",
+          "56",
+          "68",
+          "81",
+          "94"
+        ],
+        "path": [
+          0,
+          2,
+          5,
+          12
+        ],
+        "label": "searching for 68"
+      },
+      "beat": 2,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack",
+      "headline": "Memory is not flat.",
+      "subhead": "",
+      "data": {
+        "title": "How far away is your data",
+        "layers": [
+          {
+            "label": "L1 cache",
+            "value": "1 ns",
+            "n": 1
+          },
+          {
+            "label": "L2 cache",
+            "value": "4 ns",
+            "n": 4
+          },
+          {
+            "label": "L3 cache",
+            "value": "40 ns",
+            "n": 40
+          },
+          {
+            "label": "RAM",
+            "value": "100 ns",
+            "n": 100
+          },
+          {
+            "label": "NVMe SSD",
+            "value": "100 us",
+            "n": 100000
+          }
+        ]
+      },
+      "beat": 3,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "code",
+      "headline": "The bug is one line.",
+      "subhead": "",
+      "data": {
+        "lang": "c",
+        "file": "abs.c",
+        "lines": [
+          "#include <stdlib.h>",
+          "",
+          "int32_t x = INT_MIN;  // -2147483648",
+          "int32_t y = abs(x);   // still negative",
+          "if (y < 0) {",
+          "    return -1;  // never expected",
+          "}"
+        ],
+        "focus": [
+          3
+        ],
+        "bad": 4
+      },
+      "beat": 4,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "cells",
+      "headline": "One line, eight values.",
+      "subhead": "",
+      "data": {
+        "label": "64-byte cache line",
+        "cells": [
+          "a0",
+          "a1",
+          "a2",
+          "a3",
+          "a4",
+          "a5",
+          "a6",
+          "a7",
+          "a8",
+          "a9",
+          "a10",
+          "a11",
+          "a12",
+          "a13",
+          "a14",
+          "a15"
+        ],
+        "pointer": [
+          0,
+          1,
+          2,
+          3,
+          8
+        ],
+        "group": {
+          "from": 0,
+          "to": 7,
+          "label": "one cache line"
+        },
+        "index": false
+      },
+      "beat": 5,
+      "half": 0,
+      "of": 1
+    }
+  ]
+}
