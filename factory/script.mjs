@@ -60,7 +60,9 @@ function cleanCaption(s) {
     .replace(/[\u2014\u2013]/g, ' ')
     .replace(/[\u2018\u2019]/g, "'")
     .replace(/[\u201C\u201D]/g, '')
-    .replace(/[*_#`~]/g, '')
+    // underscores survive: INT_MIN and max_wal_size are names, not markdown
+    .replace(/[*#`~]/g, '')
+    .replace(/(^|\s)_+|_+(\s|$)/g, '$1$2')
     .replace(/[ \t]+/g, ' ')
     .replace(/ *\n */g, '\n')
     .replace(/\n{3,}/g, '\n\n')
@@ -69,6 +71,9 @@ function cleanCaption(s) {
 
 function cleanSpoken(s) {
   return String(s)
+    // INT_MIN must not become INTMIN on screen or in the voice: an underscore
+    // inside a name becomes a space, which reads and sounds right
+    .replace(/([A-Za-z0-9])_+(?=[A-Za-z0-9])/g, '$1 ')
     .replace(/[—–]/g, ' ')      // em/en dash
     .replace(/[‘’]/g, "'")
     .replace(/[“”]/g, '')

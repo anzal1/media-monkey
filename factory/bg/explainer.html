@@ -150,7 +150,7 @@
   .chart svg.line { width: 100%; height: 300px; display: block; overflow: visible; }
   .chart .ends { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; }
   .chart .ends .a { font-size: 40px; font-weight: 700; color: var(--mute); letter-spacing: -.02em; }
-  .chart .ends .b { font-size: 76px; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+  .chart .ends .b { font-size: 76px; font-weight: 800; letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
   .bars { display: flex; align-items: flex-end; gap: 30px; height: 400px; }
   .bar { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
   .bar .val { font-size: 44px; font-weight: 800; letter-spacing: -.03em; margin-bottom: 12px; }
@@ -217,7 +217,7 @@
 
   /* stat */
   .stat { display: flex; flex-direction: column; justify-content: center; height: 100%; }
-  .stat .v { font-size: 150px; font-weight: 800; letter-spacing: -.05em; line-height: .95; }
+  .stat .v { font-size: 150px; font-weight: 800; letter-spacing: -.05em; line-height: .95; white-space: nowrap; align-self: flex-start; }
   .stat .l { margin-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 24px; letter-spacing: .20em; color: var(--mute); }
 
   /* diff */
@@ -503,6 +503,29 @@
    * left alone, they are already sized to be the loudest thing on screen.
    */
   const FIT = { flow: 1, compare: 1, window: 1, card: 1, list: 1, diff: 1, note: 1 };
+  /*
+   * Big numbers are sized to the column too. A stat is set at 150px to be the
+   * loudest thing on screen, but "-2,147,483,648" at 150px is wider than the
+   * column and was clipped to "-2,147,483,6". Measured on the FINAL value,
+   * since the count-up only ever gets narrower than where it ends.
+   */
+  function fitNumbers(wrap) {
+    const prev = wrap.style.display;
+    wrap.style.display = 'flex';
+    const room = hero.clientWidth * 0.97;
+    for (const el of wrap.querySelectorAll('.stat .v, .chart .ends .b, .meter .read')) {
+      const shown = el.textContent;
+      if (el.dataset.v) el.textContent = el.dataset.v;
+      let px = parseFloat(getComputedStyle(el).fontSize);
+      while (el.scrollWidth > room && px > 48) {
+        px *= 0.94;
+        el.style.fontSize = px.toFixed(1) + 'px';
+      }
+      el.textContent = shown;
+    }
+    wrap.style.display = prev;
+  }
+
   function fitScene(wrap, type) {
     const child = wrap.firstElementChild;
     if (!child || !FIT[type]) return 1;
@@ -984,7 +1007,7 @@
   Promise.all(faces.map((f) => document.fonts.load(f).catch(() => null)))
     .then(() => document.fonts.ready)
     .then(() => {
-      built.forEach((b, i) => { b.zoom = fitScene(b.wrap, scenes[i].type); });
+      built.forEach((b, i) => { b.zoom = fitScene(b.wrap, scenes[i].type); fitNumbers(b.wrap); });
       built.forEach((b) => { b.keys = measureKeys(b); });
       linkScenes();
       window.MM_FIT = built.map((b) => +(+b.zoom).toFixed(2));
