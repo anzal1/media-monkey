@@ -1,0 +1,26 @@
+abs(INTMIN) returns a negative number.
+Your bounds checks get deleted by the compiler.
+Real systems crash on the edge case. 💥
+
+Two's complement is the binary format processors use to represent signed integers without building a separate subtraction circuit.
+
+Here is where it bites:
+→ Hitting 2,147,483,648 views on a video counter
+→ Generating a random positive integer via abs(rand())
+→ Validating array indices before passing them to a buffer
+
+Because zero takes up one of the positive bit patterns, thirty-two bit signed integers range from -2,147,483,648 to +2,147,483,647. There is simply no positive twin for INTMIN.
+
+When you flip the bits of INTMIN and add one, the arithmetic logic unit wraps the result straight back around into the sign bit. On paper it looks like a math trick. In hardware, it leaves the exact same negative number in your register.
+
+In C and C++, signed overflow is undefined behavior. Modern optimizing compilers know this, assume overflow never happens, and will delete your error-checking code entirely.
+
+Use unsigned types for pure bit manipulation, enable compiler sanitizers in your test pipeline, and handle INTMIN before calling absolute value.
+
+Next time your telemetry counter wraps backwards, look at the bit width.
+
+What is the worst integer wrap bug you have ever caught in production?
+
+From the root, part 1. Follow for part 2.
+
+#computerscience #lowlevel #systemsengineering #cpp #softwareengineering #coding #systemdesign #backenddeveloper #devops #programming #webdevelopment #techtok
