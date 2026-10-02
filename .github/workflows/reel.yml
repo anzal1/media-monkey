@@ -2,35 +2,42 @@ name: 🐵 Daily Reel
 
 on:
   schedule:
-    # 4x daily, spaced across IST audience windows (times are UTC).
-    # Bump or cut by adding/removing a line; IG quota is 100 posts/24h.
-    - cron: "0 3 * * *"    # 08:30 IST  morning commute
-    - cron: "30 7 * * *"   # 13:00 IST  lunch
-    - cron: "30 13 * * *"  # 19:00 IST  evening peak
-    - cron: "30 17 * * *"  # 23:00 IST  late-night scroll
+    # GitHub starts scheduled runs three to five hours late, so each cron fires
+    # 5h30 BEFORE its slot. The render happens whenever GitHub gets to it; the
+    # post itself waits for the slot (factory/slot.mjs). Slots, in IST:
+    - cron: "30 21 * * *"  # 08:30 IST  morning commute
+    - cron: "0 2 * * *"    # 13:00 IST  lunch
+    - cron: "0 8 * * *"    # 19:00 IST  evening peak
+    - cron: "0 12 * * *"   # 23:00 IST  late-night scroll
   workflow_dispatch:
     inputs:
       topic:
-        description: "Optional topic (blank = auto trending)"
+        description: "Optional topic (blank = auto)"
+        required: false
+      track:
+        description: "Optional track: root | ai | production (blank = auto mix)"
         required: false
       dry_run:
-        description: "Render only, do not publish to Instagram"
+        description: "Render only, publish nowhere, record nothing"
         type: boolean
         default: false
-      format:
-        description: "format override; blank = explainer"
-        required: false
 
 permissions:
   contents: write
 
-concurrency:
-  group: reel
-  cancel-in-progress: false
-
 jobs:
-  reel:
+  render:
     runs-on: ubuntu-latest
+    # renders are serialised so two runs never pick the same series episode;
+    # the long wait for the slot happens in the publish job, outside this group
+    concurrency:
+      group: reel-render
+      cancel-in-progress: false
+    outputs:
+      slug: ${{ steps.host.outputs.slug }}
+      slot: ${{ steps.slot.outputs.slot }}
+      video_url: ${{ steps.host.outputs.video_url }}
+      container: ${{ steps.ig.outputs.container }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,24 +50,43 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/voila/models
-          key: kokoro-82m-v1-q8
+          key: kokoro-82m-v1-${{ hashFiles('factory/config.json') }}
+          restore-keys: kokoro-82m-v1-
 
       - run: npm ci
 
       - name: System ffmpeg (for ffprobe)
         run: sudo apt-get update -qq && sudo apt-get install -yqq ffmpeg
 
+      - name: Slot and memory
+        id: slot
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            SLOT=$(node factory/slot.mjs "${{ github.event.schedule }}")
+          else
+            SLOT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          fi
+          echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
+          echo "SLOT=$SLOT" >> "$GITHUB_ENV"
+          echo "this run posts at $SLOT"
+          # out/ is gitignored, so the channel's memory lives on the reels branch
+          git fetch -q origin reels || true
+          git show origin/reels:state/history.json > "$RUNNER_TEMP/history.json" 2>/dev/null || echo "[]" > "$RUNNER_TEMP/history.json"
+          echo "MEDIAMONKEY_HISTORY=$RUNNER_TEMP/history.json" >> "$GITHUB_ENV"
+          echo "memory: $(node -e "console.log(require('$RUNNER_TEMP/history.json').length)") published reels"
+
       - name: Render reel
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}   # read-only here: ranks categories by real views
           MEDIAMONKEY_FFPROBE: /usr/bin/ffprobe
         run: |
-          FMT=""
-          if [ -n "${{ github.event.inputs.format }}" ]; then FMT="--format ${{ github.event.inputs.format }}"; fi
+          ARGS=""
+          if [ -n "${{ github.event.inputs.track }}" ]; then ARGS="--track ${{ github.event.inputs.track }}"; fi
           if [ -n "${{ github.event.inputs.topic }}" ]; then
-            node factory/make.mjs "${{ github.event.inputs.topic }}" $FMT
+            node factory/make.mjs "${{ github.event.inputs.topic }}" $ARGS
           else
-            node factory/make.mjs --auto $FMT
+            node factory/make.mjs --auto $ARGS
           fi
           REEL=$(find out -name reel.mp4 -newer package.json | head -1)
           echo "REEL=$REEL" >> "$GITHUB_ENV"
@@ -73,61 +99,95 @@ jobs:
           path: |
             ${{ env.REEL }}
             out/**/caption.txt
+            out/**/scenes.json
+            out/**/script.json
 
-      - name: Publish to YouTube Shorts (skips politely without YT secrets)
-        # Never let YouTube cost us the Instagram post. This step runs before
-        # hosting and publishing, so a hard failure here used to abort the job
-        # with the reel already rendered and nothing posted anywhere. Four runs
-        # were lost that way to a single rejected character.
+      - name: Upload to YouTube, scheduled for the slot
+        # YouTube can fail on its own without costing the Instagram post. It
+        # runs here, before hosting, because it needs the file on disk.
         continue-on-error: true
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
         run: |
-          # Runs BEFORE the hosting step: that one wipes the working tree, and
-          # out/ is gitignored so it never comes back. YouTube wants the bytes,
-          # not a URL, so it has to read the file while it is still there.
           DIR="$(dirname "$REEL")"
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             node factory/youtube.mjs --file "$REEL" --meta "$DIR/youtube.json" --dry-run
           else
-            node factory/youtube.mjs --file "$REEL" --meta "$DIR/youtube.json"
+            node factory/youtube.mjs --file "$REEL" --meta "$DIR/youtube.json" --publish-at "$SLOT" --id-file "$RUNNER_TEMP/yt_id"
           fi
 
-      - name: Host reel at a public raw URL (reels branch)
+      - name: Host reel and record it in memory
+        id: host
         run: |
           cp "$REEL" "$RUNNER_TEMP/$SLUG.mp4"
           cp "$(dirname "$REEL")/caption.txt" "$RUNNER_TEMP/$SLUG.txt"
-          git config user.name "media-monkey-bot"
-          git config user.email "anzalabidi@gmail.com"
-          git fetch origin reels || true
-          git checkout -B reels origin/reels 2>/dev/null || git checkout --orphan reels
-          git rm -rq --cached . 2>/dev/null || true
-          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'staging' -exec rm -rf {} + 2>/dev/null || true
-          mkdir -p staging
-          cp "$RUNNER_TEMP/$SLUG.mp4" "staging/$SLUG.mp4"
-          cp "$RUNNER_TEMP/$SLUG.txt" "staging/$SLUG.txt"
-          # Keep the 20 most recently COMMITTED files (10 reels) plus the one we
-          # are about to publish. The old alphabetical prune could delete the
-          # current reel before Meta fetched it.
-          git log --name-only --pretty=format: -n 60 -- staging \
-            | sed '/^$/d' | awk '!seen[$0]++' | head -20 > "$RUNNER_TEMP/keep.txt"
-          for f in staging/*; do
-            case "$f" in staging/"$SLUG".*) continue ;; esac
-            grep -qxF "$f" "$RUNNER_TEMP/keep.txt" || rm -f "$f"
-          done
-          git add -A && git commit -qm "reel: $SLUG" && git push -qf origin reels
-          echo "VIDEO_URL=https://raw.githubusercontent.com/${{ github.repository }}/reels/staging/$SLUG.mp4" >> "$GITHUB_ENV"
-          git checkout -q ${{ github.sha }}
+          YT=$(cat "$RUNNER_TEMP/yt_id" 2>/dev/null || true)
+          DRY="${{ github.event.inputs.dry_run }}"
+          # Keep the 20 most recently COMMITTED staging files (10 reels) plus
+          # this one, so the current reel is never pruned before Meta fetches it.
+          factory/push-state.sh "reel: $SLUG" '
+            cp "$RUNNER_TEMP/$SLUG.mp4" "$RUNNER_TEMP/$SLUG.txt" staging/
+            git log --name-only --pretty=format: -n 60 -- staging | sed "/^$/d" | awk "!seen[\$0]++" | head -20 > "$RUNNER_TEMP/keep.txt"
+            for f in staging/*; do
+              case "$f" in staging/"$SLUG".*) continue ;; esac
+              grep -qxF "$f" "$RUNNER_TEMP/keep.txt" || rm -f "$f"
+            done
+            if [ "'"$DRY"'" != "true" ]; then
+              [ -f state/history.json ] || echo "[]" > state/history.json
+              node "$REPO/factory/state.mjs" upsert state/history.json "$MEDIAMONKEY_HISTORY" "$SLUG" ytVideoId='"$YT"' slot="$SLOT"
+            fi
+          '
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "video_url=https://raw.githubusercontent.com/${{ github.repository }}/reels/staging/$SLUG.mp4" >> "$GITHUB_OUTPUT"
 
-      - name: Publish to Instagram (skips politely without Meta secrets)
+      - name: Prepare the Instagram post (uploaded, not published)
+        id: ig
+        if: github.event.inputs.dry_run != 'true'
         env:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
         run: |
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            echo "dry run: rendered $SLUG, hosted at $VIDEO_URL, not publishing."
-            exit 0
-          fi
-          node factory/publish.mjs --video-url "$VIDEO_URL" --caption-file "$RUNNER_TEMP/$SLUG.txt"
+          # the cover is the moment the kinetic hook is complete, not frame 0
+          COVER=$(node -e "const j=require('./$(dirname "$REEL")/youtube.json');process.stdout.write(String(j.coverMs||1200))")
+          node factory/publish.mjs --prepare --out "$RUNNER_TEMP/container" --thumb-offset "$COVER" \
+            --video-url "${{ steps.host.outputs.video_url }}" --caption-file "$RUNNER_TEMP/$SLUG.txt"
+          echo "container=$(cat "$RUNNER_TEMP/container" 2>/dev/null || true)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: render
+    if: needs.render.outputs.slug != '' && github.event.inputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    # no concurrency group: each run's wait is independent, and a shared group
+    # would let GitHub cancel one waiting post in favour of the next
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Publish to Instagram on the slot
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          SLUG="${{ needs.render.outputs.slug }}"
+          curl -sfL -o "$RUNNER_TEMP/caption.txt" "https://raw.githubusercontent.com/${{ github.repository }}/reels/staging/$SLUG.txt"
+          node factory/publish.mjs \
+            --container "${{ needs.render.outputs.container }}" \
+            --video-url "${{ needs.render.outputs.video_url }}" \
+            --caption-file "$RUNNER_TEMP/caption.txt" \
+            --publish-at "${{ needs.render.outputs.slot }}" \
+            --id-file "$RUNNER_TEMP/ig_id"
+
+      - name: Record the Instagram id in memory
+        if: always()
+        run: |
+          SLUG="${{ needs.render.outputs.slug }}"
+          IG=$(cat "$RUNNER_TEMP/ig_id" 2>/dev/null || true)
+          [ -n "$IG" ] || { echo "nothing published, nothing to record"; exit 0; }
+          factory/push-state.sh "state: $SLUG published" \
+            'node "$REPO/factory/state.mjs" set state/history.json "'"$SLUG"'" igMediaId='"$IG"' publishedAt='"$(date -u +%Y-%m-%dT%H:%M:%SZ)"

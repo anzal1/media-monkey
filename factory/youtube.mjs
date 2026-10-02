@@ -29,6 +29,13 @@ const has = (k) => args.includes(k);
 
 const file = arg('--file');
 const privacy = arg('--privacy') || 'public';
+// YouTube can schedule natively: upload private with a publishAt and it goes
+// public on the slot. It needs a little lead time, so a slot under fifteen
+// minutes away is just published now.
+const publishAtArg = arg('--publish-at');
+const idFile = arg('--id-file');
+const scheduleAt = publishAtArg && new Date(publishAtArg).getTime() - Date.now() > 15 * 60000
+  ? new Date(publishAtArg).toISOString() : null;
 
 // --meta points at the youtube.json the render wrote next to the reel, so CI
 // does not have to pick JSON apart in shell. Explicit flags still win.
@@ -120,10 +127,9 @@ const body = {
     tags: tags.reduce((acc, t) => (acc.join('').length + t.length < 480 ? [...acc, t] : acc), []),
     categoryId: '28',                       // Science & Technology
   },
-  status: {
-    privacyStatus: privacy,
-    selfDeclaredMadeForKids: false,
-  },
+  status: scheduleAt
+    ? { privacyStatus: 'private', publishAt: scheduleAt, selfDeclaredMadeForKids: false }
+    : { privacyStatus: privacy, selfDeclaredMadeForKids: false },
 };
 
 if (has('--dry-run')) {
@@ -168,4 +174,6 @@ if (!put.ok || !res.id) {
 }
 
 console.log('youtube video id:', res.id);
+if (scheduleAt) console.log('scheduled to go public at', scheduleAt);
+if (idFile) fs.writeFileSync(idFile, res.id);
 console.log('https://www.youtube.com/shorts/' + res.id);
