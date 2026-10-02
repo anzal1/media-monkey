@@ -50,7 +50,7 @@ const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchP
 
 console.log('\nOpen this if the browser does not:\n\n' + authUrl + '\n');
 const open = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
-spawn(open, [authUrl], { stdio: 'ignore', detached: true }).unref();
+if (!process.env.NO_OPEN) spawn(open, [authUrl], { stdio: 'ignore', detached: true }).unref();
 
 const code = await new Promise((resolve, reject) => {
   const timer = setTimeout(() => reject(new Error('timed out waiting for consent')), 5 * 60_000);

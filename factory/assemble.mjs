@@ -253,6 +253,18 @@ function wrapHook(text, perLine = 16) {
   return lines.join('\\N');
 }
 
+/** "<searchable topic>: <hook>", within YouTube's 100 characters. */
+function youtubeTitle(script) {
+  const hook = String(script.hook || '').replace(/\s+/g, ' ').trim();
+  let topic = String((script.series && script.series.concept) || script.topic || '')
+    .replace(/^(why|how|when|what)\s+/i, '').replace(/\s+/g, ' ').trim();
+  if (!topic || hook.toLowerCase().includes(topic.toLowerCase())) return hook.slice(0, 100);
+  topic = topic.charAt(0).toUpperCase() + topic.slice(1);
+  const sep = ': ';
+  if (topic.length + sep.length + hook.length <= 100) return topic + sep + hook;
+  return topic.slice(0, 100);
+}
+
 export function buildAss(script, segments, words, opts = {}) {
   const sub = { ...CONFIG.subtitle, ...(opts.subtitle || {}) };
   const { width, height } = CONFIG.video;
@@ -586,7 +598,9 @@ export async function assemble(opts) {
   fs.writeFileSync(
     path.join(outDir, 'youtube.json'),
     JSON.stringify({
-      title: script.hook.replace(/\s+/g, ' ').trim().slice(0, 100),
+      // 35% of YouTube views on this channel come from search, so the title
+      // leads with what someone would type, then the hook.
+      title: youtubeTitle(script),
       coverMs: bg.coverMs ?? null,
       tags: script.hashtags,
       descriptionFile: 'caption.txt',
