@@ -256,7 +256,7 @@ function wrapHook(text, perLine = 16) {
 /** "<searchable topic>: <hook>", within YouTube's 100 characters. */
 function youtubeTitle(script) {
   const hook = String(script.hook || '').replace(/\s+/g, ' ').trim();
-  let topic = String((script.series && script.series.concept) || script.topic || '')
+  let topic = String(script.keyword || (script.series && script.series.concept) || script.topic || '')
     .replace(/^(why|how|when|what)\s+/i, '').replace(/\s+/g, ' ').trim();
   if (!topic || hook.toLowerCase().includes(topic.toLowerCase())) return hook.slice(0, 100);
   topic = topic.charAt(0).toUpperCase() + topic.slice(1);

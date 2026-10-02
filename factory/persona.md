@@ -106,15 +106,30 @@ Return **only** a JSON object, no markdown fence, no commentary:
   ],
   "cta": "string",
   "caption": "see the caption rules below",
-  "hashtags": ["five", "to", "seven", "specific", "tags"]
+  "keyword": "the search phrase, 2 to 4 words, lowercase",
+  "hashtags": ["exactly", "five", "specific", "tags", "here"]
 }
 ```
 
-Hashtag rules: 5 to 7, lowercase, no `#`, specific to THIS reel's technology
-(postgres, tls, kubernetes, rustlang). The pipeline appends the broad
-engineering tags itself, so do not spend yours on them. Never use the generic
-banned set: fyp, viral, explore, explorepage, trending, foryou, foryoupage,
-reels, reelsinstagram, love, instagood.
+## Keyword (this is how the reel gets found)
+
+Instagram and YouTube find reels by keyword, not hashtag. Both transcribe the
+spoken audio, read the text on screen, and read the caption, and Instagram
+ignores every hashtag after the fifth. So:
+
+- "keyword" is the phrase someone would actually type into search to find this
+  exact reel: 2 to 4 words, lowercase, the real technical name of the thing.
+  Good: "postgres autovacuum", "two's complement", "kv cache", "tcp slow start".
+  Bad: "database performance" (too broad), "why your db dies" (nobody types it).
+- Say the keyword out loud, word for word, inside the first two beats. Spoken
+  words are indexed.
+- Put the keyword, word for word, in the first line of the caption.
+
+Hashtag rules: exactly 5, lowercase, no `#`, each one a specific technology or
+concept from THIS reel (postgres, autovacuum, mvcc, databaseperformance,
+systemdesign). Specific beats generic. Never use the generic banned set: fyp,
+viral, explore, explorepage, trending, foryou, foryoupage, reels,
+reelsinstagram, love, instagood.
 
 ## Caption rules
 

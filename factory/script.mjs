@@ -71,6 +71,8 @@ function cleanCaption(s) {
 
 function cleanSpoken(s) {
   return String(s)
+    // O(n log n) would lose its parentheses below and be read "O n log n"
+    .replace(/\bO\(([^)]{1,20})\)/g, 'O of $1')
     // INT_MIN must not become INTMIN on screen or in the voice: an underscore
     // inside a name becomes a space, which reads and sounds right
     .replace(/([A-Za-z0-9])_+(?=[A-Za-z0-9])/g, '$1 ')
@@ -244,10 +246,12 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
     'techtok', 'developerlife',
   ];
   for (const fill of BROAD) {
-    if (hashtags.length >= 12) break;
+    if (hashtags.length >= 5) break;
     if (!hashtags.includes(fill)) hashtags.push(fill);
   }
-  hashtags = hashtags.slice(0, 12);
+  // Instagram counts only the first five since December 2025; the rest are
+  // silently ignored and only make the caption look like spam
+  hashtags = hashtags.slice(0, 5);
 
   // Length budget. The format is 30 to 45 seconds and Kokoro reads roughly 2.5
   // words a second including the gaps between segments, so the word count is
@@ -295,8 +299,27 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
         'of one component each rather than padding the beats you have.');
   }
 
+  // The keyword is how the reel is found: spoken (transcribed and indexed), on
+  // screen, and first in the caption. Hard on early attempts, a warning on the
+  // last one, because a reel without it is still worth shipping.
+  const keyword = String(obj.keyword || '').toLowerCase().replace(/[^a-z0-9' +#.-]/g, ' ').replace(/\s+/g, ' ').trim();
+  const kwLen = keyword.split(' ').filter(Boolean).length;
+  const spokenEarly = [hook, ...beats.slice(0, 2).map((b) => b.text)].join(' ').toLowerCase();
+  const firstLine = caption.split('\n')[0].toLowerCase();
+  const kwProblems = [];
+  if (!keyword || kwLen > 5) kwProblems.push('"keyword" must be the 2 to 4 word search phrase for this reel');
+  else {
+    if (!spokenEarly.includes(keyword)) kwProblems.push(`say the keyword "${keyword}" word for word in the hook or the first two beats`);
+    if (!firstLine.includes(keyword)) kwProblems.push(`put the keyword "${keyword}" word for word in the first line of the caption`);
+  }
+  if (kwProblems.length) {
+    if (!opts.lenientLength) err(kwProblems.join('; '));
+    (opts.log || (() => {}))(`  keyword warning: ${kwProblems.join('; ')}`);
+  }
+
   return {
     topic,
+    keyword: keyword || null,
     lang,
     slug: slugify(obj.slug || topic),
     hook,

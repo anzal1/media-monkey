@@ -17,7 +17,7 @@
 import { gemini } from '../llm.mjs';
 
 /** The closed menu. Adding a type here means adding a renderer in explainer.html. */
-export const SCENE_TYPES = ['flow', 'compare', 'window', 'card', 'list', 'stat', 'chart', 'diff', 'note'];
+export const SCENE_TYPES = ['flow', 'compare', 'window', 'card', 'list', 'stat', 'chart', 'diff', 'note', 'sequence', 'cells', 'tree', 'stack', 'code'];
 
 /*
  * Icon keys the renderer can draw, baked into assets/icons/icons.json by
@@ -92,6 +92,34 @@ Never pick "note" twice in a row, and never use it when a real artifact exists.
           numbers from the narration only.
 "diff"    lines changing: a patch, a conflict, a log before and after.
           data: { "title": "max 5 words", "rows": [ { "text": "one line, max 36 characters", "tone": "add|del|plain" } ] }
+"sequence" messages between two or three actors over time, drawn one at a time. Use for
+          handshakes, request/response, two threads racing, retries, a message that is lost.
+          data: { "actors": ["Client", "Server"],
+                  "steps": [ { "from": 0, "to": 1, "label": "max 4 words", "tone": "plain|good|bad" } ] }
+          2 to 6 steps. "bad" draws a failed or lost message.
+"cells"   a row of boxes: bits, bytes, array slots, memory addresses, a queue. Use whenever the
+          beat is about what is physically stored where: two's complement bits, an array being
+          searched, a cache line, a ring buffer.
+          data: { "label": "max 5 words", "cells": ["0","1","1","0"],
+                  "after": ["1","0","0","1"] or omit (cells change to these values mid-scene),
+                  "pointer": [3, 1, 2] or omit (indices the pointer visits, in order),
+                  "group": { "from": 0, "to": 7, "label": "one 64-byte cache line" } or omit,
+                  "index": true|false (show indices under the cells) }
+          2 to 16 cells, each at most 4 characters.
+"tree"    a tree being searched or built: BST, B-tree, heap, trie, a call tree.
+          data: { "nodes": ["8","4","12","2","6","10","14"], "path": [0, 2, 5] or omit,
+                  "label": "max 5 words" }
+          nodes in level order (root, then its children left to right, and so on), up to 15,
+          "" for a missing node. "path" lights up those node indices in order.
+"stack"   layers with a measured size, on a log scale so huge differences are felt: the memory
+          hierarchy, network layers with latencies, storage tiers with prices.
+          data: { "title": "max 5 words", "layers": [ { "label": "L1 cache", "value": "1 ns", "n": 1 } ] }
+          2 to 6 layers, "n" is the plain number behind "value" in a common unit.
+"code"    real source code with syntax colour, a spotlight on the lines that matter and the
+          buggy line flagged. Prefer this over "window" whenever the content is code.
+          data: { "lang": "c|python|js|go|rust|java|sql|bash", "file": "main.c",
+                  "lines": ["one line of code, max 38 characters"], "focus": [2, 3], "bad": 3 or omit }
+          3 to 9 lines; focus and bad are 1-based line numbers.
 "note"    a plain statement pair when there is genuinely nothing to draw.
           data: { "lead": "max 6 words", "body": "max 14 words" }`;
 
@@ -231,6 +259,45 @@ export function normaliseScene(raw, fallbackHeadline) {
         : { text: clean(r && r.text).slice(0, 38), tone: toneOf(r && r.tone, ['add', 'del', 'plain'], 'plain') }))
       .filter((r) => r.text);
     if (rows.length >= 2) data = { title: clip(d.title, 5), rows };
+  } else if (type === 'sequence') {
+    const actors = (Array.isArray(d.actors) ? d.actors : []).slice(0, 3).map((a) => clip(a, 2)).filter(Boolean);
+    const steps = (Array.isArray(d.steps) ? d.steps : []).slice(0, 6)
+      .map((x) => ({ from: Number(x && x.from), to: Number(x && x.to), label: clip(x && x.label, 4), tone: toneOf(x && x.tone, ['plain', 'good', 'bad'], 'plain') }))
+      .filter((x) => Number.isInteger(x.from) && Number.isInteger(x.to) && x.from !== x.to && x.from >= 0 && x.to >= 0 && x.from < actors.length && x.to < actors.length);
+    if (actors.length >= 2 && steps.length >= 2) data = { actors, steps };
+  } else if (type === 'cells') {
+    const cell = (c) => clean(c).slice(0, 4);
+    const cells = (Array.isArray(d.cells) ? d.cells : []).slice(0, 16).map(cell);
+    if (cells.length >= 2) {
+      const after = Array.isArray(d.after) && d.after.length === cells.length ? d.after.map(cell) : null;
+      const pointer = (Array.isArray(d.pointer) ? d.pointer : []).map(Number).filter((i) => Number.isInteger(i) && i >= 0 && i < cells.length).slice(0, 8);
+      const g = d.group && Number.isInteger(+d.group.from) && Number.isInteger(+d.group.to)
+        && +d.group.from >= 0 && +d.group.to < cells.length && +d.group.from <= +d.group.to
+        ? { from: +d.group.from, to: +d.group.to, label: clip(d.group.label, 6) } : null;
+      data = { label: clip(d.label, 6), cells, after, pointer, group: g, index: d.index !== false };
+    }
+  } else if (type === 'tree') {
+    const nodes = (Array.isArray(d.nodes) ? d.nodes : []).slice(0, 15).map((n) => clean(n).slice(0, 5));
+    // a node needs its parent: blank out orphans so the drawing never floats
+    for (let i = 1; i < nodes.length; i++) if (nodes[i] && !nodes[Math.floor((i - 1) / 2)]) nodes[i] = '';
+    const path = (Array.isArray(d.path) ? d.path : []).map(Number).filter((i) => Number.isInteger(i) && nodes[i]).slice(0, 6);
+    if (nodes[0] && nodes.filter(Boolean).length >= 3) data = { nodes, path, label: clip(d.label, 6) };
+  } else if (type === 'stack') {
+    const layers = (Array.isArray(d.layers) ? d.layers : []).slice(0, 6)
+      .map((l) => ({ label: clip(l && l.label, 3), value: clean(l && l.value).slice(0, 12), n: Number(l && l.n) }))
+      .filter((l) => l.label && Number.isFinite(l.n) && l.n > 0);
+    if (layers.length >= 2) data = { title: clip(d.title, 5), layers };
+  } else if (type === 'code') {
+    const lines = (Array.isArray(d.lines) ? d.lines : []).slice(0, 9).map((l) => String(l == null ? '' : l).replace(/\t/g, '  ').slice(0, 40));
+    if (lines.filter((l) => l.trim()).length >= 2) {
+      const ok = (n) => Number.isInteger(n) && n >= 1 && n <= lines.length;
+      data = {
+        lang: toneOf(d.lang, ['c', 'python', 'js', 'go', 'rust', 'java', 'sql', 'bash'], 'c'),
+        file: clean(d.file).slice(0, 30), lines,
+        focus: (Array.isArray(d.focus) ? d.focus : []).map(Number).filter(ok).slice(0, 4),
+        bad: ok(Number(d.bad)) ? Number(d.bad) : null,
+      };
+    }
   } else if (type === 'note') {
     const lead = clip(d.lead, 7);
     if (lead) data = { lead, body: clip(d.body, 16) };
@@ -290,6 +357,14 @@ async function scenesForBatch(topic, batch, offset, opts, cast = []) {
         `mean one of these, use EXACTLY this label, character for character, so the ` +
         `viewer sees the same box and it can carry over: ${cast.map((c) => `"${c}"`).join(', ')}.\n\n`
       : '') +
+    (opts.series
+      ? `THIS IS A "${opts.series.seriesTitle}" EPISODE. Show the actual machinery, not boxes ` +
+        `with labels on them: real bits and bytes and array slots ("cells"), the real tree ` +
+        `("tree"), the real latencies side by side ("stack"), the real message order ` +
+        `("sequence"), the real code ("code"). Use at least three of those five types across ` +
+        `the episode wherever they fit the beat.\n\n`
+      : `Use "sequence" for any race, handshake or retry, "code" for any code, and "stack" ` +
+        `for any comparison of latencies or sizes across orders of magnitude.\n\n`) +
     `THE BEATS:\n${lines}\n\n` +
     `Return ONLY JSON, with exactly the requested number of scenes per beat:\n` +
     `{ "eyebrow": "the field this reel is about, 1 to 3 words, uppercase, e.g. ` +
@@ -409,6 +484,9 @@ export async function writeScenes(topic, script, opts = {}) {
         ? `${opts.series.seriesTitle} · part ${opts.series.number}`.toUpperCase()
         : eyebrow || clip(clean(opts.category || 'ENGINEERING'), 3).toUpperCase(),
       title: clean(script.hook),
+      // on-screen text is indexed by Instagram search, so the search phrase is
+      // printed on the title card, the frame that is also the grid cover
+      keyword: script.keyword || null,
     },
     scenes,
   };
