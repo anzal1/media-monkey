@@ -396,11 +396,20 @@ export async function writeScenes(topic, script, opts = {}) {
   log(`  scenes: ${scenes.length} across ${beats.length} beats (${beats.map((b) => b.want).join('')})` + (degraded ? `, ${degraded} beat(s) degraded to fallback` : ''));
 
   return {
-    eyebrow: eyebrow || clip(clean(opts.category || 'ENGINEERING'), 3).toUpperCase(),
+    // a series episode wears its series and number, which is what makes people
+    // follow for the next one
+    eyebrow: opts.series
+      ? `${opts.series.seriesTitle} · ${String(opts.series.number).padStart(2, '0')}`.toUpperCase()
+      : eyebrow || clip(clean(opts.category || 'ENGINEERING'), 3).toUpperCase(),
     accent: accentFor(opts.category),
     episode: opts.episode || 'THE PROD MONKEY',
     handle: opts.handle || '',
-    title: { kicker: eyebrow || clip(clean(opts.category || 'ENGINEERING'), 3).toUpperCase(), title: clean(script.hook) },
+    title: {
+      kicker: opts.series
+        ? `${opts.series.seriesTitle} · part ${opts.series.number}`.toUpperCase()
+        : eyebrow || clip(clean(opts.category || 'ENGINEERING'), 3).toUpperCase(),
+      title: clean(script.hook),
+    },
     scenes,
   };
 }

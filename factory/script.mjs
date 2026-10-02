@@ -147,16 +147,38 @@ function stripFence(raw) {
 function headlineOf(b, text, i) {
   const raw = cleanSpoken((b && b.headline) || '');
   const words = wordsOf(raw);
-  if (raw && words.length <= 6 && !/^(understanding|how to|what is|in this|section)\b/i.test(raw)) {
+  // A headline once read "Gluster bypasses the heap" over a beat about the C
+  // allocator: the model invented a product name. Any capitalised name in a
+  // headline must appear in the beat it sits on.
+  const beatLower = String(text).toLowerCase();
+  const invented = raw.split(/\s+/).map((w) => w.replace(/[^A-Za-z0-9+#.-]/g, ''))
+    .filter((w) => w.length >= 4 && /^[A-Z]/.test(w) && !/^(The|This|That|Your|Every|When|Then|Now|One|Two|Why|What|How|It|Its)$/.test(w))
+    .some((w) => !beatLower.includes(w.toLowerCase()));
+  if (raw && !invented && words.length <= 6 && !/^(understanding|how to|what is|in this|section)\b/i.test(raw)) {
     return raw;
   }
   // first clause of the beat, trimmed to 5 words, with a full stop
   const clause = text.split(/(?<=[.!?])\s|,\s/)[0] || text;
-  const short = wordsOf(clause).slice(0, 5).join(' ');
+  // never end a headline on a word that leans into a missing next word
+  const DANGLING = new Set(['a', 'an', 'the', 'to', 'of', 'on', 'in', 'at', 'for', 'with', 'by', 'from', 'and', 'or', 'but', 'your', 'its', 'their', 'is', 'are', 'that']);
+  const ws = wordsOf(clause).slice(0, 5);
+  while (ws.length > 2 && DANGLING.has(ws[ws.length - 1].toLowerCase())) ws.pop();
+  const short = ws.join(' ');
   return short ? `${short.charAt(0).toUpperCase()}${short.slice(1)}.` : `Step ${i + 1}.`;
 }
 
 /** throws with a human-readable reason; the reason is fed back on retry. */
+/*
+ * Two lengths, run side by side so the insights can settle it. People watch
+ * about 20 seconds of a 130 second reel today; "tight" tests whether a shorter
+ * reel gets more of them to the payoff, "deep" keeps the full explanation.
+ * Targets are in seconds and converted with the voice's real words per second.
+ */
+const LENGTHS = {
+  tight: { beats: [6, 9], words: (wps) => ({ low: Math.round(70 * wps), high: Math.round(95 * wps) }) },
+  deep:  { beats: [9, 14], words: (wps) => ({ low: Math.round(110 * wps), high: Math.round(150 * wps) }) },
+};
+
 export function validate(obj, topic, lang = 'en', opts = {}) {
   const err = (m) => { throw new Error(m); };
   if (!obj || typeof obj !== 'object') err('not a JSON object');
@@ -166,8 +188,9 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
   if (wordsOf(hook).length > 12) err(`hook is ${wordsOf(hook).length} words, max 12`);
 
   if (!Array.isArray(obj.beats)) err('beats is not an array');
-  if (obj.beats.length < 9 || obj.beats.length > 15) {
-    err(`beats has ${obj.beats.length} entries, need 10 to 14`);
+  const [bLo, bHi] = (LENGTHS[opts.length] || LENGTHS.deep).beats;
+  if (obj.beats.length < bLo || obj.beats.length > bHi) {
+    err(`beats has ${obj.beats.length} entries, need ${bLo} to ${bHi}`);
   }
 
   const beats = obj.beats.map((b, i) => {
@@ -240,9 +263,12 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
   // The voice reads ~4.2 words a second at the configured speed, so words are
   // the only real lever on runtime. Enforced here because the model overshoots
   // in one direction and undershoots in the other depending on the topic.
-  const WPS = 3.1;
-  const LOW = 330, HIGH = 470;          // what we ask for
-  const HARD_LOW = 280, HARD_HIGH = 540; // what we will still ship
+  // Words per second comes from the voice config, so changing the voice or its
+  // speed keeps runtime on target without touching this file.
+  const WPS = Number(CONFIG.wordsPerSecond) || 3.1;
+  const mode = LENGTHS[opts.length] ? opts.length : 'deep';
+  const { low: LOW, high: HIGH } = LENGTHS[mode].words(WPS);
+  const HARD_LOW = Math.round(LOW * 0.85), HARD_HIGH = Math.round(HIGH * 1.15); // still shipped
   const secs = (n) => (n / WPS).toFixed(0);
   // Telling the model "use 350 to 470 words" after it wrote 490 is weak
   // feedback: it swings to the other side and fails again. Give it the delta.
@@ -252,15 +278,15 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
         `${LOW}-${HIGH} but inside tolerance; shipping it rather than losing the reel`);
     }
   } else if (spokenWords > HIGH) {
-    const cut = spokenWords - 430;
+    const cut = spokenWords - Math.round((LOW + HIGH) / 2);
     err(`script is ${spokenWords} spoken words, about ${secs(spokenWords)}s, which is ${spokenWords - HIGH} over the limit. ` +
-        `Remove about ${cut} words to land near 430. Shorten the wordiest beats; ` +
+        `Remove about ${cut} words to land near ${Math.round((LOW + HIGH) / 2)}. Shorten the wordiest beats; ` +
         'do not drop the analogy beat and do not reduce the number of beats.');
   }
   if (spokenWords < LOW) {
-    const add = 430 - spokenWords;
+    const add = Math.round((LOW + HIGH) / 2) - spokenWords;
     err(`script is only ${spokenWords} spoken words, about ${secs(spokenWords)}s, which is ${LOW - spokenWords} under the minimum. ` +
-        `Add about ${add} words to land near 430, as ${Math.max(1, Math.round(add / 35))} more beat(s) ` +
+        `Add about ${add} words to land near ${Math.round((LOW + HIGH) / 2)}, as ${Math.max(1, Math.round(add / 35))} more beat(s) ` +
         'of one component each rather than padding the beats you have.');
   }
 
@@ -287,7 +313,26 @@ export async function writeScript(topic, opts = {}) {
   const model = opts.model || CONFIG.model;
   const lang = opts.lang || CONFIG.lang || 'en';
   const log = opts.log || (() => {});
+  const wps = Number(CONFIG.wordsPerSecond) || 3.1;
+  const mode = LENGTHS[opts.length] ? opts.length : 'deep';
+  const lim = LENGTHS[mode].words(wps);
+  const [bLo, bHi] = LENGTHS[mode].beats;
+  const ser = opts.series;
+  const seriesBlock = ser
+    ? `SERIES: this is part ${ser.number} of "${ser.seriesTitle}". ${ser.seriesPitch}\n` +
+      `Concept: ${ser.concept}. Angle to build on: ${ser.angle}.\n` +
+      (ser.previous ? `The previous part covered: ${ser.previous}. You may nod to it in one clause, never rely on it.\n` : '') +
+      `Structure the beats as: the textbook version everyone learned, in plain words; the everyday ` +
+      `analogy; then what the real machine or real system actually does, step by step; the number that ` +
+      `proves it; and what an engineer does differently once they know. Explain it from the ground up ` +
+      `so a smart beginner follows every step, without ever talking down to an expert.\n` +
+      `In the caption, right before the hashtags, add exactly this line: ` +
+      `"${ser.seriesTitle}, part ${ser.number}. Follow for part ${ser.number + 1}."\n\n`
+    : '';
   const base =
+    seriesBlock +
+    `LENGTH FOR THIS REEL (overrides the format contract): ${bLo} to ${bHi} beats, ` +
+    `${lim.low} to ${lim.high} spoken words in total.\n\n` +
     `Topic for this reel: "${topic}"\n\n` +
     'Write the reel now. Obey the format contract exactly. ' +
     'Return only the JSON object.' +
@@ -313,7 +358,8 @@ export async function writeScript(topic, opts = {}) {
       });
       const parsed = JSON.parse(stripFence(raw));
       // the final attempt ships whatever it gets, within tolerance
-      const script = validate(parsed, topic, lang, { lenientLength: attempt === ATTEMPTS, log });
+      const script = validate(parsed, topic, lang, { lenientLength: attempt === ATTEMPTS, log, length: mode });
+      script.lengthMode = mode;
       log(`  script ok on attempt ${attempt}: ${script.beats.length} beats, slug ${script.slug}`);
       return script;
     } catch (e) {

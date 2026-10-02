@@ -137,6 +137,11 @@ Shape, 170 to 260 words:
 5. Blank line. One or two lines on what it costs you when you get it wrong, or
    what you get back when you get it right. Real numbers if you have them.
 6. Blank line. A closing line naming the moment they will need this.
+7. Blank line. One genuine question to the reader that an engineer would
+   actually want to answer in the comments: their own war story, which option
+   they would pick, or a case where the rule breaks. Specific to this reel,
+   never "what do you think?" and never "comment below". The reels drew 345
+   saves but only 7 comments; saves were asked for and comments never were.
 
 Hard rules:
 - NEVER number the steps. Numbered lists read like documentation and that is

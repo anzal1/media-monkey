@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { writeScript, segmentsOf, slugify } from './script.mjs';
 import { synthSegments } from './tts.mjs';
 import { assemble } from './assemble.mjs';
-import { supplyTopics, appendHistory } from './topics.mjs';
+import { supplyTopics, appendHistory, nextTopic } from './topics.mjs';
 import { writeScenes } from './explainer/scenes.mjs';
 import { renderExplainer } from './explainer/render.mjs';
 import { probeSummary, firstFrameInk } from './ffmpeg.mjs';
@@ -50,6 +50,8 @@ function parseArgs(argv) {
     else if (v === '--voice') a.voice = argv[++i];
     else if (v === '--no-live') a.live = false;
     else if (v === '--dry') a.dry = true;
+    else if (v === '--track') a.track = argv[++i];        // root | ai | production
+    else if (v === '--length') a.length = argv[++i];      // tight | deep
     else if (!v.startsWith('--')) a.topics.push(v);
   }
   if (!a.topics.length) a.auto = true;
@@ -85,7 +87,8 @@ async function makeOne(topicEntry, args, index, count) {
   const format = resolveFormat(args.format);
   log(`  format: ${format}`);
 
-  const script = await writeScript(topic, { lang: args.lang, log });
+  const script = await writeScript(topic, { lang: args.lang, log, series: topicEntry.series, length: topicEntry.length || args.length });
+  if (topicEntry.series) script.series = topicEntry.series;
   const segments0 = segmentsOf(script);
   if (args.dry) {
     log(JSON.stringify(script, null, 2));
@@ -113,6 +116,7 @@ async function makeOne(topicEntry, args, index, count) {
     // The scene IS the content here, so it replaces the background entirely and
     // is timed to the narration rather than looped under it.
     const board = await writeScenes(topic, script, {
+      series: topicEntry.series || null,
       // the real narration length of each beat decides how many scenes it gets
       beatDurations: segments.filter((s) => s.kind === 'beat').map((s) => s.duration),
       category: topicEntry.category || null,
@@ -148,17 +152,27 @@ async function makeOne(topicEntry, args, index, count) {
   if (!v || !a) throw new Error('rendered reel is missing a video or audio stream');
   // The profile grid cover comes from the opening frame, so a reel that starts
   // on a blank page is a dead thumbnail no matter how good the rest is.
-  const ink = firstFrameInk(res.video);
+  // the grid cover is the frame the publisher names (coverMs), so that is the
+  // frame that must not be blank
+  const coverAt = (bg.coverMs || 0) / 1000;
+  const ink = firstFrameInk(res.video, coverAt);
   if (ink < 0.005) {
-    log(`  WARNING: first frame is blank (${(ink * 100).toFixed(2)}% ink). ` +
-        'The grid thumbnail will be empty. Draw the title card fully at t=0.');
+    log(`  WARNING: cover frame at ${coverAt.toFixed(2)}s is blank (${(ink * 100).toFixed(2)}% ink). ` +
+        'The grid thumbnail will be empty.');
+  } else {
+    log(`  cover frame ${coverAt.toFixed(2)}s, ${(ink * 100).toFixed(1)}% ink`);
   }
 
   if (v.width !== CONFIG.video.width || v.height !== CONFIG.video.height) {
     throw new Error(`rendered reel is ${v.width}x${v.height}, expected 1080x1920`);
   }
 
-  appendHistory({ slug, topic, source: topicEntry.source || 'cli', category: topicEntry.category || null, lang: args.lang });
+  appendHistory({
+    slug, topic, hook: script.hook, source: topicEntry.source || 'cli',
+    track: topicEntry.track || 'production', category: topicEntry.category || null,
+    episodeId: topicEntry.episodeId || null, length: script.lengthMode || null,
+    seconds: +Number(probe.format.duration).toFixed(1), lang: args.lang,
+  });
 
   const secs = (Date.now() - t0) / 1000;
   log(`  OK ${path.relative(ROOT, res.video)}`);
@@ -173,11 +187,8 @@ async function main() {
 
   let entries;
   if (args.auto) {
-    const { topics, notes } = await supplyTopics(args.batch, {
-      log, useGoogleSearch: args.live && CONFIG.topics.useGoogleSearch,
-    });
-    notes.forEach((nt) => log(`topics: ${nt}`));
-    entries = topics;
+    entries = [];
+    for (let i = 0; i < args.batch; i++) entries.push(await nextTopic({ log, track: args.track }));
   } else {
     // explicit topics first; a larger --batch is topped up from the supply
     entries = args.topics.slice(0, args.batch).map((t) => ({ topic: t, source: 'cli' }));

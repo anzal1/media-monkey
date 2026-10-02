@@ -22,7 +22,11 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(HERE, '..');
 const CONFIG = JSON.parse(fs.readFileSync(path.join(HERE, 'config.json'), 'utf8'));
 const TOPICS_FILE = path.join(HERE, 'topics.json');
-const HISTORY_FILE = path.join(ROOT, 'out', 'history.json');
+// out/ is gitignored, so on CI this file used to start empty on every run and
+// every repetition guard below silently did nothing (20 of 20 runs logged
+// "recent: none"). CI now restores it from the reels branch before rendering
+// and writes it back after publishing; MEDIAMONKEY_HISTORY points at it.
+const HISTORY_FILE = process.env.MEDIAMONKEY_HISTORY || path.join(ROOT, 'out', 'history.json');
 
 const KEYWORDS = /\b(brain|neuro|neuron|cogniti|memory|percept|vision|conscious|psycholog|sleep|dopamine|attention|ai|llm|model|neural|transformer|agent|algorithm|feed|social|internet|scroll|addict|interface|latency)\b/i;
 
@@ -170,8 +174,14 @@ export async function liveTopics(count = 8, opts = {}) {
         `subjects, and do not make it about AI unless the category IS ai.\n` +
         `Search the web for genuinely interesting recent findings or discussions in that subject.\n\n`
       : `Search the web for what is actually being discussed right now in this lane.\n\n`) +
+    (opts.recent && opts.recent.length
+      ? `ALREADY PUBLISHED on this channel. Do not propose the same mechanism again, and do ` +
+        `not reuse the same opening scenario (a 3am pager, a CPU dashboard that looks wrong, ` +
+        `healthy-looking microservices) even for a different mechanism:\n` +
+        opts.recent.map((r) => `- ${r}`).join('\n') + '\n\n'
+      : '') +
     `Then propose ${count} short-form video topics with real viral potential for a ` +
-    `30 to 45 second reel. Rules:\n` +
+    `two minute explainer reel. Rules:\n` +
     '- Each topic must rest on a real, checkable mechanism. No speculation, no vibes.\n' +
     '- DEPTH TEST: a working engineer must finish the reel knowing something they can USE ' +
     'or explain in a design review: a failure mode, a tradeoff, a number that changes a decision. ' +
@@ -225,7 +235,7 @@ export async function supplyTopics(n = 1, opts = {}) {
 
   if (opts.useGoogleSearch ?? CONFIG.topics.useGoogleSearch) {
     try {
-      add(await liveTopics(opts.liveCount || CONFIG.topics.liveCount, { log, category }));
+      add(await liveTopics(opts.liveCount || CONFIG.topics.liveCount, { log, category, recent: opts.recent }));
       notes.push('google_search grounding: ok');
     } catch (e) {
       notes.push(`google_search grounding unavailable (${e.message.slice(0, 120)}), fell back to HN`);
@@ -249,8 +259,167 @@ export async function supplyTopics(n = 1, opts = {}) {
   const fresh = pool.filter((p) => p.source !== 'backlog').sort((a, b) => rank[a.source] - rank[b.source]);
   const ordered = [...fresh, ...backlog];
 
-  const tagged = ordered.slice(0, n).map((t) => ({ ...t, category: t.category || (category && category.key) || null }));
+  const tagged = ordered.slice(0, n).map((t) => ({ ...t, track: 'production', category: t.category || (category && category.key) || null }));
   return { topics: tagged, notes, category: category && category.key };
+}
+
+/* ------------------------------------------------------------------------ *
+ * Tracks. Every run belongs to one of three:
+ *   root        "From the root": CS fundamentals in order, textbook vs machine
+ *   ai          AI system design, built up from tokens to full designs
+ *   production  the original failure-mode reels, by category
+ * The track furthest below its target share (topics.json "tracks") goes next,
+ * so the mix holds exactly instead of drifting the way random draws do.
+ * ------------------------------------------------------------------------ */
+
+export function pickTrack(opts = {}) {
+  const j = JSON.parse(fs.readFileSync(TOPICS_FILE, 'utf8'));
+  const want = j.tracks || { production: 1 };
+  // backfilled entries predate tracks; counting them would make the next
+  // twenty runs all series to "catch up" on a mix that did not exist yet
+  const hist = readHistory().filter((h) => !h.backfill).slice(-40);
+  const n = hist.length || 1;
+  const counts = Object.fromEntries(Object.keys(want).map((k) => [k, 0]));
+  for (const h of hist) counts[h.track || 'production'] = (counts[h.track || 'production'] || 0) + 1;
+  let best = null, bestDeficit = -Infinity;
+  for (const [k, share] of Object.entries(want)) {
+    if (k !== 'production' && !nextEpisode(k)) continue;   // series finished
+    const deficit = share - counts[k] / n;
+    if (deficit > bestDeficit) { best = k; bestDeficit = deficit; }
+  }
+  if (opts.log) opts.log(`  track: ${best} (last ${hist.length}: ${Object.entries(counts).map(([k, v]) => `${k} ${v}`).join(', ')})`);
+  return best || 'production';
+}
+
+/** The next unpublished episode of a series, in curriculum order. */
+export function nextEpisode(seriesKey) {
+  const j = JSON.parse(fs.readFileSync(TOPICS_FILE, 'utf8'));
+  const series = j.series && j.series[seriesKey];
+  if (!series) return null;
+  const done = new Set(readHistory().map((h) => h.episodeId).filter(Boolean));
+  // concepts the account covered before the series existed: skipped, but they
+  // do not count toward the episode number shown on screen
+  const pre = new Set(readHistory().map((h) => h.coversEpisode).filter(Boolean));
+  // a concept already covered as a production reel counts as done, so the
+  // series never re-runs what the account has already posted
+  const covered = readHistory().map((h) => normalizeTopic(`${h.topic || ''} ${h.hook || ''}`));
+  const idx = series.curriculum.findIndex((ep) => {
+    if (done.has(ep.id) || pre.has(ep.id)) return false;
+    const c = normalizeTopic(ep.concept);
+    return !covered.some((t) => t.includes(c) && c.length > 6);
+  });
+  if (idx < 0) return null;
+  const ep = series.curriculum[idx];
+  const prev = series.curriculum.slice(0, idx).reverse().find((e) => done.has(e.id));
+  return {
+    ...ep,
+    // episodes are numbered by what has actually been published, so a skipped
+    // or already-covered concept never leaves a gap in the count
+    number: [...done].filter((id) => id.startsWith(`${seriesKey}-`)).length + 1,
+    seriesKey, seriesTitle: series.title, seriesPitch: series.pitch,
+    previous: prev ? prev.concept : null,
+  };
+}
+
+/**
+ * Production categories ranked by how their reels actually performed. Scores
+ * are median views of the category's published reels, read live from the
+ * Instagram API when a token is present. 70% of picks follow the scores,
+ * softened so one hit cannot monopolise the account; 30% explore, preferring
+ * categories with no data yet. Categories used in the last eight production
+ * runs are skipped either way.
+ */
+export async function pickProductionCategory(opts = {}) {
+  const log = opts.log || (() => {});
+  const j = JSON.parse(fs.readFileSync(TOPICS_FILE, 'utf8'));
+  const cats = j.categories || [];
+  const hist = readHistory();
+  const recentCats = hist.filter((h) => (h.track || 'production') === 'production').slice(-8).map((h) => h.category);
+  const eligible = cats.filter((c) => !recentCats.includes(c.key));
+  const pool = eligible.length ? eligible : cats;
+
+  const views = await mediaViews(hist.filter((h) => h.igMediaId).slice(-60).map((h) => h.igMediaId), opts);
+  const byCat = {};
+  for (const h of hist) {
+    const v = h.igMediaId && views[h.igMediaId];
+    if (v == null || !h.category) continue;
+    (byCat[h.category] = byCat[h.category] || []).push(v);
+  }
+  const med = (a) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
+  const scored = pool.map((c) => ({ c, score: byCat[c.key] ? med(byCat[c.key]) : null, n: (byCat[c.key] || []).length }));
+  const known = scored.filter((x) => x.score != null);
+  const explore = Math.random() < 0.3 || !known.length;
+  let pick;
+  if (explore) {
+    const fresh = scored.filter((x) => x.score == null);
+    const from = fresh.length ? fresh : scored;
+    pick = from[Math.floor(Math.random() * from.length)];
+  } else {
+    // square root softens the curve: a 4x better category is picked 2x as often
+    const w = known.map((x) => Math.sqrt(Math.max(1, x.score)));
+    let r = Math.random() * w.reduce((a, b) => a + b, 0);
+    pick = known.find((x, i) => (r -= w[i]) <= 0) || known[0];
+  }
+  log(`  category: ${pick.c.key} (${explore ? 'explore' : `exploit, median ${pick.score} views over ${pick.n}`}; ` +
+      `skipping recent: ${recentCats.filter(Boolean).join(', ') || 'none'})`);
+  return pick.c;
+}
+
+/** Views per media id from the Instagram API, best effort. */
+async function mediaViews(ids, opts = {}) {
+  const token = process.env.IG_ACCESS_TOKEN;
+  const out = {};
+  if (!token || !ids.length) return out;
+  await Promise.all(ids.map(async (id) => {
+    try {
+      const r = await fetch(`https://graph.instagram.com/v21.0/${id}/insights?metric=views&access_token=${token}`,
+        { signal: AbortSignal.timeout(15000) });
+      const j = await r.json();
+      const v = j.data && j.data[0] && j.data[0].values && j.data[0].values[0] && j.data[0].values[0].value;
+      if (typeof v === 'number') out[id] = v;
+    } catch { /* missing data just means this reel does not vote */ }
+  }));
+  return out;
+}
+
+/** The hooks the account has actually published, newest first. */
+export function recentHooks(n = 40) {
+  return readHistory().slice(-n).reverse().map((h) => h.hook || h.topic).filter(Boolean);
+}
+
+/**
+ * What make.mjs calls in --auto mode. Returns one topic entry carrying its
+ * track, and for series episodes the series context the script needs.
+ */
+/** tight vs deep, alternated by whichever has run less lately: a clean A/B. */
+export function pickLength() {
+  const recent = readHistory().filter((h) => !h.backfill && h.length).slice(-20);
+  const tight = recent.filter((h) => h.length === 'tight').length;
+  return tight * 2 < recent.length ? 'tight' : 'deep';
+}
+
+export async function nextTopic(opts = {}) {
+  const log = opts.log || (() => {});
+  const track = opts.track || pickTrack({ log });
+  const length = opts.length || pickLength();
+  log(`  length: ${length}`);
+  const withLen = (e) => ({ ...e, length });
+  return withLen(await nextTopicFor(track, opts, log));
+}
+
+async function nextTopicFor(track, opts, log) {
+  if (track === 'root' || track === 'ai') {
+    const ep = nextEpisode(track);
+    log(`  episode: ${ep.seriesTitle} #${ep.number}, ${ep.module}: ${ep.concept}`);
+    return {
+      topic: ep.concept, source: 'series', track, category: track === 'ai' ? 'ai-systems' : 'fundamentals',
+      episodeId: ep.id, series: ep,
+    };
+  }
+  const category = await pickProductionCategory({ log });
+  const { topics, notes } = await supplyTopics(1, { log, category, recent: recentHooks(40) });
+  notes.forEach((nt) => log(`topics: ${nt}`));
+  return { ...topics[0], track: 'production', category: category.key };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -121,5 +121,792 @@
       "key": "career",
       "hint": "the craft around the code: design reviews, RFC writing, on-call practice, estimating, mentoring, reading unfamiliar codebases fast, interview system design"
     }
-  ]
+  ],
+  "series": {
+    "root": {
+      "title": "From the root",
+      "pitch": "Computer science from first principles, one concept per episode, in order. Each episode takes the textbook version and shows what the real machine actually does, the way 'binary search is optimal' becomes 'binary search fights the cache'. Each episode must stand alone for a new viewer.",
+      "curriculum": [
+        {
+          "module": "numbers",
+          "concept": "two's complement and integer overflow",
+          "angle": "why abs(INT_MIN) is negative and how an overflowed counter took down real systems",
+          "id": "root-01"
+        },
+        {
+          "module": "numbers",
+          "concept": "floating point",
+          "angle": "why 0.1 + 0.2 is not 0.3, and why summing money in floats drifts",
+          "id": "root-02"
+        },
+        {
+          "module": "numbers",
+          "concept": "integer division and modulo with negatives",
+          "angle": "why -7 % 3 differs between Python and C, and the bucketing bug it causes",
+          "id": "root-03"
+        },
+        {
+          "module": "numbers",
+          "concept": "endianness",
+          "angle": "the same four bytes mean two different numbers depending on which end is read first",
+          "id": "root-04"
+        },
+        {
+          "module": "numbers",
+          "concept": "UTF-8 and string length",
+          "angle": "why one emoji can be four bytes, two code points and one character",
+          "id": "root-05"
+        },
+        {
+          "module": "memory",
+          "concept": "the memory hierarchy",
+          "angle": "RAM is not flat: L1 is a few cycles away, main memory is hundreds",
+          "id": "root-06"
+        },
+        {
+          "module": "memory",
+          "concept": "cache lines",
+          "angle": "the CPU never reads one byte, it reads 64, and that decides your loop's speed",
+          "id": "root-07"
+        },
+        {
+          "module": "memory",
+          "concept": "false sharing",
+          "angle": "two threads touching different variables still fight over one cache line",
+          "id": "root-08"
+        },
+        {
+          "module": "memory",
+          "concept": "arrays vs linked lists",
+          "angle": "big-O says insert is O(1) in a list, the cache says the array wins anyway",
+          "id": "root-09"
+        },
+        {
+          "module": "memory",
+          "concept": "struct layout and padding",
+          "angle": "reordering fields shrinks a struct and speeds up a hot loop",
+          "id": "root-10"
+        },
+        {
+          "module": "memory",
+          "concept": "virtual memory and page tables",
+          "angle": "every pointer is a lie the MMU translates on the fly",
+          "id": "root-11"
+        },
+        {
+          "module": "memory",
+          "concept": "the TLB",
+          "angle": "huge pages make some workloads dramatically faster for one reason",
+          "id": "root-12"
+        },
+        {
+          "module": "memory",
+          "concept": "stack vs heap",
+          "angle": "why stack allocation is nearly free and heap allocation is not",
+          "id": "root-13"
+        },
+        {
+          "module": "the cpu",
+          "concept": "pipelining and branch prediction",
+          "angle": "why processing a sorted array is several times faster than an unsorted one",
+          "id": "root-14"
+        },
+        {
+          "module": "the cpu",
+          "concept": "SIMD",
+          "angle": "one instruction doing eight additions, and why your loop does not get it for free",
+          "id": "root-15"
+        },
+        {
+          "module": "the cpu",
+          "concept": "out-of-order execution",
+          "angle": "the CPU runs your code in a different order than you wrote it",
+          "id": "root-16"
+        },
+        {
+          "module": "the cpu",
+          "concept": "memory latency vs clock speed",
+          "angle": "a 4 GHz core spends most of its time waiting for memory",
+          "id": "root-17"
+        },
+        {
+          "module": "the cpu",
+          "concept": "context switches",
+          "angle": "what the kernel actually saves and restores, and what it costs your cache",
+          "id": "root-18"
+        },
+        {
+          "module": "data structures",
+          "concept": "dynamic arrays",
+          "angle": "why append is amortised O(1) and why the occasional resize is a latency spike",
+          "id": "root-19"
+        },
+        {
+          "module": "data structures",
+          "concept": "hash tables",
+          "angle": "load factor, resizing pauses, and collision attacks that turned O(1) into O(n)",
+          "id": "root-20"
+        },
+        {
+          "module": "data structures",
+          "concept": "binary search trees",
+          "angle": "sorted inserts quietly turn a tree into a linked list",
+          "id": "root-21"
+        },
+        {
+          "module": "data structures",
+          "concept": "B-trees",
+          "angle": "why every database index is short and fat instead of a binary tree",
+          "id": "root-22"
+        },
+        {
+          "module": "data structures",
+          "concept": "heaps",
+          "angle": "why building a heap is O(n), not O(n log n)",
+          "id": "root-23"
+        },
+        {
+          "module": "data structures",
+          "concept": "tries",
+          "angle": "how autocomplete answers prefix queries without scanning words",
+          "id": "root-24"
+        },
+        {
+          "module": "data structures",
+          "concept": "bloom filters",
+          "angle": "a structure that can say definitely not, but only probably yes",
+          "id": "root-25"
+        },
+        {
+          "module": "data structures",
+          "concept": "skip lists",
+          "angle": "the randomised structure inside Redis sorted sets",
+          "id": "root-26"
+        },
+        {
+          "module": "data structures",
+          "concept": "ring buffers",
+          "angle": "the lock-free queue behind audio, logging and network cards",
+          "id": "root-27"
+        },
+        {
+          "module": "algorithms",
+          "concept": "binary search",
+          "angle": "optimal on paper, cache hostile in practice; the Eytzinger layout fixes it",
+          "id": "root-28"
+        },
+        {
+          "module": "algorithms",
+          "concept": "quicksort",
+          "angle": "the O(n squared) worst case, and why real libraries use introsort",
+          "id": "root-29"
+        },
+        {
+          "module": "algorithms",
+          "concept": "timsort",
+          "angle": "why Python's sort is fast on real data: it hunts for runs that are already sorted",
+          "id": "root-30"
+        },
+        {
+          "module": "algorithms",
+          "concept": "big-O vs constants",
+          "angle": "when an O(n squared) algorithm beats an O(n log n) one",
+          "id": "root-31"
+        },
+        {
+          "module": "algorithms",
+          "concept": "recursion and the call stack",
+          "angle": "why deep recursion crashes and what tail calls change",
+          "id": "root-32"
+        },
+        {
+          "module": "algorithms",
+          "concept": "dynamic programming",
+          "angle": "it is just caching the answers to subproblems",
+          "id": "root-33"
+        },
+        {
+          "module": "algorithms",
+          "concept": "graph traversal",
+          "angle": "breadth-first and depth-first search hiding inside garbage collectors and crawlers",
+          "id": "root-34"
+        },
+        {
+          "module": "algorithms",
+          "concept": "topological sort",
+          "angle": "how build systems and package managers decide what runs first",
+          "id": "root-35"
+        },
+        {
+          "module": "algorithms",
+          "concept": "shortest paths",
+          "angle": "why map apps do not run plain Dijkstra on the whole planet",
+          "id": "root-36"
+        },
+        {
+          "module": "algorithms",
+          "concept": "consistent hashing",
+          "angle": "adding one cache server without reshuffling every key",
+          "id": "root-37"
+        },
+        {
+          "module": "algorithms",
+          "concept": "reservoir sampling",
+          "angle": "picking a fair random sample from a stream you cannot store",
+          "id": "root-38"
+        },
+        {
+          "module": "algorithms",
+          "concept": "HyperLogLog",
+          "angle": "counting a billion unique visitors in a few kilobytes",
+          "id": "root-39"
+        },
+        {
+          "module": "operating system",
+          "concept": "processes vs threads",
+          "angle": "what a thread actually shares, and why a crash in one kills them all",
+          "id": "root-40"
+        },
+        {
+          "module": "operating system",
+          "concept": "system calls",
+          "angle": "the cost of crossing into the kernel, and why batching syscalls matters",
+          "id": "root-41"
+        },
+        {
+          "module": "operating system",
+          "concept": "file descriptors",
+          "angle": "everything is a file, including the socket you forgot to close",
+          "id": "root-42"
+        },
+        {
+          "module": "operating system",
+          "concept": "the scheduler",
+          "angle": "how the kernel decides which thread runs next, and priority inversion",
+          "id": "root-43"
+        },
+        {
+          "module": "operating system",
+          "concept": "fork and copy-on-write",
+          "angle": "why forking a 60 GB process is instant, until it is not",
+          "id": "root-44"
+        },
+        {
+          "module": "operating system",
+          "concept": "mmap",
+          "angle": "reading a file without read(), and the page faults it hides",
+          "id": "root-45"
+        },
+        {
+          "module": "operating system",
+          "concept": "the page cache",
+          "angle": "why the second read of a file is a hundred times faster",
+          "id": "root-46"
+        },
+        {
+          "module": "operating system",
+          "concept": "fsync",
+          "angle": "why write() returning does not mean your data is on disk",
+          "id": "root-47"
+        },
+        {
+          "module": "operating system",
+          "concept": "epoll and the event loop",
+          "angle": "how one thread serves ten thousand connections",
+          "id": "root-48"
+        },
+        {
+          "module": "networking",
+          "concept": "packets and MTU",
+          "angle": "why a 1,501 byte packet can silently break a connection",
+          "id": "root-49"
+        },
+        {
+          "module": "networking",
+          "concept": "the TCP handshake and slow start",
+          "angle": "why a new connection cannot use your full bandwidth",
+          "id": "root-50"
+        },
+        {
+          "module": "networking",
+          "concept": "Nagle and delayed ACK",
+          "angle": "the 40 millisecond stall two well-meant optimisations create together",
+          "id": "root-51"
+        },
+        {
+          "module": "networking",
+          "concept": "TCP head-of-line blocking",
+          "angle": "one lost packet stalls every stream behind it",
+          "id": "root-52"
+        },
+        {
+          "module": "networking",
+          "concept": "UDP and QUIC",
+          "angle": "why HTTP/3 moved to UDP to fix TCP's ordering problem",
+          "id": "root-53"
+        },
+        {
+          "module": "networking",
+          "concept": "DNS resolution",
+          "angle": "the lookups behind one URL, and why TTLs make outages linger",
+          "id": "root-54"
+        },
+        {
+          "module": "networking",
+          "concept": "the TLS handshake",
+          "angle": "what actually happens before the first byte, and why resumption is faster",
+          "id": "root-55"
+        },
+        {
+          "module": "networking",
+          "concept": "load balancers",
+          "angle": "layer 4 vs layer 7, and what each one can and cannot see",
+          "id": "root-56"
+        },
+        {
+          "module": "networking",
+          "concept": "ephemeral port exhaustion",
+          "angle": "why a busy client runs out of ports talking to one server",
+          "id": "root-57"
+        },
+        {
+          "module": "storage",
+          "concept": "HDD vs SSD",
+          "angle": "why random reads were the enemy for decades, and what SSDs changed",
+          "id": "root-58"
+        },
+        {
+          "module": "storage",
+          "concept": "SSD write amplification",
+          "angle": "one logical write turning into many physical ones",
+          "id": "root-59"
+        },
+        {
+          "module": "storage",
+          "concept": "journaling filesystems",
+          "angle": "how a filesystem survives a power cut halfway through a write",
+          "id": "root-60"
+        },
+        {
+          "module": "storage",
+          "concept": "B-trees vs LSM trees",
+          "angle": "read-optimised vs write-optimised storage engines",
+          "id": "root-61"
+        },
+        {
+          "module": "storage",
+          "concept": "write-ahead logs",
+          "angle": "write the intent first, then the change: how databases survive crashes",
+          "id": "root-62"
+        },
+        {
+          "module": "databases",
+          "concept": "how an index lookup works",
+          "angle": "walking a B-tree from root to leaf, and what a covering index skips",
+          "id": "root-63"
+        },
+        {
+          "module": "databases",
+          "concept": "the query planner",
+          "angle": "why the same query is fast on Monday and slow on Tuesday",
+          "id": "root-64"
+        },
+        {
+          "module": "databases",
+          "concept": "isolation levels",
+          "angle": "the anomalies each level allows, shown with two concurrent transactions",
+          "id": "root-65"
+        },
+        {
+          "module": "databases",
+          "concept": "MVCC",
+          "angle": "how readers never block writers, and the dead rows it leaves behind",
+          "id": "root-66"
+        },
+        {
+          "module": "databases",
+          "concept": "locks and deadlocks",
+          "angle": "two transactions waiting on each other forever",
+          "id": "root-67"
+        },
+        {
+          "module": "databases",
+          "concept": "connection pooling",
+          "angle": "why a database connection is expensive and pools exist",
+          "id": "root-68"
+        },
+        {
+          "module": "databases",
+          "concept": "replication lag",
+          "angle": "read-your-writes and the user who saves a change and cannot see it",
+          "id": "root-69"
+        },
+        {
+          "module": "databases",
+          "concept": "sharding",
+          "angle": "splitting a database by key, and the cross-shard query that hurts",
+          "id": "root-70"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "clocks lie",
+          "angle": "why two servers disagree about what time it is, and Lamport clocks",
+          "id": "root-71"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "CAP in practice",
+          "angle": "what actually happens to your writes during a network partition",
+          "id": "root-72"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "leader election and Raft",
+          "angle": "how a cluster agrees on one leader, and split brain",
+          "id": "root-73"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "quorums",
+          "angle": "why three replicas and two acknowledgements give you consistency",
+          "id": "root-74"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "exactly-once delivery",
+          "angle": "why it does not exist, and idempotency is the real answer",
+          "id": "root-75"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "retries with backoff and jitter",
+          "angle": "how naive retries turn a blip into an outage",
+          "id": "root-76"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "backpressure",
+          "angle": "what a queue does when producers outrun consumers",
+          "id": "root-77"
+        },
+        {
+          "module": "distributed systems",
+          "concept": "cache invalidation",
+          "angle": "the famous hard problem, as one concrete race",
+          "id": "root-78"
+        }
+      ]
+    },
+    "ai": {
+      "title": "AI system design",
+      "pitch": "How AI systems really work, built up from tokens to full production designs, one concept per episode, in order. Precise mechanisms and real numbers, never hype, never product news. Each episode must stand alone for a new viewer.",
+      "curriculum": [
+        {
+          "module": "foundations",
+          "concept": "tokens",
+          "angle": "why an LLM cannot count the letters in strawberry, and why some languages cost more tokens",
+          "id": "ai-01"
+        },
+        {
+          "module": "foundations",
+          "concept": "embeddings",
+          "angle": "meaning as geometry: similar ideas end up close together in space",
+          "id": "ai-02"
+        },
+        {
+          "module": "foundations",
+          "concept": "attention",
+          "angle": "every token looks at every other token, and why context cost grows quadratically",
+          "id": "ai-03"
+        },
+        {
+          "module": "foundations",
+          "concept": "sampling and temperature",
+          "angle": "how the next token is actually picked, and what top-p does",
+          "id": "ai-04"
+        },
+        {
+          "module": "foundations",
+          "concept": "nondeterminism at temperature zero",
+          "angle": "why the same prompt gives different answers when requests are batched",
+          "id": "ai-05"
+        },
+        {
+          "module": "inference",
+          "concept": "prefill vs decode",
+          "angle": "reading the prompt is compute bound, writing the answer is memory bound",
+          "id": "ai-06"
+        },
+        {
+          "module": "inference",
+          "concept": "the KV cache",
+          "angle": "why a long chat eats GPU memory and what the cache stores",
+          "id": "ai-07"
+        },
+        {
+          "module": "inference",
+          "concept": "PagedAttention",
+          "angle": "the virtual memory trick that let vLLM serve many more users",
+          "id": "ai-08"
+        },
+        {
+          "module": "inference",
+          "concept": "continuous batching",
+          "angle": "why serving one request at a time wastes most of the GPU",
+          "id": "ai-09"
+        },
+        {
+          "module": "inference",
+          "concept": "TTFT vs TPOT",
+          "angle": "the two latencies users feel, and why optimising one hurts the other",
+          "id": "ai-10"
+        },
+        {
+          "module": "inference",
+          "concept": "speculative decoding",
+          "angle": "a small model guesses, the big model checks, the answer comes out faster",
+          "id": "ai-11"
+        },
+        {
+          "module": "inference",
+          "concept": "quantisation",
+          "angle": "int8 and int4 weights: what you save, what you lose",
+          "id": "ai-12"
+        },
+        {
+          "module": "inference",
+          "concept": "FlashAttention",
+          "angle": "the speedup came from moving less memory, not doing less maths",
+          "id": "ai-13"
+        },
+        {
+          "module": "inference",
+          "concept": "memory bandwidth is the limit",
+          "angle": "why a GPU with more FLOPs does not decode tokens faster",
+          "id": "ai-14"
+        },
+        {
+          "module": "inference",
+          "concept": "tensor parallelism",
+          "angle": "splitting one model across GPUs and paying for it in communication",
+          "id": "ai-15"
+        },
+        {
+          "module": "serving at scale",
+          "concept": "prompt caching",
+          "angle": "reusing a computed prefix across requests, and how it cuts cost",
+          "id": "ai-16"
+        },
+        {
+          "module": "serving at scale",
+          "concept": "model routing",
+          "angle": "sending easy questions to a small model and hard ones to a big one",
+          "id": "ai-17"
+        },
+        {
+          "module": "serving at scale",
+          "concept": "GPU cold starts",
+          "angle": "loading tens of gigabytes of weights before the first token",
+          "id": "ai-18"
+        },
+        {
+          "module": "serving at scale",
+          "concept": "admission control",
+          "angle": "why an LLM service must reject requests to stay fast",
+          "id": "ai-19"
+        },
+        {
+          "module": "serving at scale",
+          "concept": "streaming responses",
+          "angle": "how tokens reach the browser as they are generated",
+          "id": "ai-20"
+        },
+        {
+          "module": "serving at scale",
+          "concept": "token economics",
+          "angle": "the real cost of one request, input versus output tokens",
+          "id": "ai-21"
+        },
+        {
+          "module": "serving at scale",
+          "concept": "serving many LoRA adapters",
+          "angle": "hundreds of fine-tuned models on one GPU",
+          "id": "ai-22"
+        },
+        {
+          "module": "retrieval",
+          "concept": "chunking",
+          "angle": "how you split documents decides what RAG can ever find",
+          "id": "ai-23"
+        },
+        {
+          "module": "retrieval",
+          "concept": "HNSW vector indexes",
+          "angle": "searching millions of embeddings by walking a graph",
+          "id": "ai-24"
+        },
+        {
+          "module": "retrieval",
+          "concept": "IVF and product quantisation",
+          "angle": "compressing vectors so a billion fit in memory",
+          "id": "ai-25"
+        },
+        {
+          "module": "retrieval",
+          "concept": "hybrid search",
+          "angle": "why keyword search plus vectors beats either alone",
+          "id": "ai-26"
+        },
+        {
+          "module": "retrieval",
+          "concept": "rerankers",
+          "angle": "a slower second model that fixes the first ranking",
+          "id": "ai-27"
+        },
+        {
+          "module": "retrieval",
+          "concept": "lost in the middle",
+          "angle": "why the model ignores the document you put in the middle of the context",
+          "id": "ai-28"
+        },
+        {
+          "module": "retrieval",
+          "concept": "embedding model upgrades",
+          "angle": "changing the embedding model silently breaks every stored vector",
+          "id": "ai-29"
+        },
+        {
+          "module": "retrieval",
+          "concept": "evaluating retrieval",
+          "angle": "recall at k, and measuring RAG before users do",
+          "id": "ai-30"
+        },
+        {
+          "module": "agents",
+          "concept": "the tool-calling loop",
+          "angle": "what actually happens between the model and your functions",
+          "id": "ai-31"
+        },
+        {
+          "module": "agents",
+          "concept": "context window management",
+          "angle": "summarising, truncating and what the agent forgets",
+          "id": "ai-32"
+        },
+        {
+          "module": "agents",
+          "concept": "compounding latency",
+          "angle": "five tool calls at two seconds each is a ten second answer",
+          "id": "ai-33"
+        },
+        {
+          "module": "agents",
+          "concept": "prompt injection",
+          "angle": "why text inside a document can take over an agent",
+          "id": "ai-34"
+        },
+        {
+          "module": "agents",
+          "concept": "sandboxing generated code",
+          "angle": "running model-written code without trusting it",
+          "id": "ai-35"
+        },
+        {
+          "module": "agents",
+          "concept": "idempotent tool calls",
+          "angle": "the agent that retried and charged the customer twice",
+          "id": "ai-36"
+        },
+        {
+          "module": "agents",
+          "concept": "evaluating agents",
+          "angle": "why one success does not mean it works",
+          "id": "ai-37"
+        },
+        {
+          "module": "agents",
+          "concept": "tracing LLM applications",
+          "angle": "seeing every prompt, tool call and token in production",
+          "id": "ai-38"
+        },
+        {
+          "module": "training infrastructure",
+          "concept": "data parallelism and all-reduce",
+          "angle": "how eight GPUs average their gradients every step",
+          "id": "ai-39"
+        },
+        {
+          "module": "training infrastructure",
+          "concept": "pipeline parallelism",
+          "angle": "splitting layers across GPUs and the bubble it creates",
+          "id": "ai-40"
+        },
+        {
+          "module": "training infrastructure",
+          "concept": "mixed precision",
+          "angle": "training in 16 bit without the numbers falling apart",
+          "id": "ai-41"
+        },
+        {
+          "module": "training infrastructure",
+          "concept": "checkpointing at scale",
+          "angle": "saving a model that does not fit on one machine",
+          "id": "ai-42"
+        },
+        {
+          "module": "training infrastructure",
+          "concept": "LoRA vs full fine-tuning",
+          "angle": "training a tiny fraction of the weights and getting most of the result",
+          "id": "ai-43"
+        },
+        {
+          "module": "training infrastructure",
+          "concept": "distillation",
+          "angle": "teaching a small model to imitate a big one",
+          "id": "ai-44"
+        },
+        {
+          "module": "system design",
+          "concept": "designing a chat assistant",
+          "angle": "sessions, streaming, history and where the latency goes",
+          "id": "ai-45"
+        },
+        {
+          "module": "system design",
+          "concept": "designing RAG over company docs",
+          "angle": "ingestion, indexing, retrieval and permissions",
+          "id": "ai-46"
+        },
+        {
+          "module": "system design",
+          "concept": "designing an AI coding assistant",
+          "angle": "the latency budget behind an autocomplete that feels instant",
+          "id": "ai-47"
+        },
+        {
+          "module": "system design",
+          "concept": "designing a semantic cache",
+          "angle": "answering repeated questions without calling the model",
+          "id": "ai-48"
+        },
+        {
+          "module": "system design",
+          "concept": "designing an eval pipeline",
+          "angle": "catching regressions before a prompt change ships",
+          "id": "ai-49"
+        },
+        {
+          "module": "system design",
+          "concept": "designing a moderation layer",
+          "angle": "classifying input and output without doubling latency",
+          "id": "ai-50"
+        }
+      ]
+    }
+  },
+  "tracks": {
+    "root": 0.4,
+    "ai": 0.3,
+    "production": 0.3
+  }
 }
