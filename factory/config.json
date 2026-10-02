@@ -1,9 +1,11 @@
 {
-  "voice": "bm_lewis:0.5,bm_george:0.5",
+  "voice": "bf_emma",
   "voiceCandidates": [
-    "bm_lewis:0.5,bm_george:0.5"
+    "bf_emma",
+    "af_heart",
+    "am_fenrir"
   ],
-  "speed": 1.32,
+  "speed": 1.1,
   "lang": "en",
   "hindiVoice": "hf_alpha",
   "model": "gemini-3.8-flash",
@@ -81,5 +83,6 @@
     "hookFontSize": 58
   },
   "format": "explainer",
-  "handle": ""
+  "handle": "",
+  "wordsPerSecond": 2.77
 }
