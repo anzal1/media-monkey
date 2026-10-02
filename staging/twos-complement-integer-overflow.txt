@@ -1,26 +1,24 @@
-abs(INTMIN) returns a negative number.
-Your bounds checks get deleted by the compiler.
-Real systems crash on the edge case. 💥
+Two's complement controls how your CPU handles signed arithmetic.
+Positive numbers flip negative without a single warning.
+Your absolute value function can return negative numbers. 💥
 
-Two's complement is the binary format processors use to represent signed integers without building a separate subtraction circuit.
+Two's complement is the binary encoding computers use to represent negative integers using simple addition hardware.
 
 Here is where it bites:
-→ Hitting 2,147,483,648 views on a video counter
-→ Generating a random positive integer via abs(rand())
-→ Validating array indices before passing them to a buffer
+→ Storing view counts in signed 32-bit fields
+→ Running math.abs on the lowest possible signed integer
+→ Assuming an overflow will safely wrap in optimized C
 
-Because zero takes up one of the positive bit patterns, thirty-two bit signed integers range from -2,147,483,648 to +2,147,483,647. There is simply no positive twin for INTMIN.
+A 32-bit signed integer has an asymmetrical range. It stretches from negative 2,147,483,648 up to positive 2,147,483,647. Because zero claims a bit pattern where the leading sign bit is zero, positive numbers lose one slot.
 
-When you flip the bits of INTMIN and add one, the arithmetic logic unit wraps the result straight back around into the sign bit. On paper it looks like a math trick. In hardware, it leaves the exact same negative number in your register.
+When your counter hits INT_MAX and adds one, the CPU arithmetic logic unit carries that bit straight into the sign slot. The hardware treats the result as INT_MIN. If your code calls an absolute value function on that value, it flips the bits and adds one to invert it. But positive 2,147,483,648 does not exist in 32 bits, so it flips right back to negative.
 
-In C and C++, signed overflow is undefined behavior. Modern optimizing compilers know this, assume overflow never happens, and will delete your error-checking code entirely.
+In 2014, YouTube had to upgrade their view counter to a 64-bit integer because Psy's Gangnam Style broke past the 32-bit signed limit.
 
-Use unsigned types for pure bit manipulation, enable compiler sanitizers in your test pipeline, and handle INTMIN before calling absolute value.
+Save this for your next system design interview.
 
-Next time your telemetry counter wraps backwards, look at the bit width.
-
-What is the worst integer wrap bug you have ever caught in production?
+Has your production code ever silently wrapped a counter below zero?
 
 From the root, part 1. Follow for part 2.
 
-#computerscience #lowlevel #systemsengineering #cpp #softwareengineering #coding #systemdesign #backenddeveloper #devops #programming #webdevelopment #techtok
+#twoscomplement #computerscience #softwareengineering #lowlevel #systemdesign
