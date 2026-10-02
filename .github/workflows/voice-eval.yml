@@ -1,0 +1,35 @@
+name: 🎙️ Voice eval
+
+# Scores Kokoro voices by Whisper word error rate, clean and in noise, plus the
+# real speaking rate. Heavy on CPU, which is why it runs here and not locally.
+on:
+  workflow_dispatch:
+    inputs:
+      voices:
+        description: "comma list (blend = the current lewis/george blend)"
+        default: "bm_fable,bm_lewis,blend"
+      speeds:
+        default: "1.0,1.1,1.2,1.32"
+      dtype:
+        description: "q8 or fp32"
+        default: "q8"
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: sudo apt-get update -qq && sudo apt-get install -yqq ffmpeg
+      - name: Evaluate
+        run: |
+          mkdir -p voice-eval
+          node factory/voice-eval.mjs "${{ inputs.dtype }}" voice-eval "${{ inputs.voices }}" "${{ inputs.speeds }}" 2>&1 \
+            | grep -a '^{"voice"' | tee voice-eval/results.jsonl
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice-eval-${{ inputs.dtype }}
+          path: voice-eval/

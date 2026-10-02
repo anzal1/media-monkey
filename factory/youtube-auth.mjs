@@ -27,7 +27,13 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
   process.exit(2);
 }
 
-const SCOPE = 'https://www.googleapis.com/auth/youtube.upload';
+// upload to publish; the two read-only scopes let yt-insights.mjs see whether
+// Shorts are not being shown at all or are being shown and swiped past
+const SCOPE = [
+  'https://www.googleapis.com/auth/youtube.upload',
+  'https://www.googleapis.com/auth/youtube.readonly',
+  'https://www.googleapis.com/auth/yt-analytics.readonly',
+].join(' ');
 
 const server = http.createServer();
 await new Promise((res) => server.listen(0, '127.0.0.1', res));
