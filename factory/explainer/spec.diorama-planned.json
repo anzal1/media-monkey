@@ -4,7 +4,8 @@
   "art": {
     "kind": "photo",
     "art": "credit-card.webp",
-    "aspect": "1:1"
+    "aspect": "1:1",
+    "artKind": "object"
   },
   "eyebrow": "PAYMENTS",
   "accent": "#b91c1c",
@@ -73,6 +74,7 @@
         "n": 6,
         "art": "credit-card.webp",
         "aspect": "1:1",
+        "artKind": "object",
         "label": "₹450 to Corner Bakery",
         "bytes": "2 KB"
       },
@@ -121,6 +123,7 @@
         "n": 6,
         "art": "credit-card.webp",
         "aspect": "1:1",
+        "artKind": "object",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 1,
@@ -142,6 +145,7 @@
         "n": 6,
         "art": "credit-card.webp",
         "aspect": "1:1",
+        "artKind": "object",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 2,
@@ -177,6 +181,7 @@
         "kind": "card",
         "art": "credit-card.webp",
         "aspect": "1:1",
+        "artKind": "object",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 3,
@@ -199,6 +204,7 @@
         "n": 6,
         "art": "credit-card.webp",
         "aspect": "1:1",
+        "artKind": "object",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 3,
@@ -248,6 +254,7 @@
         "n": 6,
         "art": "credit-card.webp",
         "aspect": "1:1",
+        "artKind": "object",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 4,
@@ -301,6 +308,7 @@
         "n": 6,
         "art": "credit-card.webp",
         "aspect": "1:1",
+        "artKind": "object",
         "label": "₹450 to Corner Bakery"
       }
     },

@@ -1067,7 +1067,7 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
     if (!canon.key || !heroFits(sc)) { delete sc.hero; continue; }
     const h = sc.hero;
     h.key = canon.key; h.kind = canon.kind; h.n = N;
-    if (canon.art) { h.art = canon.art; h.aspect = canon.aspect; } else { delete h.art; delete h.aspect; }
+    if (canon.art) { h.art = canon.art; h.aspect = canon.aspect; h.artKind = canon.artKind; } else { delete h.art; delete h.aspect; delete h.artKind; }
     if (canon.unit) h.unit = canon.unit;
     if (!h.pieces && !seenHero && canon.pieces) h.pieces = canon.pieces;
     if (h.pieces) h.pieces = Array.from({ length: N }, (_, j) => h.pieces[j] || '');
@@ -1217,7 +1217,7 @@ export async function writeScenes(topic, script, opts = {}) {
     }
     if (bible && bible.hero) {
       const pick = pickArt(opts.art || [], bible.hero, [topic, script.hook, bible.hero.label || '', ...(script.beats || []).slice(0, 2).map((b) => b.text)], opts.recentArt || []);
-      if (pick) { bible.hero.art = pick.file; bible.hero.aspect = pick.aspect; bible.artSlug = pick.slug; } else delete bible.hero.art;
+      if (pick) { bible.hero.art = pick.file; bible.hero.aspect = pick.aspect; bible.hero.artKind = pick.kind; bible.artSlug = pick.slug; } else delete bible.hero.art;
     }
     if (bible) {
       log(`  world: art ${bible.artSlug || 'drawn'}, hero ${bible.hero ? `${bible.hero.kind} "${bible.hero.label}"` : 'none'}, ` +
@@ -1315,7 +1315,7 @@ export async function writeScenes(topic, script, opts = {}) {
 
   return {
     ...(world ? { theme: 'diorama' } : {}),
-    ...(world && bible && bible.artSlug ? { artSlug: bible.artSlug, art: { kind: 'photo', art: bible.hero.art, aspect: bible.hero.aspect } } : {}),
+    ...(world && bible && bible.artSlug ? { artSlug: bible.artSlug, art: { kind: 'photo', art: bible.hero.art, aspect: bible.hero.aspect, artKind: bible.hero.artKind } } : {}),
     // a series episode wears its series and number, which is what makes people
     // follow for the next one
     eyebrow: opts.series

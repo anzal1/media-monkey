@@ -993,7 +993,8 @@
           const q = k * (sc.hero.pieces ? 1.15 : 0.62), c = j % g.cols, r = Math.floor(j / g.cols);
           const ab = artBox(sc.hero);
           const bg = `background-image:${heroArt(sc.hero).replace(/"/g, '&quot;')};background-size:${ab.w * q}px ${ab.h * q}px;background-position:${(ab.ox - c * g.tw) * q}px ${(ab.oy - r * g.th) * q}px`;
-          return `<div class="h-slot f3bb f3tok" style="width:${g.tw * q}px;height:${g.th * q}px;opacity:0"><div class="himg" style="${bg}"></div><div class="gly"></div></div>`;
+          const blend = sc.hero.art && sc.hero.artKind && sc.hero.artKind !== 'photo' ? ';mix-blend-mode:multiply' : '';
+          return `<div class="h-slot f3bb f3tok" style="width:${g.tw * q}px;height:${g.th * q}px;opacity:0"><div class="himg" style="${bg}${blend}"></div><div class="gly"></div></div>`;
         }).join('');
     }
     return `<div class="f3"><div class="f3plane">${svg}${cards}${edge}${hero}</div></div>`;
@@ -1790,6 +1791,8 @@
       const art = heroArt(h);
       rootEl.querySelectorAll('.himg').forEach((im, j) => {
         im.style.backgroundImage = art;
+        // library objects and documents sit on near-paper: multiply drops that ground
+        if (h.art && h.artKind && h.artKind !== 'photo') im.style.mixBlendMode = 'multiply';
         const ab = artBox(h);
         im.style.backgroundSize = `${ab.w}px ${ab.h}px`;
         im.style.backgroundPosition = j ? `${ab.ox - ((j - 1) % g.cols) * g.tw}px ${ab.oy - Math.floor((j - 1) / g.cols) * g.th}px` : `${ab.ox}px ${ab.oy}px`;
