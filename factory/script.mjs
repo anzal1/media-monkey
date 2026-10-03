@@ -85,6 +85,30 @@ function cleanSpoken(s) {
     .trim();
 }
 
+/**
+ * A spelled-out figure before thousand/million/billion has to be a real English
+ * number from 1 to 999 ("sixteen", "one hundred sixty seven"). The model once
+ * tried to write 16,777,216 in words and produced "one sixty-seven million",
+ * which the voice read out as a confident wrong number. Returns the offending
+ * phrase or null. Digits and "sixteen point seven million" pass.
+ */
+const NUM_U = 'one|two|three|four|five|six|seven|eight|nine';
+const NUM_T = 'ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen';
+const NUM_Y = 'twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety';
+const NUM_WORD = `${NUM_U}|${NUM_T}|${NUM_Y}|hundred`;
+const NUM_OK = new RegExp(
+  `^(?:(?:${NUM_U}) hundred)?(?: and)?(?: ?(?:${NUM_T}|(?:${NUM_Y})(?: (?:${NUM_U}))?|(?:${NUM_U})))?$`);
+export function badSpelledNumber(s) {
+  const flat = String(s).toLowerCase().replace(/-/g, ' ');
+  const run = new RegExp(`\\b((?:(?:${NUM_WORD}|and) )+)(thousand|million|billion|trillion)\\b`, 'g');
+  for (const m of flat.matchAll(run)) {
+    // "a hundred million" and bare "hundred million" are fine English
+    const words = m[1].trim().replace(/^(?:and )+/, '').replace(/^(?:a )?hundred\b/, 'one hundred');
+    if (!NUM_OK.test(words)) return `${words} ${m[2]}`;
+  }
+  return null;
+}
+
 // Unicode-aware on purpose: Devanagari has to survive this for lang=hi.
 function normWord(w) {
   return String(w).replace(/[^\p{L}\p{N}'%.-]/gu, '');
@@ -192,6 +216,12 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
 
   const hook = cleanSpoken(obj.hook || '');
   if (!hook) err('hook is empty');
+  const spelled = [hook, ...(Array.isArray(obj.beats) ? obj.beats : []).map((b) => (typeof b === 'string' ? b : (b && b.text) || '')),
+    obj.cta || ''].map(badSpelledNumber).find(Boolean);
+  if (spelled) {
+    err(`"${spelled}" is not a number anyone says. Write large figures as digits ("16,777,216") ` +
+        'or rounded with the scale ("about 16.7 million", "sixteen million"), never as a long run of words.');
+  }
   if (wordsOf(hook).length > 12) err(`hook is ${wordsOf(hook).length} words, max 12`);
   // Every top reel opened on a moment ("A customer taps pay once.", "Your hot
   // key expires at 02:00:00.000."). When the topics turned into "why X" titles

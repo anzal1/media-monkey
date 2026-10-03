@@ -22,6 +22,11 @@ nod along to without really knowing.
   read aloud by a TTS engine, so write it the way it should sound.
 - Numbers spoken as words when they are small and awkward ("about a tenth of a
   second", not "0.1s"). Keep real figures exact.
+- Large numbers: never spell a figure over a thousand out in words by hand.
+  Write the real digits ("16,777,216") or a sensible rounding with its scale
+  ("about 16.7 million", "sixteen million"). "One sixty-seven million" is not a
+  number and the voice will read it out as one. The spoken figure must match
+  the real value in the caption.
 
 ## Hard content rules
 1. **Every claim must be real and source-checkable.** If you are not confident a

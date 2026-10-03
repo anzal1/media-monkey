@@ -193,10 +193,47 @@ const SAY = [
   [/(\d)\s?KB\b/g, '$1 kilobytes'],
   [/(\d)\s?TB\b/g, '$1 terabytes'],
 ];
+
+/*
+ * Big integers are spelled out here instead of trusting the engine. Kokoro
+ * drops the commas and hands "16777216" to the phonemizer, which is fine until
+ * a model-written figure or a leading minus sign shows up, and then the number
+ * comes out as a different number. Words are deterministic.
+ */
+const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+  'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+const SCALES = ['', 'thousand', 'million', 'billion', 'trillion'];
+function below1000(n) {
+  const out = [];
+  if (n >= 100) { out.push(ONES[Math.floor(n / 100)], 'hundred'); n %= 100; }
+  if (n >= 20) { out.push(TENS[Math.floor(n / 10)]); n %= 10; }
+  if (n > 0) out.push(ONES[n]);
+  return out.join(' ');
+}
+export function numberWords(digits) {
+  const groups = [];
+  for (let s = String(digits).replace(/^0+(?=\d)/, ''); s.length; s = s.slice(0, -3)) groups.push(Number(s.slice(-3)));
+  if (groups.length > SCALES.length) return String(digits); // past a trillion, leave it to the engine
+  if (groups.every((g) => g === 0)) return 'zero';
+  return groups.map((g, i) => (g ? `${below1000(g)} ${SCALES[i]}`.trim() : '')).reverse().filter(Boolean).join(' ');
+}
+
 export function speakable(text) {
   let t = String(text);
   for (const [re, to] of SAY) t = t.replace(re, to);
-  return t;
+  return t
+    // "16.7M", "10K", "1.2B": the bare letter would be read as a letter
+    .replace(/(\d)\s?M\b/g, '$1 million')
+    .replace(/(\d)\s?B\b/g, '$1 billion')
+    .replace(/(\d)\s?K\b/g, '$1 thousand')
+    // "0.1s" and "3s" are seconds; "90s" is left alone because it is usually a decade
+    .replace(/(\d\.\d+|\b\d)\s?s\b/g, '$1 seconds')
+    // a leading minus is not reliably voiced; the range rule only covers 3-5
+    .replace(/(^|[\s(])-(?=\d)/g, '$1minus ')
+    // a million and up, with or without commas, as English words
+    .replace(/(?<![\d.,])\d{1,3}(?:,\d{3}){2,}(?![\d]|\.\d)|(?<![\d.,])\d{7,}(?![\d]|\.\d)/g,
+      (m) => numberWords(m.replace(/,/g, '')));
 }
 
 async function generate(text, voice, speed) {
