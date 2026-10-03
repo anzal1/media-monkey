@@ -1,0 +1,33 @@
+{
+  "theme": "diorama",
+  "eyebrow": "SECURITY",
+  "accent": "#b91c1c",
+  "episode": "THE PROD MONKEY",
+  "handle": "",
+  "title": { "kicker": "SECURITY", "title": "Your code arrives in two seconds.", "keyword": "one time password" },
+  "titleUntil": 3,
+  "starts": [3, 7.5, 12, 16.5, 21, 25.5],
+  "scenes": [
+    { "type": "phone", "headline": "She pays for bread.", "subhead": "",
+      "data": { "app": "pay", "merchant": "Corner Bakery", "amount": "₹450.00", "note": "Order 2041", "method": "Card •••• 0042" },
+      "beat": 0, "half": 0, "of": 1 },
+    { "type": "phone", "headline": "A code lands.", "subhead": "",
+      "data": { "app": "notify", "from": "Messages", "title": "Verification code", "body": "Use 482 913 to confirm. Never share it.", "code": "482 913" },
+      "beat": 1, "half": 0, "of": 1 },
+    { "type": "phone", "headline": "The bank page loads.", "subhead": "",
+      "data": { "app": "browser", "url": "pay.example.com/confirm", "title": "Confirm payment" },
+      "beat": 2, "half": 0, "of": 1 },
+    { "type": "flow", "headline": "Three hops away.", "subhead": "",
+      "data": { "nodes": [ { "label": "Phone", "sub": "app", "kind": "mobile", "state": "ok" },
+        { "label": "Gateway", "sub": "checks", "kind": "shield", "state": "ok", "becomes": "blocked" },
+        { "label": "Bank", "sub": "ledger", "kind": "database", "state": "ok" } ], "edge": "request", "traffic": "flowing", "active": 1 },
+      "beat": 3, "half": 0, "of": 1 },
+    { "type": "compare", "headline": "SMS or app.", "subhead": "",
+      "data": { "left": { "label": "SMS code", "sub": "can be swapped", "kind": "mobile" }, "right": { "label": "App code", "sub": "stays on device", "kind": "lock" },
+        "rows": [ { "left": "SIM swap risk", "right": "bound to phone" } ] },
+      "beat": 4, "half": 0, "of": 1 },
+    { "type": "stat", "headline": "Thirty seconds.", "subhead": "",
+      "data": { "value": "30s", "label": "CODE LIFETIME", "tone": "bad" }, "mascot": false,
+      "beat": 5, "half": 0, "of": 1 }
+  ]
+}

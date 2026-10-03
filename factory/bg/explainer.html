@@ -305,6 +305,229 @@
     letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
   #title .tmascot { position: absolute; left: 50%; transform: translateX(-50%);
     top: 1010px; height: 360px; }
+
+  /* ================= diorama theme (spec "theme": "diorama") =================
+     A prototype behind a flag: none of these rules match without the class on
+     <html>, so the flat theme renders exactly as before. Daylight tabletop:
+     the same warm paper ground, a printed grid receding in perspective, matte
+     slabs with ink outlines and soft contact shadows. Focus is lift and
+     shadow, never glow. Motion is settle and glide only. */
+  html.diorama #grid, html.diorama #glow, html.diorama #foot,
+  html.diorama #title .tmascot { display: none; }
+  #wsky { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to bottom, #f7f5f1 0%, #f5f2ec 36%, #efebe3 100%); }
+  /* the floor's vanishing point is the perspective origin, so the horizon
+     sits at y=700 whatever the plane's size */
+  #wfloor { position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+    perspective: 700px; perspective-origin: 540px 700px; }
+  #wplane { position: absolute; left: -2460px; top: -3100px; width: 6000px; height: 5200px;
+    transform-origin: 50% 100%; transform: rotateX(80deg);
+    background-image:
+      linear-gradient(to right, rgba(23,22,20,.085) 2px, transparent 2px),
+      linear-gradient(to bottom, rgba(23,22,20,.085) 2px, transparent 2px);
+    background-size: 140px 140px;
+    -webkit-mask-image: linear-gradient(to top, #000 0%, #000 30%, transparent 88%);
+    mask-image: linear-gradient(to top, #000 0%, #000 30%, transparent 88%); }
+  #wvig { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 80% at 50% 48%, transparent 60%, rgba(120,100,70,.10) 100%); }
+  #wstage, #hobjs { position: absolute; inset: 0; pointer-events: none; }
+  #hobjs { z-index: 4; }
+  html.diorama #head { z-index: 5; }
+  html.diorama #headrow { border-bottom-color: transparent; }
+  /* the header hairline doubles as the progress track */
+  html.diorama #bar { height: 2px; z-index: 5; }
+  html.diorama #hero { left: 80px; top: 600px; width: 880px; height: 680px; }
+  html.diorama #title .kick { top: 330px; }
+  html.diorama #title .big { top: 410px; font-size: 96px; }
+  html.diorama #title .big, html.diorama #title .kick, html.diorama #title .rule, html.diorama #title .kw { z-index: 2; }
+  #title .tback { position: absolute; inset: 0; }
+  html.diorama .stat { align-items: center; text-align: center; }
+  html.diorama .stat .v { align-self: center; font-size: 230px; }
+  html.diorama .stat .srule { margin-left: auto; margin-right: auto; }
+  /* the mascot stands on the floor, small, with a contact shadow */
+  html.diorama #mascot { left: 34px; top: 1118px; height: 196px; z-index: 3;
+    filter: drop-shadow(0 16px 12px rgba(60,45,25,.22)); }
+
+  /* ---- stack3d: matte slabs on the table ---- */
+  .s3wrap { position: absolute; inset: 0; }
+  .s3 { position: absolute; inset: 0; perspective: 1700px; perspective-origin: 540px 1070px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 430px, #000 600px, #000 1300px, transparent 1470px);
+    mask-image: linear-gradient(to bottom, transparent 430px, #000 600px, #000 1300px, transparent 1470px); }
+  .s3wrap.twin .s3 { -webkit-mask-image: none; mask-image: none; }
+  .s3rig { position: absolute; left: 540px; top: 1070px; width: 0; height: 0; transform-style: preserve-3d; }
+  .s3wrap.twin .s3rig[data-side="l"] { left: 285px; top: 1075px; }
+  .s3wrap.twin .s3rig[data-side="r"] { left: 795px; top: 1075px; }
+  .s3plate { position: absolute; transform-style: preserve-3d; }
+  .s3face, .s3side, .s3shad { position: absolute; inset: 0; border-radius: 24px; }
+  /* thickness: a few layers under the face read as a solid side edge */
+  .s3side { background: #d9d3c7; }
+  .s3side.b { background: #cfc8bb; border: 1px solid rgba(23,22,20,.55); }
+  .s3face { background: #f3f0ea; border: 1px solid rgba(23,22,20,.62);
+    background-image:
+      linear-gradient(to right, rgba(23,22,20,.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(23,22,20,.045) 1px, transparent 1px);
+    background-size: 46px 46px; }
+  .s3plate.on .s3face { background-color: #fffdf8; border-color: var(--accent); }
+  .s3plate.on .s3side { background: color-mix(in srgb, var(--accent) 55%, #d9d3c7); }
+  .s3plate.on .s3side.b { background: color-mix(in srgb, var(--accent) 70%, #cfc8bb); border-color: var(--accent); }
+  .s3shad { background: rgba(60,45,25,.30); filter: blur(10px); }
+  .s3lab { position: absolute; left: 32px; bottom: 24px; white-space: nowrap;
+    font: 700 28px 'JetBrains Mono', monospace; letter-spacing: .14em; color: rgba(23,22,20,.42); }
+  .s3plate.on .s3lab { color: var(--accent); }
+  .s3bb, .f3bb { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .s3pt { position: absolute; width: 2px; height: 2px; }
+  .s3tag { position: absolute; left: 80px; top: 590px; height: 200px; width: 620px; }
+  .s3t { position: absolute; left: 0; top: 0; display: flex; align-items: flex-start; gap: 22px; }
+  .s3t b { position: relative; font-size: 168px; font-weight: 800; line-height: .82; letter-spacing: -.05em; color: var(--ink); padding-bottom: 16px; }
+  .s3t b::after { content: ''; position: absolute; left: 4px; right: 4px; bottom: 0; height: 8px; border-radius: 4px; background: var(--accent); }
+  .s3t div { display: flex; flex-direction: column; padding-top: 6px; }
+  .s3t small { font: 500 21px 'JetBrains Mono', monospace; letter-spacing: .26em; color: #8a857c; }
+  .s3t span { margin-top: 8px; font: 700 40px 'JetBrains Mono', monospace; letter-spacing: .06em; color: var(--ink); }
+  .s3t em { margin-top: 10px; font: 400 23px 'JetBrains Mono', monospace; font-style: normal; letter-spacing: .04em; color: var(--mute); }
+  .s3wire { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+  .s3wire path { fill: none; stroke-linecap: round; }
+  .s3wire .glo { stroke: rgba(60,45,25,.16); stroke-width: 10; filter: blur(5px); transform: translateY(10px); }
+  .s3wire .core { stroke: var(--ink); stroke-width: 3; }
+  .s3name { position: absolute; transform: translateX(-50%); white-space: nowrap;
+    font: 700 25px 'JetBrains Mono', monospace; letter-spacing: .26em; color: var(--ink); }
+
+  /* ---- phone: a clean light-mode handset with a real shadow ---- */
+  .ph { position: absolute; left: 50%; top: 466px; width: 392px; height: 780px; margin-left: -196px; transform-origin: 50% 0; }
+  .phbody { position: absolute; inset: 0; border-radius: 62px; background: #dedad3;
+    border: 1px solid rgba(23,22,20,.5);
+    box-shadow: inset 0 0 0 3px #ece9e3, inset 0 0 0 9px #16171a, 0 46px 70px -18px rgba(60,45,25,.38), 0 10px 22px rgba(60,45,25,.14); }
+  .phglow { position: absolute; inset: 0; border-radius: 62px; opacity: 0; }
+  .phb { position: absolute; width: 4px; border-radius: 2px; background: #c9c4bb; border: 1px solid rgba(23,22,20,.35); }
+  .phb.a { left: -5px; top: 150px; height: 46px; } .phb.b { left: -5px; top: 214px; height: 78px; }
+  .phb.c { right: -5px; top: 190px; height: 104px; }
+  .phscr { position: absolute; inset: 11px; border-radius: 52px; overflow: hidden; background: #ffffff;
+    display: flex; flex-direction: column; color: #171614; }
+  .phisland { position: absolute; left: 50%; top: 24px; width: 108px; height: 31px; margin-left: -54px;
+    border-radius: 18px; background: #0c0c0e; }
+  .phhome { position: absolute; left: 50%; bottom: 22px; width: 132px; height: 5px; margin-left: -66px;
+    border-radius: 3px; background: rgba(23,22,20,.75); }
+  .phsb { flex: 0 0 58px; display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 30px 6px 40px; font: 600 18px Inter, sans-serif; color: #171614; }
+  .phsb svg { height: 13px; margin-left: 6px; }
+  .pchd { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 12px 18px 14px;
+    border-bottom: 1px solid #ecebe8; background: #fbfbfa; }
+  .pchd .bk { width: 14px; height: 22px; }
+  .pchd .av { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+    font: 700 21px Inter, sans-serif; color: #fff; background: var(--accent); }
+  .pchd .who { display: flex; flex-direction: column; line-height: 1.15; }
+  .pchd .who b { font: 600 21px Inter, sans-serif; }
+  .pchd .who small { font: 400 15px Inter, sans-serif; color: #15803d; }
+  .pcmsgs { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 9px; padding: 14px 14px 12px; overflow: hidden; background: #ffffff; }
+  .bub { display: flex; }
+  .bub.me { justify-content: flex-end; }
+  .bub .bb { max-width: 80%; padding: 10px 14px 8px; border-radius: 20px; font: 400 19px/1.3 Inter, sans-serif; position: relative; }
+  .bub.them .bb { background: #efeeeb; border-bottom-left-radius: 6px; }
+  .bub.me .bb { background: var(--accent); color: #fff; border-bottom-right-radius: 6px; }
+  .bub.pho .bb { padding: 5px 5px 7px; }
+  .bub .tm { display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 3px;
+    font: 400 12px Inter, sans-serif; font-style: normal; opacity: .7; }
+  .bub .tm svg { width: 22px; height: 12px; }
+  .bub .tm .tk2 { opacity: 0; }
+  .phimg { width: 244px; height: 183px; border-radius: 15px; background-size: cover; background-color: rgba(255,255,255,.25); }
+  .bub.them .phimg { background-color: #e2e0dc; }
+  .typing { display: flex; gap: 6px; padding: 14px 16px; border-radius: 20px; background: #efeeeb; width: max-content; opacity: 0; }
+  .typing i { width: 9px; height: 9px; border-radius: 50%; background: #8a857c; }
+  .pcin { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 10px 14px 44px; background: #fbfbfa;
+    border-top: 1px solid #ecebe8; }
+  .pcin .pl { width: 34px; height: 34px; color: #8a857c; font: 400 30px/30px Inter, sans-serif; text-align: center; }
+  .pcin .fld { flex: 1; height: 44px; border-radius: 22px; background: #f1f0ed; color: #a09a90;
+    font: 400 18px/44px Inter, sans-serif; padding-left: 16px; }
+  .pcin .snd { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); }
+  .pcin .snd svg { width: 20px; height: 20px; }
+  /* payment sheet */
+  .ppbg { flex: 1; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; opacity: .5; }
+  .ppbg i { display: block; height: 96px; border-radius: 18px; background: #efeeeb; }
+  .ppbg i:nth-child(2) { height: 56px; width: 70%; }
+  .ppsheet { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 24px 50px; border-radius: 30px 30px 0 0;
+    background: #fff; box-shadow: 0 -12px 30px rgba(60,45,25,.12); }
+  .ppsheet .hdl { width: 46px; height: 5px; border-radius: 3px; background: #d8d4cc; margin: 0 auto 20px; }
+  .pphd { display: flex; align-items: center; gap: 12px; font: 600 20px Inter, sans-serif; }
+  .pphd .mk { width: 42px; height: 42px; border-radius: 12px; background: #f1f0ed; padding: 9px; }
+  .ppamt { margin: 22px 0 18px; font: 800 58px Inter, sans-serif; letter-spacing: -.03em; }
+  .pprow { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid #ecebe8;
+    font: 400 17px Inter, sans-serif; color: #6f6a61; }
+  .pprow b { font: 500 17px 'JetBrains Mono', monospace; color: #171614; }
+  .ppbtn { position: relative; margin-top: 20px; height: 62px; border-radius: 18px; display: grid; place-items: center;
+    background: var(--accent); font: 700 21px Inter, sans-serif; color: #fff; }
+  .ppbtn svg { position: absolute; width: 34px; height: 34px; opacity: 0; }
+  .ppok { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; background: #fff; border-radius: 30px 30px 0 0; opacity: 0; }
+  .ppok svg { width: 112px; height: 112px; }
+  .ppok b { font: 800 34px Inter, sans-serif; }
+  .ppok small { font: 400 17px 'JetBrains Mono', monospace; color: #6f6a61; }
+  /* lock screen notification */
+  .pnot { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--accent) 16%, #f7f5f1), #f7f5f1 70%); }
+  .pnot .dt { margin-top: 36px; font: 600 19px Inter, sans-serif; color: #4a463f; }
+  .pnot .clk { font: 600 104px/1 Inter, sans-serif; letter-spacing: -.04em; margin-top: 4px; }
+  .pban { position: absolute; left: 12px; right: 12px; top: 250px; padding: 14px 16px; border-radius: 24px;
+    background: rgba(255,255,255,.96); box-shadow: 0 14px 30px rgba(60,45,25,.16); display: flex; gap: 12px; opacity: 0; }
+  .pban .ai { flex: 0 0 42px; height: 42px; border-radius: 11px; padding: 9px; background: var(--accent); }
+  .pban .bt { flex: 1; min-width: 0; }
+  .pban .row { display: flex; justify-content: space-between; font: 600 14px Inter, sans-serif; color: #8a857c; letter-spacing: .04em; }
+  .pban .ti { margin-top: 3px; font: 700 18px Inter, sans-serif; }
+  .pban .bd { margin-top: 2px; font: 400 17px/1.3 Inter, sans-serif; color: #3c3a36; }
+  .pban .otp { font: 700 19px 'JetBrains Mono', monospace; color: var(--accent); letter-spacing: .06em; }
+  /* browser */
+  .pbrw { flex: 1; display: flex; flex-direction: column; }
+  .pbbar { margin: 6px 12px 0; height: 46px; border-radius: 14px; background: #f1f0ed; display: flex; align-items: center; gap: 8px;
+    padding: 0 14px; font: 400 17px 'JetBrains Mono', monospace; color: #3c3a36; white-space: nowrap; overflow: hidden; }
+  .pbbar svg { flex: 0 0 15px; height: 16px; }
+  .pbprog { height: 3px; margin: 8px 12px 0; border-radius: 2px; overflow: hidden; }
+  .pbprog i { display: block; height: 100%; width: 0; background: var(--accent); }
+  .pbpage { flex: 1; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .pbpage .blk { opacity: 0; }
+  .pbpage .hero { height: 170px; border-radius: 16px; background-size: cover; }
+  .pbpage h3 { font: 700 25px Inter, sans-serif; margin-top: 4px; }
+  .pbpage i { display: block; height: 13px; border-radius: 7px; background: #efeeeb; }
+
+  /* ---- flow on the floor: ink wires on paper, tokens moving along them ---- */
+  .f3 { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 540px 640px; }
+  .f3plane { position: absolute; left: 40px; top: 600px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
+  .f3svg { position: absolute; inset: 0; width: 1000px; height: 1000px; overflow: visible; }
+  .f3svg path { fill: none; stroke-linecap: round; }
+  .f3base { stroke: rgba(23,22,20,.16); stroke-width: 3; stroke-dasharray: 2 12; }
+  .f3core { stroke: var(--ink); stroke-width: 3.5; }
+  .f3glo { stroke: var(--accent); stroke-width: 6; opacity: 0; }
+  .f3pk { fill: var(--accent); stroke: var(--ink); stroke-width: 2; }
+  .f3pkh { fill: rgba(60,45,25,.25); }
+  .f3n { position: absolute; width: 0; height: 0; transform-style: preserve-3d; }
+  .f3foot { position: absolute; left: -95px; top: -95px; width: 190px; height: 190px; border-radius: 30px;
+    border: 1px solid rgba(23,22,20,.3); background: rgba(255,253,248,.55); }
+  .f3fglow { position: absolute; inset: -1px; border-radius: 30px; border: 3px solid var(--accent); opacity: 0; }
+  .f3card { width: 240px; padding: 18px 18px 16px; border-radius: 22px; text-align: center;
+    background: #fffdf8; border: 1px solid rgba(23,22,20,.55); box-shadow: 0 6px 0 #ddd7cb, 0 7px 0 rgba(23,22,20,.4), 0 30px 40px -12px rgba(60,45,25,.3); }
+  .f3card .ico { display: block; width: 50px; height: 50px; margin: 0 auto 10px; }
+  .f3card b { display: block; font: 700 29px Inter, sans-serif; letter-spacing: -.01em; }
+  .f3card small { display: block; margin-top: 5px; font: 400 19px 'JetBrains Mono', monospace; color: var(--mute); }
+  .f3card .st { display: none; margin-top: 10px; font: 500 16px 'JetBrains Mono', monospace; letter-spacing: .14em; }
+  .f3n.s-blocked .f3card, .f3n.s-dead .f3card { border-color: var(--bad); }
+  .f3n.s-blocked .st, .f3n.s-dead .st, .f3n.s-busy .st { display: block; }
+  .f3n.s-blocked .st { color: var(--bad); } .f3n.s-dead .st { color: #8a857c; } .f3n.s-busy .st { color: #b45309; }
+  .f3n.s-dead .f3card { filter: grayscale(1); opacity: .6; }
+  .f3edge { white-space: nowrap; font: 500 21px 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+
+  /* ---- the hero object: one thing that travels the whole reel ---- */
+  .hobj { position: absolute; inset: 0; }
+  .hpiece { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; border-radius: 12px; background: #f4f1ea;
+    box-shadow: 0 0 0 1.5px rgba(23,22,20,.7), 0 26px 30px -14px rgba(60,45,25,.42); }
+  .htile { border-radius: 7px; }
+  .hpiece .himg { position: absolute; inset: 0; background-repeat: no-repeat; }
+  .hpiece .gly { position: absolute; inset: 0; padding: 6px 8px; opacity: 0; overflow: hidden; word-break: break-all;
+    font: 700 34px/44px 'JetBrains Mono', monospace; letter-spacing: .08em; color: var(--accent);
+    white-space: pre; text-align: center; padding: 16px 10px; }
+  .htile .gly { font-size: 30px; line-height: 36px; padding: 10px 4px; }
+  .ttag { position: absolute; left: 0; top: 0; white-space: nowrap; padding: 3px 9px; border-radius: 6px;
+    font: 600 17px 'JetBrains Mono', monospace; color: var(--ink); background: #fffdf8;
+    border: 1px solid rgba(23,22,20,.65); box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 70%, transparent); transform: translate(-50%, -100%); }
+  .hmeta { position: absolute; left: 0; top: 0; transform: translateX(-50%); white-space: nowrap;
+    font: 500 21px 'JetBrains Mono', monospace; letter-spacing: .08em; color: var(--mute); }
+  .hmeta b { margin-left: 14px; color: var(--accent); font-weight: 700; }
 </style>
 
 <div id="grid"></div>
@@ -351,6 +574,47 @@
   const titleUntil = Number(S.titleUntil || 0);
 
   const $ = (id) => document.getElementById(id);
+
+  // World theme: a flag on the spec. Absent, nothing below the guard runs and
+  // the page is the light theme it always was.
+  const WORLD = S.theme === 'diorama';
+  let DRIFT = 1;          // camera drift amplitude; the loop ending eases it to 0
+  if (WORLD) {
+    const root = document.documentElement;
+    root.classList.add('diorama');
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div id="wsky"></div><div id="wfloor"><div id="wplane"></div></div><div id="wvig"></div>');
+    $('stage').insertAdjacentHTML('afterbegin', '<div id="wstage"></div>');
+    $('hero').insertAdjacentHTML('afterend', '<div id="hobjs"></div>');
+    $('title').insertAdjacentHTML('afterbegin', '<div class="tback"></div>');
+    // a closing scene with loopTo and no content of its own reuses the title
+    // backdrop, and a title with no backdrop borrows the closing scene's
+    const scs = S.scenes || [];
+    const loop = scs.find((s) => s.loopTo != null);
+    if (S.title && loop) {
+      if (!S.title.backdrop && loop.type) S.title.backdrop = { type: loop.type, data: loop.data };
+      if (!loop.type && S.title.backdrop) { loop.type = S.title.backdrop.type; loop.data = S.title.backdrop.data; }
+    }
+    // stack3d scenes may omit plates and inherit them from the previous stack
+    const plates = {};
+    for (const s of scs) {
+      if (s.type !== 'stack3d' || !s.data) continue;
+      const key = s.data.key || 'stack';
+      if (!s.data.plates && plates[key]) s.data.plates = plates[key];
+      if (s.data.plates) plates[key] = s.data.plates;
+    }
+    const bd = S.title && S.title.backdrop;
+    if (bd && bd.type === 'stack3d' && bd.data && !bd.data.plates) bd.data.plates = plates[bd.data.key || 'stack'] || [];
+  }
+  /** World ground: a slow sway of the floor, zero at t=0 so a loop can land on frame 0. */
+  function updateGround(t) {
+    if (!WORLD) return;
+    const a = DRIFT;
+    $('wplane').style.backgroundPosition =
+      `${(46 * Math.sin(t * 0.13) * a).toFixed(2)}px ${(90 * Math.sin(t * 0.09) * a).toFixed(2)}px`;
+    $('wfloor').style.perspectiveOrigin = `${(540 + 34 * Math.sin(t * 0.17) * a).toFixed(2)}px 700px`;
+  }
+
   $('eyebrow').textContent = S.eyebrow || '';
   $('episode').textContent = S.episode || '';
   $('handle').textContent = S.handle || '';
@@ -422,6 +686,89 @@
 
   function esc(s) { return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  // ---------- world: hero artwork ----------
+  // The hero is drawn, not photographed: no stock image and nothing that
+  // could be someone's real photo, card or document.
+  const HW = 320, HH = 240;
+  const HERO_SVG = {
+    photo: () => `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><defs>` +
+      `<linearGradient id='s' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#1b2547'/>` +
+      `<stop offset='.5' stop-color='#9a5a78'/><stop offset='.82' stop-color='#ec9a6d'/><stop offset='1' stop-color='#f6c48a'/></linearGradient>` +
+      `<radialGradient id='g' cx='.66' cy='.62' r='.4'><stop offset='0' stop-color='#ffe3b3' stop-opacity='.75'/><stop offset='1' stop-color='#ffe3b3' stop-opacity='0'/></radialGradient></defs>` +
+      `<rect width='320' height='240' fill='url(#s)'/><rect width='320' height='240' fill='url(#g)'/>` +
+      `<circle cx='212' cy='150' r='26' fill='#fff1d6'/>` +
+      `<path d='M0 168 C40 140 80 146 118 160 C160 176 200 150 244 152 C276 154 300 162 320 158 V240 H0Z' fill='#4a3150'/>` +
+      `<path d='M0 192 C60 172 120 186 170 194 C220 202 270 182 320 186 V240 H0Z' fill='#271d34'/>` +
+      `<path d='M0 214 C90 204 180 216 320 208 V240 H0Z' fill='#151221'/>` +
+      `<path d='M60 196 l6 -16 l6 16 Z M66 182 v-6' stroke='#151221' stroke-width='2' fill='#151221'/></svg>`,
+    card: () => `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><defs><linearGradient id='c' x1='0' y1='0' x2='1' y2='1'>` +
+      `<stop offset='0' stop-color='#2c3140'/><stop offset='1' stop-color='#11131a'/></linearGradient></defs>` +
+      `<rect width='320' height='240' fill='url(#c)'/><rect x='28' y='70' width='50' height='38' rx='7' fill='#c9a86a'/>` +
+      `<text x='28' y='164' font-family='monospace' font-size='24' fill='#e8e6e1' letter-spacing='3'>•••• •••• 0042</text>` +
+      `<text x='28' y='204' font-family='monospace' font-size='15' fill='#8a9099' letter-spacing='2'>VALID 09/29</text></svg>`,
+    file: (h) => `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><rect width='320' height='240' fill='#e9e7e2'/>` +
+      `<rect x='30' y='30' width='260' height='20' rx='4' fill='#c8c4bc'/>` +
+      [70, 98, 126, 154, 182].map((y, i) => `<rect x='30' y='${y}' width='${i % 2 ? 200 : 250}' height='12' rx='6' fill='#d6d2ca'/>`).join('') +
+      `<text x='290' y='222' text-anchor='end' font-family='monospace' font-size='18' fill='#6f6a61'>${esc((h.ext || 'PDF').toUpperCase())}</text></svg>`,
+    packet: () => `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><rect width='320' height='240' fill='#15181f'/>` +
+      `<rect width='320' height='48' fill='#252a35'/>` +
+      [80, 110, 140, 170, 200].map((y, i) => `<rect x='24' y='${y}' width='${[270, 230, 260, 190, 240][i]}' height='12' rx='6' fill='#2f3542'/>`).join('') + `</svg>`,
+    message: (h) => `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><rect width='320' height='240' fill='#1d2027'/>` +
+      `<text x='26' y='80' font-family='sans-serif' font-size='30' fill='#ecebe7'>${esc(h.text || 'hey, look')}</text>` +
+      `<rect x='26' y='120' width='230' height='14' rx='7' fill='#30343c'/><rect x='26' y='150' width='170' height='14' rx='7' fill='#30343c'/></svg>`,
+  };
+  const heroArt = (h) => `url("data:image/svg+xml;utf8,${encodeURIComponent((HERO_SVG[h && h.kind] || HERO_SVG.photo)(h || {}))}")`;
+  const heroGrid = (h) => {
+    const n = Math.max(1, Math.min(12, (h && h.n) || 6));
+    const cols = n <= 3 ? n : Math.ceil(n / 2);
+    return { n, cols, rows: Math.ceil(n / cols), tw: HW / cols, th: HH / Math.ceil(n / cols) };
+  };
+  const SVG_TICK = '<svg viewBox="0 0 22 12"><path d="M1 6.5l3.5 3.5L11 2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path class="tk2" d="M8.5 9.5l.5.5L16.5 2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const SVG_SB = '<svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="currentColor"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="currentColor"/>' +
+    '<rect x="10" y="3" width="3" height="9" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>' +
+    '<svg viewBox="0 0 16 12"><path d="M8 11.2l2.2-2.6a3.2 3.2 0 0 0-4.4 0zM3.6 6.4a6.4 6.4 0 0 1 8.8 0l1.5-1.8a8.8 8.8 0 0 0-11.8 0zM.6 3a10.8 10.8 0 0 1 14.8 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>' +
+    '<svg viewBox="0 0 26 12"><rect x=".7" y=".7" width="21.6" height="10.6" rx="3" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.3"/>' +
+    '<rect x="2.5" y="2.5" width="15" height="7" rx="1.6" fill="currentColor"/><rect x="23.4" y="4" width="1.8" height="4" rx=".9" fill="currentColor" fill-opacity=".5"/></svg>';
+
+  /** flow on the floor: node positions on a 1000x1000 plane, zigzagging into depth */
+  function f3Layout(n) {
+    if (n <= 1) return [[500, 520]];
+    if (n === 2) return [[250, 560], [750, 460]];
+    return Array.from({ length: n }, (_, i) => [200 + (600 * i) / (n - 1), i % 2 ? 300 : 690]);
+  }
+  const F3_TILT = 60;
+
+  function flow3d(d, sc) {
+    const nodes = d.nodes || [];
+    const pts = f3Layout(nodes.length);
+    let svg = '<svg class="f3svg" viewBox="0 0 1000 1000">';
+    for (let i = 1; i < pts.length; i++) {
+      const [a, b] = [pts[i - 1], pts[i]];
+      const dd = `M${a[0]},${a[1]} L${b[0]},${b[1]}`;
+      svg += `<path class="f3base" d="${dd}"/><path class="f3glo" d="${dd}"/><path class="f3core" d="${dd}"/>`;
+      for (let j = 0; j < 3; j++) svg += '<circle class="f3pkh" r="20" opacity="0"/><circle class="f3pk" r="8" opacity="0"/>';
+    }
+    svg += `<path class="f3all" d="M${pts.map((p) => p.join(',')).join(' L')}" stroke="none"/></svg>`;
+    const cards = nodes.map((nd, i) => {
+      const st = nd.state || 'ok';
+      return `<div class="f3n s-${st}" data-i="${i}"${nd.becomes ? ` data-becomes="${nd.becomes}"` : ''} style="left:${pts[i][0]}px;top:${pts[i][1]}px">` +
+        `<div class="f3foot"><div class="f3fglow"></div></div>` +
+        `<div class="f3card f3bb"><span class="ico">${icon(nd.kind)}</span><b>${esc(nd.label)}</b>` +
+        (nd.sub ? `<small>${esc(nd.sub)}</small>` : '') + `<span class="st">${STATE_LABEL[st] || ''}</span></div></div>`;
+    }).join('');
+    const mid = pts.length > 1 ? [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2] : pts[0];
+    const edge = d.edge ? `<div class="f3edge f3bb" data-x="${mid[0] + 40}" data-y="${mid[1] + 150}">${esc(d.edge)}</div>` : '';
+    let hero = '';
+    if (sc && sc.hero) {
+      const g = heroGrid(sc.hero);
+      const k = 230 / HW;
+      hero = `<div class="h-anchor f3bb" data-meta="0" data-tags="0" style="width:230px;height:${HH * k}px"></div>` +
+        Array.from({ length: g.n }, () => `<div class="h-slot f3bb" style="width:${g.tw * k * 0.5}px;height:${g.th * k * 0.5}px"></div>`).join('');
+    }
+    return `<div class="f3"><div class="f3plane">${svg}${cards}${edge}${hero}</div></div>`;
+  }
 
   // ---------- scene builders ----------
   // Each returns HTML for #hero. Every animatable element carries class "el";
@@ -628,6 +975,106 @@
         `<div class="wintitle"><span class="lights"><i style="background:#f05b4f"></i><i style="background:#f9bd2e"></i><i style="background:#57c354"></i></span>` +
         `<span>${esc(d.file || d.lang)}</span></div><div class="winbody">${lines}</div></div>`;
     },
+    /*
+     * stack3d: N plates stacked in space, seen isometrically. One plate is
+     * active: it lifts and carries the glow, and the hero stands on it.
+     * Plates are listed top first. twin: two small stacks wired along the floor,
+     * the opening and closing composition.
+     */
+    stack3d(d, sc) {
+      const plates = d.plates || [];
+      const n = plates.length;
+      const twin = !!d.twin;
+      const P = twin ? 270 : 570, GAP = twin ? 66 : 136;
+      const act = Math.max(0, Math.min(n - 1, d.active || 0));
+      const g = sc && sc.hero ? heroGrid(sc.hero) : null;
+      // standing positions on a plate: u runs across the screen, v toward the
+      // viewer, so a row of packets reads as a row whatever the plate's spin
+      const at = (u, v) => [P / 2 + (u + v) * 0.7071, P / 2 + (v - u) * 0.7071];
+      const rig = (side) => {
+        let h = `<div class="s3rig" data-side="${side}">`;
+        plates.forEach((pl, i) => {
+          let extra = '';
+          if (!twin && i === act && g) {
+            const k = 370 / HW;
+            const [ax, ay] = at(0, 50);
+            extra += `<div class="h-anchor s3bb" data-meta="1" data-x="${ax}" data-y="${ay}" style="width:370px;height:${HH * k}px"></div>`;
+            for (let j = 0; j < g.n; j++) {
+              const c = j % g.cols, r = Math.floor(j / g.cols);
+              const [sx, sy] = at((c - (g.cols - 1) / 2) * (g.tw * k * 0.86 + 46), (r - (g.rows - 1) / 2) * 300 + 50);
+              extra += `<div class="h-slot s3bb" data-x="${sx}" data-y="${sy}" style="width:${g.tw * k * 0.86}px;height:${g.th * k * 0.86}px"></div>`;
+            }
+          }
+          if (i === n - 1 || (twin && i === 0)) extra += `<i class="s3pt" data-top="${i === 0 ? 1 : 0}" style="left:${P / 2}px;top:${P / 2}px"></i>`;
+          h += `<div class="s3plate" data-i="${i}" data-z="${(n - 1 - i) * GAP}" style="width:${P}px;height:${P}px;left:${-P / 2}px;top:${-P / 2}px">` +
+            `<div class="s3shad"></div><div class="s3side b"></div><div class="s3side" data-d="10"></div><div class="s3side" data-d="5"></div><div class="s3face"></div>` +
+            extra + `</div>`;
+        });
+        return h + '</div>';
+      };
+      const tagOf = (pl, i) => pl ? `<b>${esc(pl.n != null ? pl.n : n - i)}</b><div><small>${esc(d.unit || 'LAYER')}</small>` +
+        `<span>${esc(pl.label || '')}</span>` + (pl.sub ? `<em>${esc(pl.sub)}</em>` : '') + '</div>' : '';
+      if (twin) {
+        return `<div class="s3wrap twin"><svg class="s3wire" viewBox="0 0 1080 1920"><path class="glo"/><path class="core"/></svg>` +
+          `<div class="s3">${rig('l')}${rig('r')}</div>` +
+          `<div class="s3name">${esc(d.twin.left || '')}</div><div class="s3name">${esc(d.twin.right || '')}</div></div>`;
+      }
+      return `<div class="s3wrap"><div class="s3">${rig('c')}</div>` +
+        `<div class="s3tag"><div class="s3t old"></div><div class="s3t new">${tagOf(plates[act], act)}</div></div></div>`;
+    },
+    /*
+     * phone: a handset filling the middle of the frame, with one of four app
+     * screens. Data driven; every name, number and app is generic.
+     */
+    phone(d, sc) {
+      const app = d.app || 'chat';
+      const sb = `<div class="phsb"><span>${esc(d.clock || '9:41')}</span><span>${SVG_SB}</span></div>`;
+      const arrow = '<svg viewBox="0 0 20 20"><path d="M10 16V4M4.5 9.5L10 4l5.5 5.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      let scr = '';
+      if (app === 'chat') {
+        const who = d.contact || 'Arjun';
+        const msgs = (d.messages || []).map((m, i) => {
+          const side = m.from === 'me' ? 'me' : 'them';
+          const body = m.photo
+            ? `<div class="phimg${sc && sc.hero ? ' h-anchor' : ''}" data-meta="0"${sc && sc.hero ? '' : ` style="background-image:${heroArt({ kind: 'photo' }).replace(/"/g, '&quot;')}"`}></div>`
+            : `<span>${esc(m.text)}</span>`;
+          return `<div class="bub ${side}${m.photo ? ' pho' : ''}" data-i="${i}"><div class="bb">${body}` +
+            `<i class="tm">${esc(m.time || d.clock || '9:41')}${side === 'me' ? SVG_TICK : ''}</i></div></div>`;
+        }).join('');
+        scr = `<div class="pchd"><svg class="bk" viewBox="0 0 14 22"><path d="M11 2L3 11l8 9" fill="none" stroke="#8a9099" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` +
+          `<span class="av">${esc((d.avatar || who).slice(0, 1).toUpperCase())}</span>` +
+          `<span class="who"><b>${esc(who)}</b><small>${esc(d.status || 'online')}</small></span></div>` +
+          `<div class="pcmsgs">${msgs}${d.receive ? '<div class="typing"><i></i><i></i><i></i></div>' : ''}</div>` +
+          `<div class="pcin"><span class="pl">+</span><span class="fld">Message</span><span class="snd">${arrow}</span></div>`;
+      } else if (app === 'pay') {
+        scr = `<div class="ppbg"><i></i><i></i><i></i></div><div class="ppsheet"><div class="hdl"></div>` +
+          `<div class="pphd"><span class="mk">${icon(d.kind || 'money')}</span>${esc(d.merchant || 'Corner Bakery')}</div>` +
+          `<div class="ppamt">${esc(d.amount || '₹450.00')}</div>` +
+          (d.note ? `<div class="pprow"><span>For</span><b>${esc(d.note)}</b></div>` : '') +
+          `<div class="pprow"><span>From</span><b>${esc(d.method || 'Card •••• 0042')}</b></div>` +
+          `<div class="ppbtn"><span class="lb">${esc(d.button || 'Pay')}</span>` +
+          `<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="58 30"/></svg></div>` +
+          `<div class="ppok"><svg viewBox="0 0 112 112"><circle class="oc" cx="56" cy="56" r="50" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>` +
+          `<path class="ot" d="M34 57l15 15 29-31" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>` +
+          `<b>${esc(d.done || 'Paid')}</b><small>${esc(d.amount || '₹450.00')} to ${esc(d.merchant || 'Corner Bakery')}</small></div></div>`;
+      } else if (app === 'notify') {
+        let body = esc(d.body || '');
+        if (d.code) body = body.replace(esc(d.code), `<span class="otp">${esc(d.code)}</span>`);
+        scr = `<div class="pnot"><div class="dt">${esc(d.date || 'Saturday, 3 October')}</div><div class="clk">${esc(d.clock || '9:41')}</div>` +
+          `<div class="pban"><span class="ai">${icon(d.kind || 'lock', '#fff')}</span><div class="bt">` +
+          `<div class="row"><span>${esc((d.from || 'Messages').toUpperCase())}</span><span>now</span></div>` +
+          `<div class="ti">${esc(d.title || '')}</div><div class="bd">${body}</div></div></div></div>`;
+      } else {
+        scr = `<div class="pbrw"><div class="pbbar"><svg viewBox="0 0 15 16"><rect x="1.5" y="7" width="12" height="8" rx="2" fill="#8a9099"/>` +
+          `<path d="M4 7V5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="#8a9099" stroke-width="1.8"/></svg>${esc(d.url || 'example.com')}</div>` +
+          `<div class="pbprog"><i></i></div><div class="pbpage">` +
+          `<div class="blk hero" style="background-image:${heroArt({ kind: d.image || 'photo' }).replace(/"/g, '&quot;')}"></div>` +
+          `<h3 class="blk">${esc(d.title || '')}</h3><i class="blk"></i><i class="blk" style="width:82%"></i><i class="blk" style="width:64%"></i></div></div>`;
+      }
+      return `<div class="ph" data-app="${app}"><div class="phglow"></div><div class="phbody"></div>` +
+        `<i class="phb a"></i><i class="phb b"></i><i class="phb c"></i>` +
+        `<div class="phscr">${sb}${scr}</div><div class="phisland"></div><div class="phhome"></div></div>`;
+    },
     note(d) {
       return `<div class="note"><div class="lead el">${esc(d.lead)}</div>` +
         (d.body ? `<div class="body el">${esc(d.body)}</div>` : '') + `</div>`;
@@ -638,11 +1085,15 @@
   // frame than rebuilding innerHTML on every cut, and it keeps the frame loop
   // free of layout thrash.
   const hero = $('hero');
+  // world types that draw across the whole frame rather than inside #hero
+  const FULL = { stack3d: 1, phone: 1, flow: 1 };
+  const isFull = (type) => WORLD && !!FULL[type];
+  const builderFor = (type) => (WORLD && type === 'flow' ? flow3d : BUILD[type] || BUILD.note);
   const built = scenes.map((sc) => {
     const wrap = document.createElement('div');
     wrap.style.cssText = 'position:absolute;inset:0;display:none';
-    wrap.innerHTML = (BUILD[sc.type] || BUILD.note)(sc.data);
-    hero.appendChild(wrap);
+    wrap.innerHTML = builderFor(sc.type)(WORLD ? sc.data || {} : sc.data, sc);
+    (isFull(sc.type) ? $('wstage') : hero).appendChild(wrap);
     return {
       wrap,
       els: [...wrap.querySelectorAll('.el')],
@@ -691,13 +1142,13 @@
 
   function fitScene(wrap, type) {
     const child = wrap.firstElementChild;
-    if (!child || !FIT[type]) return 1;
+    if (!child || !FIT[type] || isFull(type)) return 1;
     const prev = wrap.style.display;
     wrap.style.display = 'flex';
     const maxH = hero.clientHeight * 0.94;
     const spills = () => [child, ...child.querySelectorAll('.win, .diff, .ln, .drow, .fnode, .card1, .cmprow, .lrow')]
       .some((e) => e.scrollWidth > e.clientWidth + 1);
-    let z = 1.45;
+    let z = WORLD ? 1.6 : 1.45;
     for (; z > 0.7; z -= 0.05) {
       child.style.zoom = z.toFixed(2);
       if (child.getBoundingClientRect().height <= maxH && !spills()) break;
@@ -992,8 +1443,608 @@
     }
   }
 
+  // =================== world theme runtime ===================
+  const easeOut = (t) => 1 - Math.pow(1 - clamp01(t), 3);
+  const eio = (t) => easeInOut(clamp01(t));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const lerpR = (a, b, t) => ({ x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), s: lerp(a.s, b.s, t) });
+
+  /* ---- the hero object ----
+   * One element per hero key, drawn above the scenes in screen space. Each
+   * scene that carries the hero exposes an anchor (.h-anchor, where the whole
+   * object stands) and optionally slots (.h-slot, where its packets go). At a
+   * cut the hero glides from where it was last drawn to the new anchor, so it
+   * visibly travels. Its state is a handful of numbers (scale, scramble,
+   * split, labels) that ease from the previous hero scene's values. */
+  const parseBytes = (v) => {
+    const m = /([\d.,]+)\s*(B|KB|MB|GB)?/i.exec(String(v || ''));
+    return m ? parseFloat(m[1].replace(/,/g, '')) * { b: 1, kb: 1e3, mb: 1e6, gb: 1e9 }[(m[2] || 'b').toLowerCase()] : null;
+  };
+  const fmtBytes = (b) => (b >= 1e9 ? (b / 1e9).toFixed(1) + ' GB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB'
+    : b >= 1e3 ? Math.round(b / 1e3) + ' KB' : Math.round(b) + ' B');
+  const HSTEP = {
+    whole: () => ({ s: 1, e: 0, p: 0, t: 0 }),
+    compressed: (q) => ({ ...q, s: 0.72, p: 0, t: 0 }),
+    encrypted: (q) => ({ ...q, e: 1 }),
+    split: (q) => ({ ...q, p: 1, t: 0 }),
+    labelled: (q) => ({ ...q, p: 1, t: 1 }),
+  };
+  const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  const heroes = new Map();
+  if (WORLD) {
+    const last = new Map();
+    scenes.forEach((sc) => {
+      const h = sc.hero;
+      if (!h || !h.key) return;
+      const prev = last.get(h.key);
+      const from = prev ? prev.to : null;
+      const to = (HSTEP[h.state] || HSTEP.whole)(from || HSTEP.whole());
+      const b = parseBytes(h.bytes);
+      const bTo = b != null ? b : prev ? prev.bTo : null;
+      sc._h = { from: from || to, to, bFrom: prev && prev.bTo != null ? prev.bTo : bTo, bTo,
+        tagFrom: prev ? prev.tag : (h.tag || '#{i}'), tag: h.tag || (prev && to.t > 0 ? prev.tag : '#{i}') };
+      last.set(h.key, sc._h);
+      if (heroes.has(h.key)) return;
+      const g = heroGrid(h);
+      const rootEl = document.createElement('div');
+      rootEl.className = 'hobj';
+      rootEl.style.opacity = 0;
+      let html = `<div class="hpiece hwhole" style="width:${HW}px;height:${HH}px"><div class="himg"></div><div class="gly"></div></div>`;
+      for (let j = 0; j < g.n; j++) html += `<div class="hpiece htile" style="width:${g.tw}px;height:${g.th}px;opacity:0"><div class="himg"></div><div class="gly"></div></div>`;
+      for (let j = 0; j < g.n; j++) html += '<div class="ttag" style="opacity:0"></div>';
+      html += '<div class="hmeta" style="opacity:0"><span></span><b></b></div>';
+      rootEl.innerHTML = html;
+      $('hobjs').appendChild(rootEl);
+      const art = heroArt(h);
+      rootEl.querySelectorAll('.himg').forEach((im, j) => {
+        im.style.backgroundImage = art;
+        im.style.backgroundSize = `${HW}px ${HH}px`;
+        if (j) im.style.backgroundPosition = `${-((j - 1) % g.cols) * g.tw}px ${-Math.floor((j - 1) / g.cols) * g.th}px`;
+      });
+      heroes.set(h.key, { ...g, key: h.key, root: rootEl, whole: rootEl.querySelector('.hwhole'),
+        tiles: [...rootEl.querySelectorAll('.htile')], tags: [...rootEl.querySelectorAll('.ttag')],
+        meta: rootEl.querySelector('.hmeta'), imgs: [...rootEl.querySelectorAll('.himg')],
+        glys: [...rootEl.querySelectorAll('.gly')], last: null, from: null, fade: 0, slot: -1 });
+    });
+  }
+
+  function heroCut() {
+    heroes.forEach((H) => {
+      H.from = H.last && H.last.vis > 0.5 ? H.last : null;
+      H.fade = H.last ? H.last.vis : 0;
+    });
+  }
+
+  function heroTarget(H, B, cur) {
+    if (B.hAnchor === undefined) {
+      B.hAnchor = B.wrap.querySelector('.h-anchor');
+      B.hSlots = [...B.wrap.querySelectorAll('.h-slot')];
+    }
+    if (!B.hAnchor) return null;
+    const r = B.hAnchor.getBoundingClientRect();
+    if (!r.width) return null;
+    const S = (r.width / HW) * cur.s;
+    const whole = { x: r.left + r.width / 2 - (HW * S) / 2, y: r.bottom - HH * S, s: S };
+    const g = 0.2 * H.tw * S;
+    const fanW = H.cols * H.tw * S + (H.cols - 1) * g, fanH = H.rows * H.th * S + (H.rows - 1) * g;
+    const tiles = [];
+    for (let j = 0; j < H.n; j++) {
+      const c = j % H.cols, rr = Math.floor(j / H.cols);
+      const home = { x: whole.x + c * H.tw * S, y: whole.y + rr * H.th * S, s: S };
+      let to;
+      const sl = B.hSlots[j];
+      if (sl) {
+        const q = sl.getBoundingClientRect();
+        const ts = q.width / H.tw;
+        to = { x: q.left, y: q.bottom - H.th * ts, s: ts };
+      } else {
+        to = { x: r.left + r.width / 2 - fanW / 2 + c * (H.tw * S + g), y: r.bottom - fanH + rr * (H.th * S + g), s: S };
+      }
+      tiles.push(lerpR(home, to, cur.p));
+    }
+    return { whole, tiles, meta: B.hAnchor.dataset.meta !== '0' };
+  }
+
+  const placeEl = (el, r) => { el.style.transform = `translate(${r.x.toFixed(1)}px, ${r.y.toFixed(1)}px) scale(${r.s.toFixed(4)})`; };
+
+  function updateHeroes(sc, B, local, span, tSec) {
+    heroes.forEach((H) => {
+      const mine = sc.hero && sc.hero.key === H.key && sc._h;
+      let cur = null, tgt = null;
+      if (mine) {
+        const { from, to } = sc._h;
+        const t0 = Math.min(1.0, span * 0.22);
+        const r = (a, b, d0, dur) => a + (b - a) * easeInOut(clamp01((local - d0) / dur));
+        cur = { s: r(from.s, to.s, t0, 1.4), e: r(from.e, to.e, t0 + 0.1, 1.3), p: r(from.p, to.p, t0, 1.3),
+          t: r(from.t, to.t, t0 + (to.p > from.p ? 1.1 : 0.2), 0.9), bp: easeInOut(clamp01((local - t0) / 1.4)) };
+        tgt = heroTarget(H, B, cur);
+      }
+      let st, vis;
+      if (tgt) {
+        st = tgt;
+        if (H.from) {
+          const e = easeInOut(clamp01(local / 0.9));
+          st = { whole: lerpR(H.from.whole, tgt.whole, e), tiles: tgt.tiles.map((t, j) => lerpR(H.from.tiles[j], t, e)), meta: tgt.meta };
+          vis = 1;
+        } else vis = easeOut((local - 0.2) / 0.6);
+      } else if (H.last) {
+        st = H.last;
+        cur = H.last.cur;
+        vis = H.fade * (1 - clamp01(local / 0.3));
+      } else return;
+      H.root.style.opacity = vis.toFixed(3);
+      if (vis <= 0) { H.last = { ...st, vis: 0, cur }; return; }
+
+      const split = cur.p > 0.002;
+      placeEl(H.whole, st.whole);
+      H.whole.style.opacity = split ? 0 : 1;
+      H.tiles.forEach((t, j) => { placeEl(t, st.tiles[j]); t.style.opacity = split ? 1 : 0; });
+
+      // scramble: glyphs sweep across left to right and reshuffle ten times a second
+      const e = cur.e;
+      H.imgs.forEach((im) => { im.style.opacity = e > 0.001 ? (1 - 0.86 * e).toFixed(3) : ''; });
+      H.glys.forEach((gl) => {
+        gl.style.opacity = e > 0.001 ? 1 : 0;
+        gl.style.clipPath = `inset(0 ${((1 - e) * 100).toFixed(2)}% 0 0)`;
+      });
+      if (e > 0.001 && mine) {
+        const slot = Math.floor(Math.round(tSec * FPS) / 3);
+        if (slot !== H.slot) {
+          H.slot = slot;
+          const abc = sc.hero.glyphs === 'bits' ? '01' : GLYPHS;
+          const rnd = window.rng(9173 + slot * 31);
+          H.glys.forEach((gl, j) => {
+            let s = '';
+            const lines = j ? 3 : 5, per = j ? 4 : 11;
+            for (let l = 0; l < lines; l++) {
+              if (l) s += '\n';
+              for (let c = 0; c < per; c++) s += abc[Math.floor(rnd() * abc.length)];
+            }
+            gl.textContent = s;
+          });
+        }
+      }
+
+      // packet labels, once the pieces have separated
+      const h = mine ? sc.hero : null;
+      H.tags.forEach((tg, j) => {
+        const t = st.tiles[j];
+        const big = t.s * H.tw >= 64 && !(B.hAnchor && B.hAnchor.dataset.tags === '0');
+        let o = clamp01((cur.p - 0.6) / 0.4) * (big ? 1 : 0);
+        let tmpl = mine ? sc._h.tag : (H.lastTag || '#{i}');
+        if (mine && sc._h.to.t > sc._h.from.t) {
+          const at = Math.min(1.0, span * 0.22) + 1.1 + j * 0.12;
+          if (local < at) tmpl = sc._h.tagFrom;
+          else o *= easeOut((local - at) / 0.35);
+        }
+        const txt = tmpl.replace(/\{i\}/g, j + 1).replace(/\{n\}/g, H.n);
+        if (tg.textContent !== txt) tg.textContent = txt;
+        tg.style.opacity = o.toFixed(3);
+        tg.style.left = (t.x + (H.tw * t.s) / 2).toFixed(1) + 'px';
+        tg.style.top = (t.y - 8).toFixed(1) + 'px';
+      });
+      if (mine) H.lastTag = sc._h.tag;
+
+      // file name and a live byte counter under the object
+      if (st.meta && h) {
+        const xs = split ? st.tiles.map((t) => [t.x, t.x + H.tw * t.s]) : [[st.whole.x, st.whole.x + HW * st.whole.s]];
+        const ys = split ? st.tiles.map((t) => t.y + H.th * t.s) : [st.whole.y + HH * st.whole.s];
+        const lo = Math.min(...xs.map((a) => a[0])), hi = Math.max(...xs.map((a) => a[1]));
+        H.meta.style.left = ((lo + hi) / 2).toFixed(1) + 'px';
+        H.meta.style.top = (Math.max(...ys) + 18).toFixed(1) + 'px';
+        H.meta.style.opacity = 1;
+        const { bFrom, bTo } = sc._h;
+        const bytes = bFrom && bTo ? Math.exp(lerp(Math.log(bFrom), Math.log(bTo), cur.bp)) : bTo;
+        const label = cur.p > 0.5 ? `${H.n} PACKETS` : (h.label || '');
+        const sp = H.meta.firstChild, bb = H.meta.lastChild;
+        if (sp.textContent !== label) sp.textContent = label;
+        const bt = bytes ? fmtBytes(bytes) : '';
+        if (bb.textContent !== bt) bb.textContent = bt;
+      } else if (!mine) {
+        // keep whatever it said while it fades
+      } else H.meta.style.opacity = 0;
+      H.last = { whole: st.whole, tiles: st.tiles, meta: st.meta, vis, cur };
+    });
+  }
+
+  /* ---- stack3d ---- */
+  function animStack(B, d, local, span, tSec, w) {
+    if (!B.s3) {
+      B.s3 = {
+        rigs: [...B.wrap.querySelectorAll('.s3rig')].map((el) => ({ el,
+          plates: [...el.querySelectorAll('.s3plate')].map((p) => ({ el: p, z: +p.dataset.z, i: +p.dataset.i,
+            shad: p.querySelector('.s3shad'), lab: p.querySelector('.s3lab'), bbs: [...p.querySelectorAll('.s3bb')],
+            sides: [...p.querySelectorAll('.s3side')] })) })),
+        tagNew: B.wrap.querySelector('.s3t.new'), tagOld: B.wrap.querySelector('.s3t.old'),
+        pts: [...B.wrap.querySelectorAll('.s3pt')], names: [...B.wrap.querySelectorAll('.s3name')],
+        core: B.wrap.querySelector('.s3wire .core'), glo: B.wrap.querySelector('.s3wire .glo'),
+      };
+    }
+    const S3 = B.s3, twin = !!d.twin;
+    const n = (d.plates || []).length || 1;
+    const GAP = twin ? 66 : 136;
+    const act = Math.max(0, Math.min(n - 1, d.active || 0));
+    const tgt = { f: twin ? (n - 1) / 2 : act, D: d.zoom != null ? d.zoom : twin ? 0 : 150 };
+    const from = B.s3from || { f: tgt.f, D: tgt.D - 360 };
+    const c = w != null ? w : B.s3from ? easeInOut(clamp01(local / 1.5)) : easeOut(local / 1.9);
+    const f = lerp(from.f, tgt.f, c), D = lerp(from.D, tgt.D, c);
+    const ax = 56 + 1.2 * Math.sin(tSec * 0.17) * DRIFT, az = 45 + 2.6 * Math.sin(tSec * 0.23) * DRIFT;
+    const bb = `rotateZ(${(-az).toFixed(3)}deg) rotateX(${(-ax).toFixed(3)}deg) translate(-50%, -100%)`;
+    S3.rigs.forEach((R) => {
+      R.el.style.transform = `translateZ(${D.toFixed(1)}px) rotateX(${ax.toFixed(3)}deg) rotateZ(${az.toFixed(3)}deg) translateZ(${(-(n - 1 - f) * GAP).toFixed(1)}px)`;
+      R.plates.forEach((P) => {
+        const q = B.s3from || w != null ? 1 : easeOut((local - 0.1 - (n - 1 - P.i) * 0.08) / 0.7);
+        const fa = twin ? 0 : clamp01((f - P.i) * 1.5 - 0.3);
+        let on = twin && P.i === 0 ? 0.6 : 0;
+        if (!twin) {
+          if (P.i === act) on = clamp01((c - 0.55) / 0.45);
+          if (B.s3prevAct != null && P.i === B.s3prevAct && P.i !== act) on = Math.max(on, 1 - clamp01(c / 0.45));
+        }
+        // focus is lift and shadow: the active slab rises, and its shadow on
+        // the slab below lengthens and softens
+        const lift = 34 * on;
+        P.el.style.transform = `translateZ(${(P.z + 160 * fa + lift - 40 * (1 - q)).toFixed(1)}px)`;
+        P.el.style.opacity = (q * (1 - 0.94 * fa)).toFixed(3);
+        P.el.classList.toggle('on', on >= 0.5);
+        if (!P.sides[0].style.transform) {
+          P.sides[0].style.transform = 'translateZ(-15px)';
+          P.sides.slice(1).forEach((sd) => { sd.style.transform = `translateZ(-${sd.dataset.d}px)`; });
+        }
+        const drop = (P.i === n - 1 ? 30 : GAP) + lift;
+        P.shad.style.transform = `translate3d(${(4 + lift * 0.35).toFixed(1)}px, ${(6 + lift * 0.35).toFixed(1)}px, ${(-drop + 2).toFixed(1)}px) scale(${(1 + lift * 0.0015).toFixed(4)})`;
+        P.shad.style.filter = `blur(${(9 + lift * 0.45).toFixed(1)}px)`;
+        P.shad.style.opacity = ((P.i === n - 1 ? 0.55 : 1) * (1 - 0.35 * on)).toFixed(3);
+        P.bbs.forEach((e) => { e.style.transform = `translate3d(${e.dataset.x}px, ${e.dataset.y}px, 2px) ${bb}`; });
+      });
+    });
+    if (S3.tagNew) {
+      const e = eio(B.s3from ? (c - 0.3) / 0.5 : (local - 0.35) / 0.6);
+      S3.tagNew.style.opacity = e.toFixed(3);
+      S3.tagNew.style.transform = `translateY(${((1 - e) * 18).toFixed(1)}px)`;
+      const o = easeInOut(clamp01(c / 0.4));
+      S3.tagOld.style.opacity = (1 - o).toFixed(3);
+      S3.tagOld.style.transform = `translateY(${(-18 * o).toFixed(1)}px)`;
+    }
+    if (twin && S3.pts.length >= 2 && S3.core) {
+      const base = B.wrap.getBoundingClientRect();
+      const pos = (e) => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2 - base.left, y: r.top + r.height / 2 - base.top }; };
+      const low = S3.pts.filter((e) => e.dataset.top !== '1').map(pos), high = S3.pts.filter((e) => e.dataset.top === '1').map(pos);
+      const [pa, pb] = low;
+      const dp = `M${pa.x.toFixed(1)},${pa.y.toFixed(1)} C${pa.x.toFixed(1)},${(pa.y + 250).toFixed(1)} ${pb.x.toFixed(1)},${(pb.y + 250).toFixed(1)} ${pb.x.toFixed(1)},${pb.y.toFixed(1)}`;
+      S3.core.setAttribute('d', dp);
+      S3.glo.setAttribute('d', dp);
+      const len = S3.core.getTotalLength();
+      const drawn = Math.max(w != null ? w : 0, easeInOut(clamp01((local - 0.5) / 1.4)));
+      [S3.core, S3.glo].forEach((p) => { p.style.strokeDasharray = `${len.toFixed(1)}`; p.style.strokeDashoffset = (len * (1 - drawn)).toFixed(1); });
+      S3.names.forEach((nm, j) => {
+        const p = high[j] || (j ? pb : pa);
+        nm.style.left = p.x.toFixed(1) + 'px';
+        nm.style.top = (p.y - 150).toFixed(1) + 'px';
+        nm.style.opacity = Math.max(w != null ? w : 0, easeOut((local - 0.6) / 0.6)).toFixed(3);
+      });
+    }
+  }
+
+  /* ---- phone ---- */
+  // the handset is laid out at 392x780 and scaled up to about half the frame
+  const PH_S = 1.3;
+  function animPhone(B, d, local, span, tSec) {
+    if (!B.ph) {
+      const q = (s) => B.wrap.querySelector(s);
+      B.ph = { root: q('.ph'), glow: q('.phglow'), bubs: [...B.wrap.querySelectorAll('.bub')], snd: q('.snd'),
+        fld: q('.fld'), typing: q('.typing'), dots: [...B.wrap.querySelectorAll('.typing i')],
+        sheet: q('.ppsheet'), btn: q('.ppbtn'), ring: q('.ppbtn svg'), lb: q('.ppbtn .lb'), ok: q('.ppok'),
+        oc: q('.ppok .oc'), ot: q('.ppok .ot'), ban: q('.pban'), prog: q('.pbprog i'), blks: [...B.wrap.querySelectorAll('.pbpage .blk')] };
+    }
+    const P = B.ph;
+    const app = d.app || 'chat';
+    const intro = B.carry ? 1 : easeOut(local / 0.8);
+    P.root.style.transform = `translateY(${((1 - intro) * 40).toFixed(1)}px) scale(${PH_S})`;
+    P.glow.style.opacity = (0.8 * (B.carry ? 1 : easeOut((local - 0.3) / 0.9))).toFixed(3);
+    if (app === 'chat') {
+      const msgs = d.messages || [];
+      const lastOf = (who) => { for (let i = msgs.length - 1; i >= 0; i--) if ((msgs[i].from === 'me') === (who === 'me')) return i; return -1; };
+      const sendI = d.send ? lastOf('me') : -1, recvI = d.receive ? lastOf('them') : -1;
+      const tTap = Math.max(1.1, span * 0.32);
+      const cs = eio((local - tTap - 0.12) / 0.75);
+      const tRecv = Math.max(1.3, span * 0.3);
+      P.bubs.forEach((b, i) => {
+        if (i === sendI) {
+          // the photo waits in the composer as a thumbnail, then is sent up
+          // into its place in the thread
+          if (!b.dataset.dx) {
+            const br = b.querySelector('.bb').getBoundingClientRect(), fr = P.fld.getBoundingClientRect();
+            // measured on screen, applied inside the scaled handset
+            b.dataset.dx = ((fr.right - 16 * PH_S - br.right) / PH_S).toFixed(1);
+            b.dataset.dy = ((fr.top - 12 * PH_S - br.bottom) / PH_S).toFixed(1);
+          }
+          const bbq = b.querySelector('.bb');
+          bbq.style.transformOrigin = '100% 100%';
+          bbq.style.transform = `translate(${(+b.dataset.dx * (1 - cs)).toFixed(1)}px, ${(+b.dataset.dy * (1 - cs)).toFixed(1)}px) scale(${lerp(0.36, 1, cs).toFixed(4)})`;
+          b.style.opacity = easeOut((local - 0.3) / 0.4).toFixed(3);
+          const t1 = b.querySelector('.tm');
+          if (t1) t1.style.opacity = (0.62 * clamp01((cs - 0.8) / 0.2)).toFixed(3);
+          const k2 = b.querySelector('.tk2');
+          if (k2) {
+            const dl = d.delivered ? easeOut((local - tTap - 1.7) / 0.4) : 0;
+            k2.style.opacity = dl.toFixed(3);
+            b.querySelector('.tm svg').style.color = dl > 0.5 ? 'var(--accent)' : '';
+          }
+        } else if (i === recvI) {
+          const a = easeOut((local - tRecv) / 0.6);
+          b.style.opacity = a.toFixed(3);
+          b.style.transform = `translateY(${((1 - a) * 26).toFixed(1)}px)`;
+        } else {
+          const a = B.carry ? 1 : easeOut((local - 0.35 - i * 0.16) / 0.5);
+          b.style.opacity = a.toFixed(3);
+          b.style.transform = `translateY(${((1 - a) * 14).toFixed(1)}px)`;
+        }
+      });
+      if (P.snd) {
+        const pr = clamp01((local - tTap) / 0.28);
+        P.snd.style.transform = `scale(${(1 - 0.1 * Math.sin(pr * Math.PI)).toFixed(4)})`;
+      }
+      if (P.typing) {
+        const on = clamp01((local - 0.4) / 0.3) * (1 - clamp01((local - tRecv + 0.1) / 0.2));
+        P.typing.style.opacity = on.toFixed(3);
+        P.typing.style.display = local > tRecv + 0.2 ? 'none' : '';
+        P.dots.forEach((dt, j) => { dt.style.opacity = (0.35 + 0.65 * Math.max(0, Math.sin(tSec * 5 - j * 0.9))).toFixed(3); });
+      }
+    } else if (app === 'pay') {
+      P.sheet.style.transform = `translateY(${(B.carry ? 0 : (1 - easeOut((local - 0.25) / 0.7)) * 460).toFixed(1)}px)`;
+      const tap = Math.max(1.3, span * 0.35);
+      const pr = clamp01((local - tap) / 0.28);
+      P.btn.style.transform = `scale(${(1 - 0.04 * Math.sin(pr * Math.PI)).toFixed(4)})`;
+      const busy = clamp01((local - tap - 0.1) / 0.2) * (1 - clamp01((local - tap - 1.1) / 0.2));
+      P.lb.style.opacity = (1 - clamp01((local - tap - 0.05) / 0.2)).toFixed(3);
+      P.ring.style.opacity = busy.toFixed(3);
+      P.ring.style.transform = `rotate(${(local * 400).toFixed(1)}deg)`;
+      if (d.success !== false) {
+        const t0 = tap + 1.15;
+        P.ok.style.opacity = easeOut((local - t0) / 0.35).toFixed(3);
+        const lc = 314.2, lt = 70;
+        P.oc.style.strokeDasharray = lc; P.oc.style.strokeDashoffset = (lc * (1 - easeInOut(clamp01((local - t0) / 0.6)))).toFixed(1);
+        P.ot.style.strokeDasharray = lt; P.ot.style.strokeDashoffset = (lt * (1 - easeInOut(clamp01((local - t0 - 0.45) / 0.35)))).toFixed(1);
+      }
+    } else if (app === 'notify') {
+      const a = B.carry ? 1 : easeOut((local - 0.5) / 0.6);
+      P.ban.style.opacity = a.toFixed(3);
+      P.ban.style.transform = `translateY(${((1 - a) * -44).toFixed(1)}px)`;
+    } else {
+      const goal = d.progress != null ? d.progress : 1;
+      const t1 = Math.max(1.8, span * 0.7);
+      const pr = local < 0.3 ? 0 : local < t1 * 0.5 ? 0.12 + 0.5 * easeOut((local - 0.3) / (t1 * 0.5 - 0.3))
+        : 0.62 + (goal - 0.62) * easeInOut(clamp01((local - t1 * 0.5) / (t1 * 0.5)));
+      P.prog.style.width = (pr * 100).toFixed(2) + '%';
+      P.prog.parentNode.style.opacity = (pr >= 0.999 ? 1 - clamp01((local - t1) / 0.4) : 1).toFixed(3);
+      P.blks.forEach((b, j) => { b.style.opacity = easeOut((pr - (0.25 + j * 0.13)) / 0.15).toFixed(3); });
+    }
+  }
+
+  /* ---- flow on the floor ---- */
+  function animFlow3d(B, sc, local, span, tSec) {
+    const d = sc.data || {};
+    if (!B.f3) {
+      const all = B.wrap.querySelector('.f3all');
+      const nodes = [...B.wrap.querySelectorAll('.f3n')];
+      const pts = nodes.map((n) => [parseFloat(n.style.left), parseFloat(n.style.top)]);
+      const cum = [0];
+      for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+      B.f3 = { plane: B.wrap.querySelector('.f3plane'), all, len: all.getTotalLength(), cum, pts, nodes,
+        cards: nodes.map((n) => n.querySelector('.f3card')), fglow: nodes.map((n) => n.querySelector('.f3fglow')),
+        cores: [...B.wrap.querySelectorAll('.f3core')], glos: [...B.wrap.querySelectorAll('.f3glo')],
+        pk: [...B.wrap.querySelectorAll('.f3pk')], pkh: [...B.wrap.querySelectorAll('.f3pkh')],
+        edge: B.wrap.querySelector('.f3edge'), anchor: B.wrap.querySelector('.h-anchor'), slots: [...B.wrap.querySelectorAll('.h-slot')] };
+      B.f3.cores.forEach((p) => { const l = p.getTotalLength(); p.dataset.len = l; p.style.strokeDasharray = l; });
+    }
+    const F = B.f3;
+    const yaw = 1.8 * Math.sin(tSec * 0.21) * DRIFT;
+    F.plane.style.transform = `rotateX(${F3_TILT}deg) rotateZ(${yaw.toFixed(3)}deg)`;
+    const bb = `rotateZ(${(-yaw).toFixed(3)}deg) rotateX(${-F3_TILT}deg) translate(-50%, -100%)`;
+    const flipAt = span * 0.5;
+    const state = F.nodes.map((nd, i) => {
+      const to = nd.dataset.becomes;
+      const s0 = (d.nodes[i] && d.nodes[i].state) || 'ok';
+      const cur = to && local >= flipAt ? to : s0;
+      if (!nd.classList.contains('s-' + cur)) {
+        nd.classList.remove('s-ok', 's-busy', 's-blocked', 's-dead');
+        nd.classList.add('s-' + cur);
+        nd.querySelector('.st').textContent = STATE_LABEL[cur] || '';
+      }
+      return cur;
+    });
+    F.cards.forEach((c, i) => {
+      const q = easeOut((local - 0.15 - i * 0.16) / 0.6);
+      c.style.opacity = q.toFixed(3);
+      c.style.transform = `${bb} translateY(${(-26 + (1 - q) * 18).toFixed(1)}px)`;
+      F.nodes[i].querySelector('.f3foot').style.opacity = q.toFixed(3);
+    });
+    if (F.edge) {
+      F.edge.style.transform = `translate3d(${F.edge.dataset.x}px, ${F.edge.dataset.y}px, 0) ${bb}`;
+      F.edge.style.opacity = easeOut((local - 0.9) / 0.5).toFixed(3);
+    }
+    F.cores.forEach((p, i) => {
+      const q = easeInOut(clamp01((local - 0.5 - i * 0.3) / 0.6));
+      p.style.strokeDashoffset = (p.dataset.len * (1 - q)).toFixed(1);
+      const bad = state[i + 1] === 'blocked' || state[i + 1] === 'dead';
+      p.style.stroke = bad && local >= flipAt ? 'var(--bad)' : '';
+    });
+    // which node is active: the one the hero is passing, or the one named
+    let glowAt = null;
+    if (sc.hero && F.anchor) {
+      const prog = easeInOut(clamp01((local - 0.7) / Math.max(1.2, span * 0.72)));
+      // the train stops short of the last card so it never sits on its label
+      const L = (F.len - 90) * prog;
+      const pt = (l) => F.all.getPointAtLength(Math.max(0, Math.min(F.len, l)));
+      const at = pt(L);
+      F.anchor.style.transform = `translate3d(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px, 0) ${bb}`;
+      F.slots.forEach((s, j) => {
+        const p2 = pt(L - j * 46);
+        s.style.transform = `translate3d(${p2.x.toFixed(1)}px, ${p2.y.toFixed(1)}px, 0) ${bb}`;
+      });
+      glowAt = L;
+      F.glos.forEach((g, i) => {
+        const inside = L > F.cum[i] + 5 && L < F.cum[i + 1] - 5;
+        g.style.opacity = (inside ? 0.28 : 0).toString();
+      });
+    }
+    F.fglow.forEach((g, i) => {
+      let on = 0;
+      if (glowAt != null) on = clamp01(1 - Math.abs(glowAt - F.cum[i]) / 170);
+      else if (d.active === i) on = easeOut((local - 0.8) / 0.6);
+      g.style.opacity = on.toFixed(3);
+    });
+    // without a hero, requests stream along the wires as small lights
+    const traffic = d.traffic || 'flowing';
+    for (let i = 0; i < F.cores.length; i++) {
+      const [a, b] = [F.pts[i], F.pts[i + 1]];
+      const ready = local > 0.5 + i * 0.3 + 0.6;
+      const bad = (state[i + 1] === 'blocked' || state[i + 1] === 'dead') && local >= flipAt;
+      for (let j = 0; j < 3; j++) {
+        const c = F.pk[i * 3 + j], h = F.pkh[i * 3 + j];
+        let at = (((tSec * (traffic === 'slow' ? 0.22 : 0.5)) - i * 0.2 - j / 3) % 1 + 1) % 1;
+        if (bad || traffic === 'blocked') at = 0.6 - j * 0.12;
+        const op = sc.hero || !ready || traffic === 'none' ? 0 : bad ? 0.9 : Math.min(1, Math.sin(at * Math.PI) * 2.2);
+        const x = lerp(a[0], b[0], at), y = lerp(a[1], b[1], at);
+        c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('opacity', op.toFixed(3));
+        h.setAttribute('cx', x.toFixed(1)); h.setAttribute('cy', y.toFixed(1)); h.setAttribute('opacity', (op * 0.3).toFixed(3));
+      }
+    }
+  }
+
+  function animWorld(B, sc, local, span, tSec, w) {
+    if (sc.type === 'stack3d') animStack(B, sc.data || {}, local, span, tSec, w);
+    else if (sc.type === 'phone') animPhone(B, sc.data || {}, local, span, tSec);
+    else if (sc.type === 'flow') animFlow3d(B, sc, local, span, tSec);
+  }
+
+  // continuity between consecutive world scenes of the same kind: the stack
+  // stays and the camera moves; the phone stays and its screen changes
+  let titleB = null;
+  function linkWorld() {
+    if (!WORLD) return;
+    built.forEach((b, i) => {
+      const sc = scenes[i], pv = scenes[i - 1];
+      if (!pv || !sc.data || !pv.data) return;
+      if (sc.type === 'stack3d' && pv.type === 'stack3d' && !sc.data.twin && !pv.data.twin && sc.loopTo == null &&
+          (sc.data.key || 'stack') === (pv.data.key || 'stack')) {
+        b.carry = true;
+        b.s3from = { f: pv.data.active || 0, D: pv.data.zoom != null ? pv.data.zoom : 150 };
+        b.s3prevAct = pv.data.active || 0;
+        const old = b.wrap.querySelector('.s3t.old'), mine = built[i - 1].wrap.querySelector('.s3t.new');
+        if (old && mine && b.s3prevAct !== (sc.data.active || 0)) old.innerHTML = mine.innerHTML;
+      }
+      if (sc.type === 'phone' && pv.type === 'phone' && (sc.data.device || 'a') === (pv.data.device || 'a') &&
+          (sc.data.app || 'chat') === (pv.data.app || 'chat')) b.carry = true;
+    });
+    const bd = S.title && S.title.backdrop;
+    if (bd && bd.type) {
+      const wrap = document.querySelector('#title .tback');
+      wrap.innerHTML = builderFor(bd.type)(bd.data || {}, bd);
+      titleB = { wrap, sc: bd };
+    } else {
+      // no diorama behind the title: the mascot holds the cover, as it always has
+      document.querySelector('#title .tmascot').style.display = 'block';
+    }
+  }
+
   const mascot = $('mascot');
   const tmascot = document.querySelector('#title .tmascot');
+
+  /** The title card at time t. Also redrawn at t=0 by a closing loopTo scene. */
+  function drawTitle(tSec) {
+    // Instagram takes the grid cover from the FIRST frame, so the title card
+    // has to be fully drawn at t=0. An entrance that fades up from nothing
+    // renders frame 0 as a blank page and the post gets a dead thumbnail.
+    // The animation therefore only settles the card, it never reveals it.
+    const big = document.querySelector('#title .big');
+    big.style.opacity = 1;
+    // slow push-in, then a zoom-through into the first scene
+    const out = clamp01((tSec - (titleUntil - 0.22)) / 0.22);
+    big.style.transform = `scale(${(1 + 0.035 * (tSec / Math.max(1, titleUntil)) + 0.05 * out * out).toFixed(4)})`;
+    $('title').style.opacity = (1 - out * out).toFixed(3);
+    titleWords.forEach(({ el, at }, i) => {
+      const q = i === 0 || WORLD ? 1 : easeInOut(clamp01((tSec - at) / 0.32));
+      el.style.opacity = i === 0 ? 1 : clamp01(q * 1.6).toFixed(3);
+      el.style.transform = `translateY(${((1 - q) * 14).toFixed(1)}px)`;
+    });
+    document.querySelector('#title .kick').style.opacity = 1;
+    // the rule sits under the headline's real bottom edge, which depends on
+    // how many lines the hook wrapped to
+    const rule = document.querySelector('#title .rule');
+    rule.style.top = Math.round(big.getBoundingClientRect().bottom + 46) + 'px';
+    // the keyword sits under the rule and is fully drawn from frame 0
+    document.querySelector('#title .kw').style.top = Math.round(big.getBoundingClientRect().bottom + 84) + 'px';
+    rule.style.transform = 'none';
+    const tb = Math.sin(tSec * Math.PI * 2 / 3.4);
+    tmascot.style.transform = `translateX(-50%) translateY(${(tb * 3).toFixed(2)}px)`;
+    if (titleB) animWorld(titleB, titleB.sc, 99, 5, tSec, null);
+  }
+
+  /*
+   * One world frame after the scene is chosen: the loop ending, the scene's
+   * own animation, a calm crossfade at cuts (no slide, no blur), and the hero.
+   */
+  function worldFrame(k, sc, B, local, span, tSec) {
+    // loopTo: the closing scene eases its camera and the drift to rest, the
+    // title fades back in over it, and at w=1 the page IS frame 0
+    let w = null;
+    if (sc.loopTo != null && titleB) w = easeInOut(clamp01((local - 0.3) / Math.min(2.6, span * 0.6)));
+    DRIFT = w == null ? 1 : 1 - w;
+    updateGround(tSec);
+    animWorld(B, sc, local, span, tSec, w);
+
+    const T = 0.5;
+    const carried = B.morph.size > 0 || !!B.carry;
+    const tin = carried ? 1 : easeOut(local / T);
+    const prog = clamp01(local / span);
+    const push = isFull(sc.type) ? '' : `scale(${(1 + 0.02 * prog).toFixed(4)})`;
+    B.wrap.style.transform = carried ? push : `translateY(${((1 - tin) * 16).toFixed(1)}px) ${push}`;
+    B.wrap.style.opacity = carried ? 1 : tin.toFixed(3);
+    B.wrap.style.filter = '';
+    if (outgoing) {
+      const O = built[outgoing.k];
+      const q = clamp01((tSec - outgoing.t0) / T);
+      if (q >= 1 || carried) { O.wrap.style.display = 'none'; outgoing = null; }
+      else {
+        O.wrap.style.display = 'flex';
+        O.wrap.style.opacity = (1 - q * q).toFixed(3);
+        O.wrap.style.filter = '';
+      }
+    }
+    updateHeroes(sc, B, local, span, tSec);
+
+    // the phone wants the height, so its scenes run the headline alone
+    $('subhead').style.visibility = sc.type === 'phone' ? 'hidden' : '';
+    // the mascot stands on the floor where the scene leaves room for it
+    const room = sc.mascot != null ? !!sc.mascot : !(sc.type === 'stack3d' || sc.type === 'flow');
+    const mq = room ? easeOut((local - 0.2) / 0.6) : 0;
+    mascot.style.opacity = (mq * (w == null ? 1 : 1 - w)).toFixed(3);
+    mascot.style.display = mq > 0 ? 'block' : 'none';
+
+    const tl = $('title');
+    if (w == null) {
+      $('head').style.opacity = '';
+      $('bar').style.opacity = '';
+      return;
+    }
+    // the header leaves first, then the title arrives, so the two never overlap
+    $('head').style.opacity = (1 - clamp01(w / 0.45)).toFixed(3);
+    $('bar').style.opacity = (1 - clamp01(w / 0.45)).toFixed(3);
+    tl.style.display = w > 0 ? 'block' : 'none';
+    if (w <= 0) return;
+    drawTitle(0);
+    const back = tl.querySelector('.tback');
+    if (w >= 1) {
+      // identical to the opening frame from here on
+      back.style.display = '';
+      tl.style.opacity = 1;
+      $('stage').style.display = 'none';
+    } else {
+      back.style.display = 'none';
+      tl.style.opacity = clamp01((w - 0.5) / 0.5).toFixed(3);
+    }
+  }
 
   let shown = -2;
   let outgoing = null;
@@ -1007,32 +2058,9 @@
       $('title').style.display = inTitle ? 'block' : 'none';
       if (!inTitle) $('title').style.opacity = 1;
       $('stage').style.display = inTitle ? 'none' : 'block';
+      if (WORLD) { DRIFT = 1; updateGround(tSec); }
       if (inTitle) {
-        // Instagram takes the grid cover from the FIRST frame, so the title card
-        // has to be fully drawn at t=0. An entrance that fades up from nothing
-        // renders frame 0 as a blank page and the post gets a dead thumbnail.
-        // The animation therefore only settles the card, it never reveals it.
-        const big = document.querySelector('#title .big');
-        big.style.opacity = 1;
-        // slow push-in, then a zoom-through into the first scene
-        const out = clamp01((tSec - (titleUntil - 0.22)) / 0.22);
-        big.style.transform = `scale(${(1 + 0.035 * (tSec / Math.max(1, titleUntil)) + 0.05 * out * out).toFixed(4)})`;
-        $('title').style.opacity = (1 - out * out).toFixed(3);
-        titleWords.forEach(({ el, at }, i) => {
-          const q = i === 0 ? 1 : easeInOut(clamp01((tSec - at) / 0.32));
-          el.style.opacity = i === 0 ? 1 : clamp01(q * 1.6).toFixed(3);
-          el.style.transform = `translateY(${((1 - q) * 14).toFixed(1)}px)`;
-        });
-        document.querySelector('#title .kick').style.opacity = 1;
-        // the rule sits under the headline's real bottom edge, which depends on
-        // how many lines the hook wrapped to
-        const rule = document.querySelector('#title .rule');
-        rule.style.top = Math.round(big.getBoundingClientRect().bottom + 46) + 'px';
-        // the keyword sits under the rule and is fully drawn from frame 0
-        document.querySelector('#title .kw').style.top = Math.round(big.getBoundingClientRect().bottom + 84) + 'px';
-        rule.style.transform = 'none';
-        const tb = Math.sin(tSec * Math.PI * 2 / 3.4);
-        tmascot.style.transform = `translateX(-50%) translateY(${(tb * 3).toFixed(2)}px)`;
+        drawTitle(tSec);
         return;
       }
 
@@ -1062,6 +2090,7 @@
         $('counter').textContent =
           String(k + 1).padStart(2, '0') + ' — ' + String(TOTAL).padStart(2, '0');
         shown = k;
+        if (WORLD) heroCut();
       }
 
       // ---- header enters on every cut, so the cut reads as a cut
@@ -1114,7 +2143,7 @@
       });
 
       // ---- flow wires draw, then carry a document along the live wire
-      if (sc.type === 'flow') {
+      if (sc.type === 'flow' && !WORLD) {
         // a node's state can change halfway through, while the line is spoken
         const flipAt = span * 0.5;
         const stateNow = B.nodes.map((nd) => {
@@ -1223,9 +2252,10 @@
         if (rule) rule.style.width = (q * 140).toFixed(1) + 'px';
       }
 
+      if (WORLD) worldFrame(k, sc, B, local, span, tSec);
       // ---- camera: every scene drifts and pushes in slowly, so nothing on
       // screen is ever a still frame; transitions ride on the same transform
-      {
+      else {
         const T = 0.32;
         const kind = ['slide', 'rise', 'zoom'][k % 3];
         const carried = B.morph.size > 0;
@@ -1275,6 +2305,9 @@
       built.forEach((b, i) => { b.zoom = fitScene(b.wrap, scenes[i].type); fitNumbers(b.wrap); });
       built.forEach((b) => { b.keys = measureKeys(b); });
       linkScenes();
+      linkWorld();
+      // world: the progress bar runs along the header's hairline
+      if (WORLD) $('bar').style.top = ($('head').offsetTop + $('headrow').offsetHeight - 2) + 'px';
       window.MM_FIT = built.map((b) => +(+b.zoom).toFixed(2));
       window.MM_MORPHS = built.map((b) => b.morph.size);
       window.mmBoot(MMDEF);

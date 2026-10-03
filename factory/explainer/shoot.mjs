@@ -7,6 +7,10 @@
  * has drifted under the grid crop or behind the Reels UI.
  *
  *   node factory/explainer/shoot.mjs out/_shots 1,5,10,20 --zones
+ *   node factory/explainer/shoot.mjs out/_shots 1,5 --spec factory/explainer/spec.diorama.json
+ *
+ * --spec shoots a fixture instead of whatever explainer-spec.js holds, and puts
+ * the tracked spec file back afterwards.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +20,7 @@ import { findChrome } from '../record-bg.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PAGE = path.join(HERE, '..', 'bg', 'explainer.html');
+const SPEC = path.join(HERE, '..', 'bg', 'explainer-spec.js');
 
 const ZONE_CSS = `
   .mm-zone { position: fixed; z-index: 99999; pointer-events: none; }
@@ -66,6 +71,17 @@ export async function shoot(outDir, times, { zones = false } = {}) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const out = process.argv[2] || 'out/_shots';
   const times = (process.argv[3] || '1,5,10,15,20,25,30,35,40,44').split(',').map(Number);
-  const files = await shoot(out, times, { zones: process.argv.includes('--zones') });
-  console.log(files.join('\n'));
+  const si = process.argv.indexOf('--spec');
+  const original = si > 0 && fs.existsSync(SPEC) ? fs.readFileSync(SPEC) : null;
+  if (si > 0) {
+    const spec = JSON.parse(fs.readFileSync(process.argv[si + 1], 'utf8'));
+    for (const s of spec.scenes) s.of = s.of || 1;
+    fs.writeFileSync(SPEC, 'window.SPEC = ' + JSON.stringify(spec) + ';');
+  }
+  try {
+    const files = await shoot(out, times, { zones: process.argv.includes('--zones') });
+    console.log(files.join('\n'));
+  } finally {
+    if (original) fs.writeFileSync(SPEC, original);
+  }
 }

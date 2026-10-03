@@ -1,0 +1,321 @@
+{
+  "theme": "diorama",
+  "eyebrow": "NETWORKING",
+  "accent": "#0d9488",
+  "episode": "THE PROD MONKEY",
+  "handle": "",
+  "title": {
+    "kicker": "NETWORKING · THE OSI MODEL",
+    "title": "Priya taps send.",
+    "keyword": "osi model",
+    "backdrop": {
+      "type": "stack3d",
+      "data": {
+        "key": "osi",
+        "twin": {
+          "left": "PRIYA",
+          "right": "ARJUN"
+        }
+      }
+    }
+  },
+  "titleUntil": 3,
+  "starts": [
+    3,
+    7.5,
+    12,
+    16,
+    20,
+    24.5,
+    29,
+    33.5,
+    38.5,
+    42.5,
+    47
+  ],
+  "scenes": [
+    {
+      "type": "phone",
+      "headline": "Priya taps send.",
+      "subhead": "one photo, 4.2 MB",
+      "data": {
+        "app": "chat",
+        "contact": "Arjun",
+        "status": "online",
+        "send": true,
+        "delivered": true,
+        "messages": [
+          {
+            "from": "them",
+            "text": "how is the trip going?",
+            "time": "9:38"
+          },
+          {
+            "from": "me",
+            "text": "you have to see this",
+            "time": "9:40"
+          },
+          {
+            "from": "me",
+            "photo": true,
+            "time": "9:41"
+          }
+        ]
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "label": "IMG_2041.JPG",
+        "bytes": "4.2 MB",
+        "state": "whole",
+        "n": 6
+      },
+      "beat": 0,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack3d",
+      "headline": "It enters at the top.",
+      "subhead": "layer 7, the app hands it over",
+      "data": {
+        "key": "osi",
+        "active": 0,
+        "plates": [
+          {
+            "label": "APPLICATION",
+            "sub": "the chat app"
+          },
+          {
+            "label": "PRESENTATION",
+            "sub": "format, compress, encrypt"
+          },
+          {
+            "label": "SESSION",
+            "sub": "keep the conversation"
+          },
+          {
+            "label": "TRANSPORT",
+            "sub": "chop and number"
+          },
+          {
+            "label": "NETWORK",
+            "sub": "address and route"
+          },
+          {
+            "label": "DATA LINK",
+            "sub": "next hop on the wire"
+          },
+          {
+            "label": "PHYSICAL",
+            "sub": "light, radio, voltage"
+          }
+        ]
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "label": "IMG_2041.JPG",
+        "bytes": "4.2 MB",
+        "state": "whole"
+      },
+      "beat": 1,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack3d",
+      "headline": "First, it shrinks.",
+      "subhead": "layer 6 compresses it",
+      "data": {
+        "key": "osi",
+        "active": 1
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "label": "IMG_2041.JPG",
+        "bytes": "640 KB",
+        "state": "compressed"
+      },
+      "beat": 2,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack3d",
+      "headline": "Then it is scrambled.",
+      "subhead": "only Arjun's phone can read it",
+      "data": {
+        "key": "osi",
+        "active": 1
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "label": "IMG_2041.JPG",
+        "bytes": "640 KB",
+        "state": "encrypted"
+      },
+      "beat": 3,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack3d",
+      "headline": "Chopped into packets.",
+      "subhead": "layer 4 numbers every piece",
+      "data": {
+        "key": "osi",
+        "active": 3
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "label": "IMG_2041.JPG",
+        "bytes": "640 KB",
+        "state": "split",
+        "n": 6
+      },
+      "beat": 4,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack3d",
+      "headline": "Each one gets an address.",
+      "subhead": "layer 3 writes where it goes",
+      "data": {
+        "key": "osi",
+        "active": 4
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "state": "labelled",
+        "tag": "#{i} → 10.4.0.9"
+      },
+      "beat": 5,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack3d",
+      "headline": "At the bottom, it is light.",
+      "subhead": "layer 1, ones and zeros",
+      "data": {
+        "key": "osi",
+        "active": 6
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "state": "labelled",
+        "tag": "#{i} → 10.4.0.9",
+        "glyphs": "bits"
+      },
+      "beat": 6,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "flow",
+      "headline": "Hop by hop.",
+      "subhead": "router, provider, the other side",
+      "data": {
+        "nodes": [
+          {
+            "label": "Priya",
+            "sub": "phone",
+            "kind": "mobile"
+          },
+          {
+            "label": "Router",
+            "sub": "home wi-fi",
+            "kind": "network"
+          },
+          {
+            "label": "Backbone",
+            "sub": "fibre",
+            "kind": "globe"
+          },
+          {
+            "label": "Arjun",
+            "sub": "phone",
+            "kind": "mobile"
+          }
+        ],
+        "edge": "packets"
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "state": "labelled",
+        "tag": "#{i}"
+      },
+      "beat": 8,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stat",
+      "headline": "Under a blink.",
+      "subhead": "",
+      "data": {
+        "value": "80 ms",
+        "label": "SEND TO SEEN",
+        "tone": "accent"
+      },
+      "beat": 9,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "phone",
+      "headline": "Arjun sees it.",
+      "subhead": "back up all seven layers",
+      "data": {
+        "app": "chat",
+        "device": "b",
+        "contact": "Priya",
+        "status": "online",
+        "receive": true,
+        "messages": [
+          {
+            "from": "me",
+            "text": "how is the trip going?",
+            "time": "9:38"
+          },
+          {
+            "from": "them",
+            "text": "you have to see this",
+            "time": "9:40"
+          },
+          {
+            "from": "them",
+            "photo": true,
+            "time": "9:41"
+          }
+        ]
+      },
+      "hero": {
+        "key": "photo",
+        "kind": "photo",
+        "label": "IMG_2041.JPG",
+        "bytes": "4.2 MB",
+        "state": "whole"
+      },
+      "beat": 10,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "loopTo": 0,
+      "headline": "Seven down, seven up.",
+      "subhead": "",
+      "beat": 11,
+      "half": 0,
+      "of": 1
+    }
+  ]
+}
