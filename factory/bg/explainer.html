@@ -391,6 +391,27 @@
   .s3name { position: absolute; transform: translateX(-50%); white-space: nowrap;
     font: 700 25px 'JetBrains Mono', monospace; letter-spacing: .26em; color: var(--ink); }
 
+  /* ---- stat on a plinth ---- */
+  html.diorama .stat.sdio { justify-content: center; align-items: center; height: 100%; }
+  html.diorama .stat.sdio .v { position: relative; z-index: 2; line-height: .8; margin-bottom: -150px; }
+  .splw { position: relative; width: 680px; height: 250px; perspective: 1300px; perspective-origin: 50% -40%; }
+  .spl { position: absolute; left: 30px; top: 0; width: 620px; height: 250px; transform-style: preserve-3d;
+    transform-origin: 50% 100%; transform: rotateX(58deg); }
+  .spface { position: absolute; inset: 0; border-radius: 22px; background: #fffdf8;
+    border: 2px solid currentColor;
+    background-image: linear-gradient(to right, rgba(23,22,20,.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(23,22,20,.045) 1px, transparent 1px);
+    background-size: 46px 46px; }
+  .spcontact { position: absolute; left: 18%; right: 18%; top: 30%; height: 40%; border-radius: 50%;
+    background: rgba(60,45,25,.22); filter: blur(16px); }
+  .spedge { position: absolute; left: 0; right: 0; top: 100%; height: 84px; transform-origin: 50% 0; transform: rotateX(-90deg);
+    border-radius: 0 0 14px 14px; border: 2px solid currentColor; border-top: 0;
+    background: color-mix(in srgb, currentColor 18%, #e7e1d6);
+    display: flex; align-items: center; justify-content: center; }
+  .spedge span { font: 700 30px 'JetBrains Mono', monospace; letter-spacing: .2em; color: var(--ink); white-space: nowrap; }
+  .spshad { position: absolute; inset: 6% -2% -12% -2%; border-radius: 30px; background: rgba(60,45,25,.28);
+    filter: blur(22px); transform: translateZ(-64px); }
+
   /* ---- phone: a clean light-mode handset with a real shadow ---- */
   .ph { position: absolute; left: 50%; top: 466px; width: 392px; height: 780px; margin-left: -196px; transform-origin: 50% 0; }
   .phbody { position: absolute; inset: 0; border-radius: 62px; background: #dedad3;
@@ -516,6 +537,21 @@
   .f3tok .gly { position: absolute; inset: 0; opacity: 0; overflow: hidden; white-space: pre; text-align: center;
     padding: 3px 1px; font: 700 12px/15px 'JetBrains Mono', monospace; color: var(--accent); }
   .f3edge { white-space: nowrap; font: 500 21px 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+
+  /* ---- compare on the floor: two standing cards on their own pads ---- */
+  .c3 .f3foot { left: -150px; top: -110px; width: 300px; height: 220px; }
+  .s3wrap.twin { transform: translateY(64px); }
+  .f3card.c3card { width: 400px; padding: 26px 24px 24px; }
+  .c3card .ico { width: 64px; height: 64px; }
+  .c3card b { font-size: 50px; }
+  .c3card small { font-size: 27px; }
+  .c3rows { margin-top: 16px; padding-top: 4px; border-top: 1px solid rgba(23,22,20,.14); }
+  .c3rows div { margin-top: 14px; font: 500 33px/1.2 Inter, sans-serif; color: var(--ink); }
+  .c3vs { font: 700 24px 'JetBrains Mono', monospace; letter-spacing: .22em; color: var(--mute); white-space: nowrap; }
+  /* ---- list: each item a card lying on the table, in a column ---- */
+  html.diorama .lst .hd { font: 500 22px 'JetBrains Mono', monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); margin-bottom: 22px; }
+  html.diorama .lrow { border-bottom: 0; margin-bottom: 20px; padding: 20px 26px; border-radius: 18px; background: #fffdf8;
+    border: 1px solid rgba(23,22,20,.55); box-shadow: 0 5px 0 #ddd7cb, 0 6px 0 rgba(23,22,20,.38), 0 26px 30px -16px rgba(60,45,25,.32); }
 
   /* ---- the hero object: one thing that travels the whole reel ---- */
   .hobj { position: absolute; inset: 0; }
@@ -644,6 +680,12 @@
     const key = words.findIndex((w) => /\d/.test(w)) >= 0 ? words.findIndex((w) => /\d/.test(w))
       : words.reduce((b, w, i) => (w.replace(/\W/g, '').length > words[b].replace(/\W/g, '').length ? i : b), 0);
     big.innerHTML = words.map((w, i) => `<span class="w${i === key ? ' key' : ''}">${esc(w)}</span>`).join(' ');
+    // a long hook over a diorama cover drops a size so it stays at two or
+    // three lines and leaves the lower half of the cover to the picture
+    if (WORLD) {
+      const len = String(S.title.title || '').length;
+      big.style.fontSize = len > 52 ? '74px' : len > 34 ? '84px' : '';
+    }
     const weights = words.map((w) => w.length + 2);
     const tot = weights.reduce((a, b) => a + b, 0) || 1;
     let acc = 0;
@@ -722,6 +764,25 @@
     message: (h) => `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><rect width='320' height='240' fill='#1d2027'/>` +
       `<text x='26' y='80' font-family='sans-serif' font-size='30' fill='#ecebe7'>${esc(h.text || 'hey, look')}</text>` +
       `<rect x='26' y='120' width='230' height='14' rx='7' fill='#30343c'/><rect x='26' y='150' width='170' height='14' rx='7' fill='#30343c'/></svg>`,
+    // a value: an integer, a float, an amount, set in mono on a paper tile
+    number: (h) => {
+      const t = String(h.text || h.label || '42').slice(0, 16);
+      const fs = Math.min(118, Math.floor(272 / Math.max(1, t.length * 0.6)));
+      return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><rect width='320' height='240' fill='#f6f3ec'/>` +
+        `<rect x='14' y='14' width='292' height='212' rx='10' fill='none' stroke='#d6d0c4' stroke-width='2'/>` +
+        `<text x='160' y='${120 + fs * 0.34}' text-anchor='middle' font-family='monospace' font-weight='700' font-size='${fs}' fill='#171614'>${esc(t)}</text></svg>`;
+    },
+    // a database row: up to four cells, separated by "|" in the text
+    row: (h) => {
+      const cells = String(h.text || h.label || 'id 42 | Priya | 450').split('|').map((c) => c.trim()).filter(Boolean).slice(0, 4);
+      const w = 292 / Math.max(1, cells.length);
+      return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><rect width='320' height='240' fill='#f6f3ec'/>` +
+        `<rect x='14' y='40' width='292' height='34' fill='#e4dfd5'/>` +
+        `<rect x='14' y='40' width='292' height='160' rx='4' fill='none' stroke='#8a857c' stroke-width='2'/>` +
+        cells.map((c, i) => (i ? `<line x1='${14 + i * w}' y1='40' x2='${14 + i * w}' y2='200' stroke='#c8c2b6' stroke-width='2'/>` : '') +
+          `<text x='${14 + i * w + w / 2}' y='146' text-anchor='middle' font-family='monospace' font-weight='700' font-size='${Math.min(30, Math.floor((w - 12) / Math.max(1, c.length * 0.62)))}' fill='#171614'>${esc(c.slice(0, 12))}</text>`).join('') +
+        `</svg>`;
+    },
   };
   const heroArt = (h) => `url("data:image/svg+xml;utf8,${encodeURIComponent((HERO_SVG[h && h.kind] || HERO_SVG.photo)(h || {}))}")`;
   const heroGrid = (h) => {
@@ -780,6 +841,22 @@
         }).join('');
     }
     return `<div class="f3"><div class="f3plane">${svg}${cards}${edge}${hero}</div></div>`;
+  }
+
+  /** compare on the floor: two cards standing on their own pads, side by side */
+  function cmp3d(d) {
+    const sides = [d.left || {}, d.right || {}];
+    const pts = [[262, 520], [718, 520]];
+    const cards = sides.map((s, i) => {
+      const rows = (d.rows || []).map((r) => (i ? r.right : r.left)).filter((t) => t != null && t !== '');
+      return `<div class="f3n c3" data-i="${i}" style="left:${pts[i][0]}px;top:${pts[i][1]}px">` +
+        `<div class="f3foot"></div>` +
+        `<div class="f3card c3card f3bb"><span class="ico">${icon(s.kind)}</span><b>${esc(s.label || '')}</b>` +
+        (s.sub ? `<small>${esc(s.sub)}</small>` : '') +
+        (rows.length ? `<div class="c3rows">${rows.map((t) => `<div>${esc(t)}</div>`).join('')}</div>` : '') +
+        `</div></div>`;
+    }).join('');
+    return `<div class="f3 c3w"><div class="f3plane">${cards}<div class="c3vs f3bb" data-x="500" data-y="470">VS</div></div></div>`;
   }
 
   // ---------- scene builders ----------
@@ -847,6 +924,14 @@
     stat(d) {
       const colour = d.tone === 'good' ? 'var(--good)' : d.tone === 'bad' ? 'var(--bad)' : 'var(--accent)';
       // the number settles and a hairline draws under its label: restraint, not fireworks
+      if (WORLD) {
+        // diorama: the number stands on a matte plinth, its label set into the
+        // plinth's front edge like a museum card
+        return `<div class="stat sdio" style="color:${colour}">` +
+          `<div class="v el" data-v="${esc(d.value)}" data-from="${esc(d.from || '')}" style="color:${colour}">${esc(d.value)}</div>` +
+          `<div class="splw el"><div class="spl"><div class="spshad"></div><div class="spface"><i class="spcontact"></i></div>` +
+          `<div class="spedge">${d.label ? `<span style="font-size:${d.label.length > 26 ? 22 : d.label.length > 20 ? 26 : 30}px">${esc(d.label)}</span>` : ''}</div></div></div></div>`;
+      }
       return `<div class="stat" style="color:${colour}">` +
         `<div class="v el" data-v="${esc(d.value)}" data-from="${esc(d.from || '')}" style="color:${colour}">${esc(d.value)}</div>` +
         (d.label ? `<div class="l el">${esc(d.label)}</div>` : '') + `<span class="srule"></span></div>`;
@@ -1098,9 +1183,9 @@
   // free of layout thrash.
   const hero = $('hero');
   // world types that draw across the whole frame rather than inside #hero
-  const FULL = { stack3d: 1, phone: 1, flow: 1 };
+  const FULL = { stack3d: 1, phone: 1, flow: 1, compare: 1 };
   const isFull = (type) => WORLD && !!FULL[type];
-  const builderFor = (type) => (WORLD && type === 'flow' ? flow3d : BUILD[type] || BUILD.note);
+  const builderFor = (type) => (WORLD && type === 'flow' ? flow3d : WORLD && type === 'compare' ? cmp3d : BUILD[type] || BUILD.note);
   const built = scenes.map((sc) => {
     const wrap = document.createElement('div');
     wrap.style.cssText = 'position:absolute;inset:0;display:none';
@@ -1763,7 +1848,8 @@
     const P = B.ph;
     const app = d.app || 'chat';
     const intro = B.carry ? 1 : easeOut(local / 0.8);
-    P.root.style.transform = `translateY(${((1 - intro) * 40).toFixed(1)}px) scale(${PH_S})`;
+    if (B.phTop != null) P.root.style.top = B.phTop + 'px';
+    P.root.style.transform = `translateY(${((1 - intro) * 40).toFixed(1)}px) scale(${B.phS || PH_S})`;
     P.glow.style.opacity = (0.8 * (B.carry ? 1 : easeOut((local - 0.3) / 0.9))).toFixed(3);
     if (app === 'chat') {
       const msgs = d.messages || [];
@@ -1940,10 +2026,35 @@
     }
   }
 
+  /* ---- compare on the floor ---- */
+  function animCmp3d(B, local, tSec) {
+    if (!B.c3) {
+      B.c3 = { plane: B.wrap.querySelector('.f3plane'), nodes: [...B.wrap.querySelectorAll('.f3n')],
+        cards: [...B.wrap.querySelectorAll('.f3card')], vs: B.wrap.querySelector('.c3vs') };
+    }
+    const C = B.c3;
+    const yaw = 1.8 * Math.sin(tSec * 0.21) * DRIFT;
+    C.plane.style.transform = `rotateX(${F3_TILT}deg) rotateZ(${yaw.toFixed(3)}deg)`;
+    const bb = `rotateZ(${(-yaw).toFixed(3)}deg) rotateX(${-F3_TILT}deg) translate(-50%, -100%)`;
+    C.cards.forEach((c, i) => {
+      const q = easeOut((local - 0.15 - i * 0.35) / 0.6);
+      c.style.opacity = q.toFixed(3);
+      c.style.transform = `translate3d(0, -60px, 0) ${bb} translateY(${(-6 + (1 - q) * 18).toFixed(1)}px)`;
+      C.nodes[i].querySelector('.f3foot').style.opacity = q.toFixed(3);
+      // rows are read one after another, after both sides are standing
+      c.querySelectorAll('.c3rows div').forEach((r, j) => { r.style.opacity = easeOut((local - 1.0 - j * 0.45 - i * 0.2) / 0.5).toFixed(3); });
+    });
+    if (C.vs) {
+      C.vs.style.transform = `translate3d(${C.vs.dataset.x}px, ${C.vs.dataset.y}px, 0) ${bb}`;
+      C.vs.style.opacity = easeOut((local - 0.6) / 0.5).toFixed(3);
+    }
+  }
+
   function animWorld(B, sc, local, span, tSec, w) {
     if (sc.type === 'stack3d') animStack(B, sc.data || {}, local, span, tSec, w);
     else if (sc.type === 'phone') animPhone(B, sc.data || {}, local, span, tSec);
     else if (sc.type === 'flow') animFlow3d(B, sc, local, span, tSec);
+    else if (sc.type === 'compare') animCmp3d(B, local, tSec);
   }
 
   // continuity between consecutive world scenes of the same kind: the stack
@@ -2006,6 +2117,14 @@
     rule.style.transform = 'none';
     const tb = Math.sin(tSec * Math.PI * 2 / 3.4);
     tmascot.style.transform = `translateX(-50%) translateY(${(tb * 3).toFixed(2)}px)`;
+    if (titleB && titleB.sc.type === 'phone' && titleB.phTop == null) {
+      // a handset behind the cover starts under the keyword and is scaled to
+      // the room left above the bottom crop line, so the hook never sits on it
+      const kwEl = document.querySelector('#title .kw');
+      const top = Math.round(kwEl.getBoundingClientRect().top + 76);
+      titleB.phTop = top;
+      titleB.phS = Math.max(0.8, Math.min(PH_S, (1600 - top) / 780));
+    }
     if (titleB) animWorld(titleB, titleB.sc, 99, 5, tSec, null);
   }
 
@@ -2045,7 +2164,7 @@
     // the phone wants the height, so its scenes run the headline alone
     $('subhead').style.visibility = sc.type === 'phone' ? 'hidden' : '';
     // the mascot stands on the floor where the scene leaves room for it
-    const room = sc.mascot != null ? !!sc.mascot : !(sc.type === 'stack3d' || sc.type === 'flow');
+    const room = sc.mascot != null ? !!sc.mascot : !(sc.type === 'stack3d' || sc.type === 'flow' || sc.type === 'compare' || sc.type === 'list');
     const mq = room ? easeOut((local - 0.2) / 0.6) : 0;
     mascot.style.opacity = (mq * (w == null ? 1 : 1 - w)).toFixed(3);
     mascot.style.display = mq > 0 ? 'block' : 'none';

@@ -82,6 +82,9 @@
     "hookFontSize": 58
   },
   "format": "explainer",
+  "explainer": {
+    "theme": "paper"
+  },
   "handle": "",
   "wordsPerSecond": 2.62
 }

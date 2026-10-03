@@ -1,0 +1,319 @@
+{
+  "theme": "diorama",
+  "eyebrow": "PAYMENTS",
+  "accent": "#b91c1c",
+  "episode": "THE PROD MONKEY",
+  "handle": "",
+  "title": {
+    "kicker": "PAYMENTS",
+    "title": "You tap pay and the bakery gets paid.",
+    "keyword": "card payment",
+    "backdrop": {
+      "type": "phone",
+      "data": {
+        "app": "pay",
+        "merchant": "Corner Bakery",
+        "amount": "₹450.00",
+        "method": "Card •••• 0042",
+        "button": "Pay",
+        "done": "Paid"
+      }
+    }
+  },
+  "scenes": [
+    {
+      "type": "phone",
+      "headline": "You tap pay and the bakery",
+      "subhead": "",
+      "data": {
+        "app": "pay",
+        "merchant": "Corner Bakery",
+        "amount": "₹450.00",
+        "method": "Card •••• 0042",
+        "button": "Pay",
+        "done": "Paid"
+      },
+      "beat": 0,
+      "half": 0,
+      "of": 2
+    },
+    {
+      "type": "stack3d",
+      "headline": "It starts at the top.",
+      "subhead": "the app hands it over",
+      "data": {
+        "key": "net",
+        "active": 0,
+        "plates": [
+          {
+            "label": "APPLICATION",
+            "sub": "the payment app"
+          },
+          {
+            "label": "SECURITY",
+            "sub": "token and encryption"
+          },
+          {
+            "label": "TRANSPORT",
+            "sub": "chop and number"
+          },
+          {
+            "label": "NETWORK",
+            "sub": "address and route"
+          }
+        ],
+        "unit": "LAYER"
+      },
+      "hero": {
+        "key": "payment",
+        "state": "whole",
+        "kind": "card",
+        "n": 6,
+        "label": "₹450 to Corner Bakery",
+        "bytes": "2 KB"
+      },
+      "beat": 0,
+      "half": 1,
+      "of": 2
+    },
+    {
+      "type": "compare",
+      "headline": "Address outside, secret inside.",
+      "subhead": "",
+      "data": {
+        "left": {
+          "label": "Envelope",
+          "sub": "address visible",
+          "kind": "file"
+        },
+        "right": {
+          "label": "Letter",
+          "sub": "sealed",
+          "kind": "lock"
+        },
+        "rows": [
+          {
+            "left": "anyone reads",
+            "right": "nobody reads"
+          }
+        ]
+      },
+      "beat": 1,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "stack3d",
+      "headline": "The number never leaves.",
+      "subhead": "",
+      "data": {
+        "key": "net",
+        "active": 1
+      },
+      "hero": {
+        "key": "payment",
+        "state": "encrypted",
+        "kind": "card",
+        "n": 6,
+        "label": "₹450 to Corner Bakery"
+      },
+      "beat": 2,
+      "half": 0,
+      "of": 2
+    },
+    {
+      "type": "stat",
+      "headline": "The card becomes a token.",
+      "subhead": "",
+      "data": {
+        "value": "0",
+        "label": "CARD NUMBERS SENT",
+        "tone": "good",
+        "from": ""
+      },
+      "beat": 2,
+      "half": 1,
+      "of": 2
+    },
+    {
+      "type": "stack3d",
+      "headline": "Six pieces, numbered.",
+      "subhead": "",
+      "data": {
+        "key": "net",
+        "active": 2
+      },
+      "hero": {
+        "key": "payment",
+        "state": "split",
+        "n": 6,
+        "kind": "card",
+        "label": "₹450 to Corner Bakery"
+      },
+      "beat": 3,
+      "half": 0,
+      "of": 2
+    },
+    {
+      "type": "stack3d",
+      "headline": "Each one addressed.",
+      "subhead": "",
+      "data": {
+        "key": "net",
+        "active": 3
+      },
+      "hero": {
+        "key": "payment",
+        "state": "labelled",
+        "tag": "#{i} → gateway",
+        "kind": "card",
+        "n": 6,
+        "label": "₹450 to Corner Bakery"
+      },
+      "beat": 3,
+      "half": 1,
+      "of": 2
+    },
+    {
+      "type": "flow",
+      "headline": "Terminal, gateway, bank.",
+      "subhead": "",
+      "data": {
+        "nodes": [
+          {
+            "label": "Terminal",
+            "sub": "",
+            "kind": "mobile",
+            "state": "ok",
+            "becomes": ""
+          },
+          {
+            "label": "Gateway",
+            "sub": "",
+            "kind": "shield",
+            "state": "ok",
+            "becomes": ""
+          },
+          {
+            "label": "Bank",
+            "sub": "",
+            "kind": "database",
+            "state": "ok",
+            "becomes": ""
+          }
+        ],
+        "edge": "packets",
+        "traffic": "flowing"
+      },
+      "hero": {
+        "key": "payment",
+        "state": "labelled",
+        "tag": "#{i}",
+        "kind": "card",
+        "n": 6,
+        "label": "₹450 to Corner Bakery"
+      },
+      "beat": 4,
+      "half": 0,
+      "of": 2
+    },
+    {
+      "type": "flow",
+      "headline": "The bank checks it.",
+      "subhead": "",
+      "data": {
+        "nodes": [
+          {
+            "label": "Terminal",
+            "sub": "",
+            "kind": "mobile",
+            "state": "ok",
+            "becomes": ""
+          },
+          {
+            "label": "Gateway",
+            "sub": "",
+            "kind": "shield",
+            "state": "ok",
+            "becomes": ""
+          },
+          {
+            "label": "Bank",
+            "sub": "",
+            "kind": "database",
+            "state": "busy",
+            "becomes": "ok"
+          }
+        ],
+        "edge": "",
+        "traffic": "flowing",
+        "active": 2
+      },
+      "beat": 4,
+      "half": 1,
+      "of": 2
+    },
+    {
+      "type": "stat",
+      "headline": "Yes, in a blink.",
+      "subhead": "",
+      "data": {
+        "value": "300 ms",
+        "label": "TAP TO APPROVED",
+        "tone": "plain",
+        "from": ""
+      },
+      "beat": 5,
+      "half": 0,
+      "of": 2
+    },
+    {
+      "type": "list",
+      "headline": "What it never sent.",
+      "subhead": "",
+      "data": {
+        "title": "never on the wire",
+        "items": [
+          {
+            "label": "your card number",
+            "tone": "good"
+          },
+          {
+            "label": "your PIN",
+            "tone": "good"
+          },
+          {
+            "label": "your balance",
+            "tone": "good"
+          }
+        ]
+      },
+      "beat": 5,
+      "half": 1,
+      "of": 2
+    },
+    {
+      "loopTo": 0,
+      "beat": 6,
+      "half": 0,
+      "of": 1,
+      "headline": "Follow for what happens when it fails.",
+      "subhead": ""
+    }
+  ],
+  "starts": [
+    3,
+    6.6,
+    11,
+    20,
+    24.05,
+    29,
+    32.6,
+    37,
+    41.05,
+    46,
+    49.6,
+    54
+  ],
+  "titleUntil": 3
+}

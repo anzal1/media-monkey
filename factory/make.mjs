@@ -37,6 +37,7 @@ function parseArgs(argv) {
   const a = {
     topics: [], batch: 1, auto: false, lang: CONFIG.lang,
     voice: null, live: true, dry: false, fresh: null, bg: null,
+    theme: (CONFIG.explainer && CONFIG.explainer.theme) || '',
   };
   for (let i = 0; i < argv.length; i++) {
     const v = argv[i];
@@ -52,6 +53,7 @@ function parseArgs(argv) {
     else if (v === '--dry') a.dry = true;
     else if (v === '--track') a.track = argv[++i];        // everyday | root | ai | production
     else if (v === '--length') a.length = argv[++i];      // tight | deep
+    else if (v === '--theme') a.theme = argv[++i] || '';  // diorama | paper ("" = the flat look)
     else if (!v.startsWith('--')) a.topics.push(v);
   }
   if (!a.topics.length) a.auto = true;
@@ -85,7 +87,7 @@ async function makeOne(topicEntry, args, index, count) {
   // One voice, two visual treatments: the persona and the topic depth are the
   // same either way, so the format is just how this mechanism is best shown.
   const format = resolveFormat(args.format);
-  log(`  format: ${format}`);
+  log(`  format: ${format}, theme: ${args.theme || 'paper'}`);
 
   const script = await writeScript(topic, { lang: args.lang, log, series: topicEntry.series, length: topicEntry.length || args.length });
   if (topicEntry.series) script.series = topicEntry.series;
@@ -122,6 +124,7 @@ async function makeOne(topicEntry, args, index, count) {
       category: topicEntry.category || null,
       episode: 'THE PROD MONKEY',
       handle: CONFIG.handle || '',
+      theme: args.theme === 'diorama' ? 'diorama' : '',
       log,
     });
     bg = await renderExplainer({

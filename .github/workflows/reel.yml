@@ -19,6 +19,9 @@ on:
       track:
         description: "Optional track: everyday | root | ai | production (blank = auto mix)"
         required: false
+      theme:
+        description: "Optional look for this run: diorama | paper (blank = config explainer.theme)"
+        required: false
       dry_run:
         description: "Render only, publish nowhere, record nothing"
         type: boolean
@@ -90,6 +93,7 @@ jobs:
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.track }}" ]; then ARGS="--track ${{ github.event.inputs.track }}"; fi
+          if [ -n "${{ github.event.inputs.theme }}" ]; then ARGS="$ARGS --theme ${{ github.event.inputs.theme }}"; fi
           if [ -n "${{ github.event.inputs.topic }}" ]; then
             node factory/make.mjs "${{ github.event.inputs.topic }}" $ARGS
           else
