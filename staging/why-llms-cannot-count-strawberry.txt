@@ -1,24 +1,20 @@
-Your model has never seen the letter R.
-It only sees numbers.
-And that blind spot costs real money. 🍓
+Understanding llm tokens explains why your model hallucinates basic spelling.
+It cannot count letters.
+It cannot index strings.
 
-Tokens are the discrete integer chunks that text gets compressed into before a neural network ever sees it.
+An LLM never sees raw text, but rather integer chunks produced by a standalone byte pair encoding tokenizer.
 
 Here is where it bites:
-→ Counting characters fails because syllables exist as single atomic IDs.
-→ Non-English API bills run up to three times higher for the same text.
-→ Context windows shrink drastically when processing non-Latin scripts.
+→ Asking an agent to parse fixed-width file columns
+→ Paying double API rates for non-Latin localization
+→ Unit tests failing on basic character arithmetic
 
-When text enters a pipeline, a tokenizer runs Byte Pair Encoding. It starts with single bytes and iteratively merges the most frequent pairs found in the training data into a vocabulary of roughly one hundred thousand tokens.
+The tokenizer runs before the transformer even wakes up. It matches character sequences against a static dictionary of roughly one hundred thousand common patterns. When you pass strawberry, it splits the word into straw and berry, assigns them IDs, and passes those numbers forward. The individual letters are literally invisible to the attention heads.
 
-Because the word strawberry appears often, the tokenizer compresses it into just two tokens: straw and berry. The transformer's attention heads compute math across those two tokens, completely unaware of the individual letters inside. If a model gets the count right, it is simply matching training patterns, not inspecting letters.
-
-For languages like Hindi, Japanese, or Arabic, rare byte combinations do not get merged. A single letter can cost three separate byte tokens, running your latency and context costs through the roof.
-
-Next time you need string parsing inside an LLM pipeline.
+This also creates a massive token tax. Common English words get single IDs. Meanwhile, non-Latin scripts get fragmented into single bytes, burning up to ten times more context window and budget for the exact same information density.
 
 AI system design, part 1. Follow for part 2.
 
-What is the weirdest tokenization edge case you have caught in production?
+What is the weirdest tokenization edge case that has broken your production prompts?
 
-#llm #tokenization #gpt4 #transformers #systemdesign #machinelearning #softwareengineering #backenddeveloper #devops #programming #coding #webdevelopment
+#llmtokens #bytepairencoding #tokens #tokenization #systemdesign

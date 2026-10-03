@@ -821,5 +821,20 @@
     "slot": "2026-10-02T17:30:00.000Z",
     "igMediaId": "18113760362023295",
     "publishedAt": "2026-10-02T17:47:20Z"
+  },
+  {
+    "slug": "why-llms-cannot-count-strawberry",
+    "topic": "tokens",
+    "hook": "Why your model cannot spell strawberry.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-01",
+    "length": "tight",
+    "seconds": 90.1,
+    "lang": "en",
+    "at": "2026-10-03T00:42:13.881Z",
+    "ytVideoId": "Ivzkuzbrt_w",
+    "slot": "2026-10-03T03:00:00.000Z"
   }
 ]
