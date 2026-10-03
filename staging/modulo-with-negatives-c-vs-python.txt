@@ -1,0 +1,24 @@
+Your modulo with negatives just returned two different numbers.
+C gives you minus one.
+Python gives you two. ⚠️
+
+Integer division fundamentally disagrees on how to round quotients below zero.
+
+Here is where it bites:
+→ Modulo hashing a user ID with a negative sign
+→ Passing minus one directly into an array lookup
+→ Crashing production with a segfault that passes local tests
+
+The root equation never changes: a equals q times b plus r. But when you divide minus seven by three, the true mathematical answer is minus two point three three. C truncates toward zero, making the quotient minus two, which forces the remainder to be minus one. Python floors toward negative infinity, making the quotient minus three, forcing the remainder to be positive two.
+
+Hardware loves truncation because the x86 assembly instruction IDIV has baked it into silicon for forty years. Math libraries love flooring because positive remainders make cyclic buffers work without edge cases.
+
+One missed sign check turns an index into a negative offset that reads raw garbage off your heap.
+
+Next time you write an in-memory hash ring.
+
+Did your stack ever drop an out of bounds exception because a hash went negative?
+
+From the root, part 2. Follow for part 3.
+
+#computerscience #programming #softwareengineering #python #clang

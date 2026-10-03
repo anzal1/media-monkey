@@ -855,5 +855,20 @@
     "slot": "2026-10-03T07:30:00.000Z",
     "igMediaId": "17899578180671419",
     "publishedAt": "2026-10-03T07:30:08Z"
+  },
+  {
+    "slug": "modulo-with-negatives-c-vs-python",
+    "topic": "integer division and modulo with negatives",
+    "hook": "Why negative seven modulo three breaks your code.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-03",
+    "length": "tight",
+    "seconds": 93,
+    "lang": "en",
+    "at": "2026-10-03T13:07:56.371Z",
+    "ytVideoId": "mN9JoZUmJ68",
+    "slot": "2026-10-03T13:30:00.000Z"
   }
 ]
