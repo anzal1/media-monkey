@@ -33,10 +33,11 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
-    # renders are serialised so two runs never pick the same series episode;
-    # the long wait for the slot happens in the publish job, outside this group
+    # live renders are serialised so two runs never pick the same series
+    # episode; dry runs record nothing, so each gets its own group and runs now.
+    # The long wait for the slot happens in the publish job, outside this group.
     concurrency:
-      group: reel-render
+      group: reel-render-${{ github.event.inputs.dry_run == 'true' && github.run_id || 'live' }}
       cancel-in-progress: false
     outputs:
       slug: ${{ steps.host.outputs.slug }}
