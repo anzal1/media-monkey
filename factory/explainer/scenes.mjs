@@ -338,6 +338,8 @@ export function normaliseScene(raw, fallbackHeadline, ctx = {}) {
   } else if (type === 'card') {
     const title = clean(d.title).slice(0, 34);
     if (title) data = { kind: kindOf(d.kind), title, pill: clip(d.pill, 2), sub: clip(d.sub, 7) };
+    const art = String(d.art || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
+    if (data && world && art) data.art = art;
   } else if (type === 'list') {
     const items = (Array.isArray(d.items) ? d.items : []).slice(0, 5)
       .map((it) => (typeof it === 'string'
@@ -519,7 +521,7 @@ function normalisePhone(d) {
     if (d.delivered === true) out.delivered = true;
   } else if (app === 'pay') {
     out.merchant = clip(d.merchant, 3).slice(0, 22) || 'Corner Bakery';
-    out.amount = short(d.amount, 12) || '₹450.00';
+    out.amount = short(d.amount, 12);
     const note = clip(d.note, 3).slice(0, 18);
     if (note) out.note = note;
     out.method = short(d.method, 18) || 'Card •••• 0042';
@@ -548,7 +550,7 @@ function normalisePhone(d) {
     if (d.buffering === true) out.buffering = true;
   } else if (app === 'pos') {
     out.merchant = clip(d.merchant, 3).slice(0, 22) || 'Corner Bakery';
-    out.amount = short(d.amount, 12) || '₹450.00';
+    out.amount = short(d.amount, 12);
     const prompt = clip(d.prompt, 3).slice(0, 14);
     if (prompt) out.prompt = prompt;
     if (d.success === false) out.success = false;
@@ -660,6 +662,9 @@ function worldBrief(bible, batch, offset, prev) {
     `analogy is drawn faithfully, never paraphrased into something that is no longer true.\n` +
     `PHONE SCREENS MATCH THE STORY: a chat photo only when the story is a photo; a game, a bank ` +
     `or a shop is a "browser" screen whose "title" is the thing the person reads (\"Coins: 16,777,216\").\n` +
+    `PICTURE CARDS: an analogy object or a real thing is a "card" with "art" set to a library ` +
+    `slug (${(b.artSlugs || []).join(', ') || 'none'}) and "title" in plain words, never a made up ` +
+    `file name.\n` +
     `ONE COMPARE PER REEL: a side by side is used once, for the one contrast that matters; ` +
     `after that the map and the hero carry the idea. No "note" scenes on this look.\n` +
     `ONE FACT ONCE: never spend two scenes on the same fact (a "stat" of 32 bytes and then ` +
@@ -887,6 +892,12 @@ export function normaliseBible(b, nBeats) {
   return out;
 }
 
+/** a number in the text that the reference never says, ignoring commas and signs */
+function ungroundedIn(text, reference) {
+  const ref = String(reference || '').replace(/,/g, '');
+  return (String(text || '').match(/\d[\d.,]*\d|\d/g) || []).some((t) => !ref.includes(t.replace(/,/g, '').replace(/\.0+$/, '')))
+    || /-\s*\d/.test(String(text || '')) && !/-\s*\d/.test(String(reference || ''));
+}
 const wordsOfText = (t) => String(t || '').toLowerCase().match(/[a-z0-9₹$%]+/g) || [];
 const sameWords = (a, b) => { const x = wordsOfText(a).join(' '); return !!x && x === wordsOfText(b).join(' '); };
 /** the headline is the hook, or the hook cut short (headlines are clipped to six words) */
@@ -940,7 +951,7 @@ function signature(sc) {
  * reuse the cover's line. Scenes that break a rule are dropped or merged into
  * their neighbours; nothing here throws.
  */
-export function polishDiorama(scenes, { beats = [], hook = '', bible = null, durations = [], log = () => {} } = {}) {
+export function polishDiorama(scenes, { beats = [], hook = '', bible = null, durations = [], log = () => {}, art = [] } = {}) {
   const notes = [];
   const people = bible && bible.people;
   const map = bible && bible.map;
@@ -967,6 +978,64 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
       if (sc.data.active != null && idx[sc.data.active] >= 0) sc.data.active = idx[sc.data.active];
       else delete sc.data.active;
       sc._onMap = true;
+    }
+  }
+
+  // ---- the hero crosses the map one hop per visit: a visit that names no
+  // particular hop (or the whole map) takes the next one, so every visit differs
+  if (map) {
+    const last = map.nodes.length - 1;
+    let seg = 0;
+    for (const sc of scenes) {
+      if (!sc._onMap) continue;
+      const h = sc.data.hop;
+      if (!h || (Math.min(...h) === 0 && Math.max(...h) === last)) {
+        sc.data.hop = [seg, seg + 1];
+        seg = Math.min(seg + 1, last - 1);
+      } else seg = Math.min(Math.max(...h), last - 1);
+    }
+  }
+
+  // ---- a picture card: an analogy object or a real thing drawn from the art
+  // library instead of a made up file name
+  const bySlug = new Map(art.map((a) => [a.slug, a]));
+  for (const sc of scenes) {
+    if (sc.type !== 'card') continue;
+    const d = sc.data;
+    let a = d.art && bySlug.get(d.art);
+    const fileish = /^[\w-]+\.[a-z0-9]{1,4}$/i.test(d.title) || /_/.test(d.title);
+    if (!a && fileish && sc.beat === 1 && art.length) {
+      // the analogy beat drew a file: find the object it means in the library
+      const bag = new Set(wordsOfText([d.title.replace(/[._-]/g, ' '), d.sub, sc.headline].join(' ')));
+      a = art.find((x) => x.kind !== 'photo' && (x.tags || []).some((t) => bag.has(String(t).toLowerCase())));
+    }
+    if (a) {
+      d.art = a.file; d.artKind = a.kind;
+      if (fileish) d.title = clip(d.sub || sc.headline, 5) || d.title.replace(/[._-]+/g, ' ');
+      if (d.title === d.sub) d.sub = '';
+    } else {
+      delete d.art;
+      // no picture for it: at least say what it is in words, not as a file name
+      if (fileish && sc.beat === 1) d.title = clip(d.sub || d.title.replace(/\.[a-z0-9]{1,4}$/i, '').replace(/[._-]+/g, ' '), 5);
+    }
+  }
+
+  // ---- a phone shows only values the story says: a cover reading -16,777,215
+  // over a narration of 16,777,216 is a contradiction on screen
+  {
+    const told = [hook, ...beats.map((b) => b.text || '')].join(' ');
+    const phoneDatas = scenes.filter((sc) => sc.type === 'phone').map((sc) => sc.data);
+    if (bible && bible.cover && bible.cover.type === 'phone') phoneDatas.push(bible.cover.data);
+    for (const d of phoneDatas) {
+      for (const k of ['value', 'from', 'amount', 'title', 'code']) {
+        if (d[k] && /\d/.test(d[k]) && ungroundedIn(d[k], told)) {
+          notes.push(`phone ${k} "${d[k]}" is not in the script`);
+          if (k === 'value') d.value = d.title && !ungroundedIn(d.title, told) ? '' : (d.name || '');
+          else if (k === 'code') { d.body = (d.body || '').replace(d.code, '').trim(); delete d.code; }
+          else delete d[k];
+        }
+      }
+      if (d.app === 'app' && !d.value && !(d.rows || []).length) d.value = d.title || d.name || '';
     }
   }
 
@@ -1215,6 +1284,7 @@ export async function writeScenes(topic, script, opts = {}) {
         log(`  scenes: world plan attempt ${attempt} failed (${e.message.slice(0, 60)})`);
       }
     }
+    if (bible) bible.artSlugs = (opts.art || []).filter((a) => a.kind !== 'photo').map((a) => a.slug);
     if (bible && bible.hero) {
       const pick = pickArt(opts.art || [], bible.hero, [topic, script.hook, bible.hero.label || '', ...(script.beats || []).slice(0, 2).map((b) => b.text)], opts.recentArt || []);
       if (pick) { bible.hero.art = pick.file; bible.hero.aspect = pick.aspect; bible.hero.artKind = pick.kind; bible.artSlug = pick.slug; } else delete bible.hero.art;
@@ -1278,7 +1348,7 @@ export async function writeScenes(topic, script, opts = {}) {
   let cover = null;
   if (world) {
     const polished = polishDiorama(scenes, {
-      beats, hook: script.hook, bible, durations, log,
+      beats, hook: script.hook, bible, durations, log, art: opts.art || [],
     });
     scenes.length = 0;
     scenes.push(...polished.scenes);
