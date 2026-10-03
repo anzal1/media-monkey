@@ -838,5 +838,20 @@
     "slot": "2026-10-03T03:00:00.000Z",
     "igMediaId": "18026682506859145",
     "publishedAt": "2026-10-03T03:00:11Z"
+  },
+  {
+    "slug": "why-closing-fd-leaves-epoll-hanging",
+    "topic": "why closing a file descriptor does not unregister it from epoll",
+    "hook": "Closing a socket does not remove it from epoll.",
+    "source": "live",
+    "track": "production",
+    "category": "os-internals",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 117.4,
+    "lang": "en",
+    "at": "2026-10-03T07:18:47.004Z",
+    "ytVideoId": "4L4Sf_8wHWY",
+    "slot": "2026-10-03T07:30:00.000Z"
   }
 ]

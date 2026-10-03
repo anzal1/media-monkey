@@ -1,0 +1,24 @@
+Managing file descriptor epoll state requires watching references.
+You closed the socket.
+Your loop still fires on it.
+
+Under Linux, closing a file descriptor only tears down your process pointer, not the kernel object epoll actually monitors.
+
+Here is where it bites:
+→ A child process inherits an inherited socket handle across fork.
+→ Your parent loop calls close and assumes epoll deregisters it.
+→ Epoll keeps firing phantom events on a descriptor you thought died.
+
+An integer file descriptor is just an offset in your process table. It points to a struct file in kernel space. When you pass a descriptor to epoll_ctl, epoll stores the struct file, not your local integer.
+
+If that struct file has another reference held anywhere a dup call, an open fork, or a UNIX domain socket passing credentials the reference count never hits zero when you call close. Because the count never hits zero, the kernel cleanup hook never triggers inside the event poll subsystem.
+
+Once the kernel reallocates that recycled integer to an incoming client, your event loop starts dispatching notifications meant for a dead socket to fresh connections.
+
+Call EPOLL_CTL_DEL before close whenever descriptors escape across process boundaries.
+
+Save this for your next socket leak.
+
+Have you ever spent hours chasing phantom epoll wakeups after a fork?
+
+#linuxkernel #systemsengineering #epoll #networking #kernelinternals
