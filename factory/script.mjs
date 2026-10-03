@@ -258,6 +258,26 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
     return { text, headline, accent: pickAccent(text, b.accent), source };
   });
 
+  // A beat that says what an earlier beat already said is the fastest way to
+  // lose a viewer. Filler phrases are the tell, and so is a beat whose content
+  // words mostly repeat another's (real scripts top out near 0.42).
+  const FILLER = /\b(in other words|basically|simply put|to recap|as we saw|long story short|once again)\b/i;
+  beats.forEach((b, i) => {
+    const m = b.text.match(FILLER);
+    if (m) soft(`beat ${i + 1} says "${m[0]}", which restates instead of adding. Cut it and add the next fact.`);
+  });
+  const STOP = new Set('that this with from your they their them then than what when which have just into only each every more most like about there where while will would could should does been were being because after before over under also same other these those very much many some'.split(' '));
+  const content = (t) => new Set(t.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w.length >= 4 && !STOP.has(w)));
+  const sets = beats.map((b) => content(b.text));
+  for (let i = 0; i < sets.length; i++) {
+    for (let j = i + 1; j < sets.length; j++) {
+      const small = Math.min(sets[i].size, sets[j].size);
+      if (small < 5) continue;
+      const shared = [...sets[i]].filter((w) => sets[j].has(w)).length;
+      if (shared / small >= 0.6) soft(`beat ${j + 1} repeats beat ${i + 1}. Every beat must add one new fact; make beat ${j + 1} the next step deeper.`);
+    }
+  }
+
   // Two scenes in a row carrying the same headline reads as a stall, so the
   // later one falls back to its own beat text.
   const seenHeadlines = new Set();

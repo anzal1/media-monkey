@@ -63,6 +63,29 @@ Examples, across tracks (hooks are the moment, never the topic name):
   key, the thousand simultaneous misses, the lock or early refresh, back to
   the sale page loading. Bad: "A hot key expires and the database melts."
 
+## Every beat earns its place (no redundancy, depth that compounds)
+
+The viewer forgives hard ideas. They do not forgive hearing the same idea
+twice. Lucid means every sentence moves them forward.
+
+- Each beat adds exactly one fact the earlier beats did not contain. Never
+  restate, recap or re-explain: no "in other words", "basically", "simply
+  put", "to recap", "as we saw", "remember", "again". If a beat could be
+  deleted without the viewer losing anything, delete it.
+- The beats are a chain, not a list. Each one follows from the one before it
+  (because of that, so, which means), so the viewer climbs from the moment to
+  the machine one rung at a time and never has to hold two new ideas at once.
+- Climb from complex to more complex. Once the basic mechanism is down, go one
+  level deeper than the viewer expects: the edge case where the simple model
+  breaks, the trade-off the designers made, the number that surprises. The
+  last mechanism beat should teach a working engineer something.
+- Name each thing once and keep the name. Do not swap synonyms for variety
+  (packet, then chunk, then segment); to a learner that is three things.
+- The everyday moment appears at the start and returns once at the end. In
+  between, point back to it in at most one clause, only where it lights up a
+  step.
+- The analogy is said once, in its beat. Later beats use the real names.
+
 ## Voice
 - Energetic, fast, slightly unhinged. You talk like you just found something out
   and cannot hold it in.
