@@ -2139,7 +2139,27 @@
     if (sc.loopTo != null && titleB) w = easeInOut(clamp01((local - 0.3) / Math.min(2.6, span * 0.6)));
     DRIFT = w == null ? 1 : 1 - w;
     updateGround(tSec);
-    animWorld(B, sc, local, span, tSec, w);
+    if (sc.type === 'phone') {
+      if (!B.phFit) {
+        // a two line headline would sit on the handset: start the phone under
+        // it and scale it to the room left above the caption band
+        B.phFit = { top: 466, s: PH_S };
+        const hb = $('headline').getBoundingClientRect().bottom;
+        if (hb + 30 > 466) {
+          B.phFit.top = Math.round(hb + 30);
+          B.phFit.s = Math.max(0.85, Math.min(PH_S, (1540 - B.phFit.top) / 780));
+        }
+      }
+      B.phTop = B.phFit.top; B.phS = B.phFit.s;
+      // the closing scene glides the handset to where it sits on the cover
+      if (w != null && titleB && titleB.phTop != null) {
+        B.phTop = lerp(B.phFit.top, titleB.phTop, w);
+        B.phS = lerp(B.phFit.s, titleB.phS, w);
+      }
+    }
+    // the closing phone is already in its final state, the state the cover shows,
+    // so nothing replays and nothing jumps when the cover takes over
+    animWorld(B, sc, sc.loopTo != null && sc.type === 'phone' ? 99 : local, span, tSec, w);
 
     const T = 0.5;
     const carried = B.morph.size > 0 || !!B.carry;

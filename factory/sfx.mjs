@@ -88,6 +88,10 @@ export function cuesFor(board, starts, titleUntil, total) {
     if (s.type === 'flow') return d.nodes.map((n) => key(n.label));
     if (s.type === 'card') return [key(d.title)];
     if (s.type === 'compare') return [key(d.left.label), key(d.right.label)];
+    // diorama: the same stack with the camera moving, or the same handset with a
+    // new screen, is one continuous shot, not a cut
+    if (s.type === 'stack3d' && !d.twin) return ['stack3d' + key(d.key)];
+    if (s.type === 'phone') return ['phone' + (d.device || 'a')];
     return [];
   };
   const cues = [];

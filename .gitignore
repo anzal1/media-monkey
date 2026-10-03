@@ -10,3 +10,6 @@ assets/clips/**/*.mp4
 assets/clips/.tmp-*
 assets/bg/calm/
 legacy/__pycache__/
+
+# CI review renders: kept locally, too big for the repo
+insights/visuals/ci/*.mp4
