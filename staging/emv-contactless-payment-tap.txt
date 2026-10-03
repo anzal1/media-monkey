@@ -1,0 +1,25 @@
+Sofia taps her card for a morning espresso.
+Before she pulls her hand back, the terminal beeps to confirm the local radio exchange is finished.
+Under five hundred milliseconds of EMV contactless payment cryptography just ran off thin air.
+
+An EMV contactless card is an unpowered microcontroller that uses magnetic induction to compute dynamic symmetric proof for a transaction.
+
+Picture this:
+→ A card sitting in your wallet has zero battery and runs no background processes.
+→ A skimming coil nearby tries to power the chip up without physical contact.
+→ The terminal must verify the card is authentic before the buyer walks out.
+
+1. The reader broadcasts an electromagnetic field at 13.56 MHz, inducing a tiny electric current in the card antenna that boots the secure chip.
+2. The terminal transmits a SELECT command matching an Application Identifier to pick Visa, Mastercard, or Amex.
+3. The reader sends an unpredictable number, the store amount, and the currency code into the card.
+4. The chip bumps its internal Application Transaction Counter and runs a symmetric cipher with a shared issuer secret key to produce an Application Request Cryptogram.
+5. The card hands over the cryptogram and account details, and the reader beeps so you can remove your plastic.
+6. The terminal sends an ISO 8583 network payload across the acquiring switch to the issuing bank to validate the counter and approve the funds.
+
+Replaying a captured contactless payload fails because the bank drops any reused transaction counter immediately.
+
+Next time you hear that reader beep at the counter.
+
+Does your current payment stack still handle raw ISO 8583 messages directly or do you route through modern aggregators?
+
+#fintech #payments #emv #cryptography #systemdesign
