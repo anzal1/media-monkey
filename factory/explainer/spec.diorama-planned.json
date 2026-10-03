@@ -90,7 +90,7 @@
         "kind": "file",
         "title": "a sealed envelope",
         "pill": "",
-        "sub": "a sealed envelope"
+        "sub": ""
       },
       "beat": 1,
       "half": 0,
@@ -142,21 +142,7 @@
       },
       "beat": 2,
       "half": 0,
-      "of": 2
-    },
-    {
-      "type": "stat",
-      "headline": "The card becomes a token.",
-      "subhead": "",
-      "data": {
-        "value": "0",
-        "label": "CARD NUMBERS SENT",
-        "tone": "good",
-        "from": ""
-      },
-      "beat": 2,
-      "half": 1,
-      "of": 2
+      "of": 1
     },
     {
       "type": "stack3d",
@@ -355,7 +341,6 @@
     11,
     15.05,
     20,
-    24.05,
     29,
     32.6,
     37,

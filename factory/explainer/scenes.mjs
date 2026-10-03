@@ -893,10 +893,41 @@ export function normaliseBible(b, nBeats) {
 }
 
 /** a number in the text that the reference never says, ignoring commas and signs */
+const UNITS = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+  eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19 };
+const TENS = { twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
+/**
+ * Every number a text says, as plain digit strings: written numbers ("16,777,216",
+ * "4.2", "450.00") and simple spelled ones ("thirty-two", "two", "a hundred").
+ * Matching is exact: "20" is not found inside "2041".
+ */
+function numbersIn(text) {
+  const out = new Set();
+  const t = String(text || '');
+  for (const m of t.match(/\d[\d,]*(?:\.\d+)?/g) || []) {
+    const n = m.replace(/,/g, '').replace(/\.0+$/, '');
+    out.add(n);
+    // "4.2" also covers "4" and "42" is not covered; a whole number keeps its own form only
+  }
+  const words = t.toLowerCase().replace(/-/g, ' ').match(/[a-z]+/g) || [];
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    if (w in TENS) {
+      const u = words[i + 1] in UNITS && UNITS[words[i + 1]] < 10 ? UNITS[words[i + 1]] : 0;
+      out.add(String(TENS[w] + u));
+      if (u) i++;
+    } else if (w in UNITS) out.add(String(UNITS[w]));
+    else if (w === 'hundred') out.add('100');
+    else if (w === 'thousand') out.add('1000');
+  }
+  return out;
+}
+/** a number in the text that the reference never says, or a minus sign it never has */
 function ungroundedIn(text, reference) {
-  const ref = String(reference || '').replace(/,/g, '');
-  return (String(text || '').match(/\d[\d.,]*\d|\d/g) || []).some((t) => !ref.includes(t.replace(/,/g, '').replace(/\.0+$/, '')))
-    || /-\s*\d/.test(String(text || '')) && !/-\s*\d/.test(String(reference || ''));
+  const said = numbersIn(reference);
+  const shown = String(text || '').match(/\d[\d,]*(?:\.\d+)?/g) || [];
+  return shown.some((m) => !said.has(m.replace(/,/g, '').replace(/\.0+$/, '')))
+    || (/(^|[^\w])-\s*[₹$]?\d/.test(String(text || '')) && !/(^|[^\w])-\s*[₹$]?\d/.test(String(reference || '')));
 }
 const wordsOfText = (t) => String(t || '').toLowerCase().match(/[a-z0-9₹$%]+/g) || [];
 const sameWords = (a, b) => { const x = wordsOfText(a).join(' '); return !!x && x === wordsOfText(b).join(' '); };
@@ -1003,20 +1034,27 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
     if (sc.type !== 'card') continue;
     const d = sc.data;
     let a = d.art && bySlug.get(d.art);
-    const fileish = /^[\w-]+\.[a-z0-9]{1,4}$/i.test(d.title) || /_/.test(d.title);
+    // the planner sometimes puts the slug itself in the title ("parcel-box")
+    const slugTitle = bySlug.get(String(d.title).toLowerCase().trim());
+    if (!a && slugTitle) a = slugTitle;
+    const fileish = /^[\w-]+\.[a-z0-9]{1,4}$/i.test(d.title) || /_/.test(d.title) || !!slugTitle ||
+      (/^[a-z0-9]+(-[a-z0-9]+)+$/.test(d.title) && !/\s/.test(d.title));
     if (!a && fileish && sc.beat === 1 && art.length) {
       // the analogy beat drew a file: find the object it means in the library
       const bag = new Set(wordsOfText([d.title.replace(/[._-]/g, ' '), d.sub, sc.headline].join(' ')));
       a = art.find((x) => x.kind !== 'photo' && (x.tags || []).some((t) => bag.has(String(t).toLowerCase())));
     }
+    const words = (t) => { const w = String(t).replace(/\.[a-z0-9]{1,4}$/i, '').replace(/[._-]+/g, ' ').replace(/\b\w*\d\w*\b/g, '').replace(/\s+/g, ' ').trim(); return w.charAt(0).toUpperCase() + w.slice(1); };
     if (a) {
       d.art = a.file; d.artKind = a.kind;
-      if (fileish) d.title = clip(d.sub || sc.headline, 5) || d.title.replace(/[._-]+/g, ' ');
+      // a picture card is named in plain words: the slug humanised, never the slug
+      if (fileish) d.title = words(a.slug);
       if (d.title === d.sub) d.sub = '';
     } else {
       delete d.art;
-      // no picture for it: at least say what it is in words, not as a file name
-      if (fileish && sc.beat === 1) d.title = clip(d.sub || d.title.replace(/\.[a-z0-9]{1,4}$/i, '').replace(/[._-]+/g, ' '), 5);
+      // no picture for it: say what it is in words, never as a made up file name
+      if (fileish) d.title = clip(d.sub, 5) || words(d.title);
+      if (d.title === d.sub) d.sub = '';
     }
   }
 
@@ -1059,12 +1097,17 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
   // ---- facts: a detail the beat never says (an algorithm, a mode, a size, a
   // URL) is blanked; a scene whose main value is such a detail goes
   const known = [hook, bible ? JSON.stringify({ h: bible.hero, m: bible.map, s: bible.stack, p: bible.people }) : ''].join(' ').toLowerCase();
+  const told = [hook, ...beats.map((b) => b.text || '')].join(' ');
   const ungrounded = (text, beatText) => {
     const hay = (beatText + ' ' + known).toLowerCase();
     const str = String(text || '');
+    // numbers must be ones the narration says, matched exactly (the whole script,
+    // since a stat may land a beat after the line that says it)
+    if (ungroundedIn(str, beatText + ' ' + told)) return true;
     // labels arrive uppercased, where capitals say nothing: only numbers count there
-    const toks = str.match(str === str.toUpperCase() ? /\d[\d.,]*/g : /[A-Za-z]*[A-Z]{2,}[A-Za-z0-9-]*|\d[\d.,]*/g) || [];
-    return toks.some((t) => !hay.includes(t.toLowerCase().replace(/[.,]+$/, '')));
+    if (str === str.toUpperCase()) return false;
+    const toks = str.match(/[A-Za-z]*[A-Z]{2,}[A-Za-z0-9-]*/g) || [];
+    return toks.some((t) => !new RegExp(`(^|[^a-z0-9])${t.toLowerCase().replace(/[.*+?^${}()|[\]\\-]/g, '\\$&')}($|[^a-z0-9])`).test(hay));
   };
   scenes = scenes.filter((sc) => {
     const bt = (beats[sc.beat] || {}).text || '';
@@ -1083,7 +1126,9 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
     const dead = (main && ungrounded(main, bt)) || (sc.type === 'list' && d.items.length < 2) || (sc.type === 'note' && !d.lead);
     if (!dead) return true;
     const others = scenes.filter((o) => o !== sc && o.beat === sc.beat && !o._gone).length;
-    if (!others || (durations[sc.beat] || 9) / others > 6.5) {
+    // a wrong number on screen is worse than a long hold: those always go
+    const wrongNumber = main && ungrounded(main, bt);
+    if (!wrongNumber && (!others || (durations[sc.beat] || 9) / others > 6.5)) {
       notes.push(`kept ${sc.type} "${main || sc.headline}" (its beat would hold too long)`);
       return true;
     }
