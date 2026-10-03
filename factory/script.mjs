@@ -193,6 +193,17 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
   const hook = cleanSpoken(obj.hook || '');
   if (!hook) err('hook is empty');
   if (wordsOf(hook).length > 12) err(`hook is ${wordsOf(hook).length} words, max 12`);
+  // Every top reel opened on a moment ("A customer taps pay once.", "Your hot
+  // key expires at 02:00:00.000."). When the topics turned into "why X" titles
+  // the hooks followed ("Why negative seven modulo three breaks your code.")
+  // and read like a chapter heading again.
+  // hard on early attempts, a warning on the last, like the keyword: a
+  // title-ish hook still beats a lost slot
+  const soft = (m) => (opts.lenientLength ? (opts.log || (() => {}))(`  warning: ${m}`) : err(m));
+  if (/^(why|how|what|when|understanding|learn|here'?s|this is|did you know|ever wonder)\b/i.test(hook)) {
+    soft(`hook "${hook}" reads like a title. Open on the moment itself, present tense: what the viewer sees, ` +
+        'types or gets back. Example shape: "Your modulo just returned two different numbers."');
+  }
 
   if (!Array.isArray(obj.beats)) err('beats is not an array');
   const [bLo, bHi] = (LENGTHS[opts.length] || LENGTHS.deep).beats;
@@ -305,12 +316,19 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
   const keyword = String(obj.keyword || '').toLowerCase().replace(/[^a-z0-9' +#.-]/g, ' ').replace(/\s+/g, ' ').trim();
   const kwLen = keyword.split(' ').filter(Boolean).length;
   const spokenEarly = [hook, ...beats.slice(0, 2).map((b) => b.text)].join(' ').toLowerCase();
-  const firstLine = caption.split('\n')[0].toLowerCase();
+  // the opening fragments, the part shown before "more". The keyword goes in
+  // there, inside the situation; forcing it into line one produced openers
+  // like "Understanding two's complement and integer overflow explains why".
+  const opening = caption.split(/\n\s*\n/)[0].toLowerCase();
+  const firstLine = caption.split('\n')[0];
   const kwProblems = [];
   if (!keyword || kwLen > 5) kwProblems.push('"keyword" must be the 2 to 4 word search phrase for this reel');
   else {
     if (!spokenEarly.includes(keyword)) kwProblems.push(`say the keyword "${keyword}" word for word in the hook or the first two beats`);
-    if (!firstLine.includes(keyword)) kwProblems.push(`put the keyword "${keyword}" word for word in the first line of the caption`);
+    if (!opening.includes(keyword)) kwProblems.push(`use the keyword "${keyword}" word for word somewhere in the opening fragments of the caption, inside the situation`);
+  }
+  if (/^(why|how|what is|understanding|managing|learn|in this|today)\b/i.test(firstLine.trim())) {
+    soft(`caption opens "${firstLine.slice(0, 40)}...", which is a title. Open with the situation: a symptom, a number, a log line or a flat contradiction.`);
   }
   if (kwProblems.length) {
     if (!opts.lenientLength) err(kwProblems.join('; '));

@@ -47,8 +47,13 @@ than three who bounce at eight seconds, and the only thing that holds them is
 that every ten seconds they learn one more true thing they did not know.
 
 - **hook**: 1 line, spoken in about 2 seconds. Also the title card of the video,
-  so it must read as a thumbnail. Max 9 words. It states the symptom or the
-  weird result. No "did you know".
+  so it must read as a thumbnail. Max 9 words. It is a MOMENT, not a title:
+  present tense, the thing the viewer sees, types or gets back, the instant
+  before it goes wrong. Never open with Why, How, What, Understanding, Here's
+  or "did you know"; the topic name is not the hook.
+  Good: "A customer taps pay once." "Your hot key expires at 02:00:00.000."
+  "Your modulo just returned two different numbers."
+  Bad: "Why negative modulo breaks your code." "Understanding two's complement." 
 - **beats**: 10 to 14 of them, in this shape:
   1. SYMPTOM: what an engineer actually sees. Dashboards, errors, the bill.
   2. ANALOGY: one plain-language picture of the mechanism, using everyday
@@ -123,7 +128,10 @@ ignores every hashtag after the fifth. So:
   Bad: "database performance" (too broad), "why your db dies" (nobody types it).
 - Say the keyword out loud, word for word, inside the first two beats. Spoken
   words are indexed.
-- Put the keyword, word for word, in the first line of the caption.
+- Use the keyword, word for word, in the caption's opening fragments, inside
+  the situation ("abs() on INT_MIN in two's complement returns a negative").
+  Never as a heading or a definition sentence: "Understanding X explains why"
+  is a title, and the opening must still read as the situation.
 
 Hashtag rules: exactly 5, lowercase, no `#`, each one a specific technology or
 concept from THIS reel (postgres, autovacuum, mvcc, databaseperformance,
