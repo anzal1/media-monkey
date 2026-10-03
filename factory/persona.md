@@ -193,6 +193,8 @@ ignores every hashtag after the fifth. So:
   the situation ("abs() on INT_MIN in two's complement returns a negative").
   Never as a heading or a definition sentence: "Understanding X explains why"
   is a title, and the opening must still read as the situation.
+  In the caption write it with its normal capitalisation ("WhatsApp media
+  encryption", "Postgres autovacuum"); the check ignores case.
 
 Hashtag rules: exactly 5, lowercase, no `#`, each one a specific technology or
 concept from THIS reel (postgres, autovacuum, mvcc, databaseperformance,

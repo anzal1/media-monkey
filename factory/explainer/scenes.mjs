@@ -357,7 +357,16 @@ async function scenesForBatch(topic, batch, offset, opts, cast = []) {
         `mean one of these, use EXACTLY this label, character for character, so the ` +
         `viewer sees the same box and it can carry over: ${cast.map((c) => `"${c}"`).join(', ')}.\n\n`
       : '') +
-    (opts.series
+    // everyday episodes follow one object a person touches (the photo, the card,
+    // the OTP) through the machine; bit-level types only where a beat is about bits
+    (opts.series && opts.series.seriesKey === 'everyday'
+      ? `THIS IS A "${opts.series.seriesTitle}" EPISODE. The story is one ordinary thing a person ` +
+        `does, and the viewer follows that one object through the machine. Keep it on screen: ` +
+        `carry the same label for it (the photo, the card, the message) across scenes so it can ` +
+        `travel, and show what happens to it at each step with the real components ("flow", ` +
+        `"sequence", "window"). Use "cells", "stack" or "code" only where a beat is really about ` +
+        `bytes, latencies or code.\n\n`
+      : opts.series
       ? `THIS IS A "${opts.series.seriesTitle}" EPISODE. Show the actual machinery, not boxes ` +
         `with labels on them: real bits and bytes and array slots ("cells"), the real tree ` +
         `("tree"), the real latencies side by side ("stack"), the real message order ` +
