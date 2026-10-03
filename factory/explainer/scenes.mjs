@@ -179,11 +179,15 @@ const MENU_DIORAMA = `DIORAMA TYPES (this reel uses the tabletop look; prefer th
           new "bytes"; encrypted = scrambled into glyphs; split = cut into "n" pieces (2 to 12);
           labelled = the pieces each get a label, "tag" is the label text where {i} is the
           piece number; "glyphs": "bits" shows ones and zeros instead of letters. States build
-          on each other in order; "whole" reassembles it.
+          on each other in order; "whole" reassembles it. A value ("number", "row") that is
+          split shows real parts: give "pieces", the text on each part (bytes as hex, digits,
+          fields), and change their order or values from scene to scene to show what the machine
+          does to them (for byte order: ["00","00","00","01"] then ["01","00","00","00"]).
           Examples:
             "hero": { "key": "photo", "state": "compressed", "bytes": "640 KB" }
             "hero": { "key": "photo", "state": "split", "n": 6 }
             "hero": { "key": "payment", "state": "labelled", "tag": "#{i} seq {i}00", "glyphs": "bits" }
+            "hero": { "key": "coins", "state": "split", "pieces": ["01", "00", "00", "00"], "tag": "addr 0x0{i}" }
 "flow" on this look stands its nodes on the floor and the hero travels the wire through them:
           the default for hops, routes and paths ("phone, router, backbone, server").
 "compare" and "list" stand on the table as cards; "stat" stands its number on a plinth.`;
@@ -405,7 +409,8 @@ function normaliseStack3d(d) {
   const plates = (Array.isArray(d.plates) ? d.plates : []).slice(0, 8)
     .map((pl) => (typeof pl === 'string' ? { label: pl } : pl || {}))
     .map((pl) => {
-      const o = { label: clean(pl.label).toUpperCase().slice(0, 16), sub: clip(pl.sub, 5) };
+      // words are set in capitals, but an address or a hex value keeps its case (0x00, not 0X00)
+      const o = { label: clean(pl.label).split(' ').map((w) => (/\d/.test(w) ? w : w.toUpperCase())).join(' ').slice(0, 16), sub: clip(pl.sub, 5) };
       const n = clean(pl.n).slice(0, 4);
       if (n) o.n = n;
       return o;
@@ -493,6 +498,13 @@ export function normaliseHero(h) {
   const tag = clean(h.tag).slice(0, 22);
   if (tag) out.tag = tag;
   if (String(h.glyphs || '').toLowerCase() === 'bits') out.glyphs = 'bits';
+  // a value split into named parts: each piece shows its own text (bytes, digits, fields)
+  if (Array.isArray(h.pieces)) {
+    const pcs = h.pieces.slice(0, 12).map((x) => clean(x).slice(0, 6));
+    if (pcs.length >= 2 && pcs.some(Boolean)) { out.pieces = pcs; if (h.n == null) out.n = pcs.length; }
+  }
+  const unit = clip(h.unit, 1).toUpperCase().replace(/[^A-Z]/g, '').slice(0, 10);
+  if (unit) out.unit = unit;
   return out;
 }
 
@@ -708,7 +720,9 @@ async function planWorld(topic, script, opts) {
     `{ "eyebrow": "the field, 1 to 3 words, uppercase",\n` +
     `  "hero": { "key": "short-id", "kind": "photo|card|file|packet|message|number|row", ` +
     `"label": "its name on screen, max 3 words, e.g. IMG_2041.JPG or ₹450 to Corner Bakery", ` +
-    `"bytes": "real size like 4.2 MB, or empty", "text": "for message, number, row" },\n` +
+    `"bytes": "real size like 4.2 MB, or empty", "text": "for message, number, row", ` +
+    `"n": "how many pieces it splits into, 2 to 12", "unit": "what a piece is called: PACKETS, BYTES, DIGITS, FIELDS", ` +
+    `"pieces": "optional, for number or row: the text on each piece, e.g. [\"00\",\"00\",\"00\",\"01\"]" },\n` +
     `  "people": { "sender": "Priya", "receiver": "Arjun" },\n` +
     `  "map": null or { "nodes": [ { "label": "Your phone", "sub": "sender", "kind": "mobile" } ] },\n` +
     `  "stack": null or { "key": "short-id", "unit": "LAYER", "plates": [ { "label": "max 2 words", "sub": "max 5 words" } ] },\n` +
@@ -731,7 +745,7 @@ export function normaliseBible(b, nBeats) {
     hero.state = 'whole';
     if (!hero.kind) hero.kind = 'file';
     if (!hero.label) hero.label = hero.text || hero.key;
-    if (!hero.n) hero.n = 6;
+    if (!hero.n) hero.n = hero.pieces ? hero.pieces.length : 6;
     out.hero = hero;
   }
   if (b.people && typeof b.people === 'object') {
@@ -797,7 +811,14 @@ function signature(sc) {
     return `ph:${d.device || 'a'}:${d.app}:${m}:${d.send ? 's' : ''}${d.receive ? 'r' : ''}:${d.amount || ''}:${d.code || d.body || ''}:${d.url || ''}${h}`;
   }
   if (sc.type === 'flow') return `fl:${d.nodes.map((n) => `${wordsOfText(n.label).join('')}.${n.state}.${n.becomes}`).join('>')}:${d.traffic}:${d.active ?? ''}:${d.hop || ''}${h}`;
-  return `${sc.type}:${JSON.stringify(d)}`;
+  // the classic types: what the eye takes in is the main value, not the small print
+  const main = {
+    stat: () => d.value, card: () => d.title, cells: () => [d.cells, d.after], code: () => d.lines,
+    window: () => d.lines.map((l) => l.text), diff: () => d.rows.map((r) => r.text), list: () => d.items.map((it) => it.label),
+    compare: () => [d.left.label, d.right.label], sequence: () => d.steps.map((x) => x.label), tree: () => [d.nodes, d.path],
+    chart: () => [d.kind, d.from, d.to, d.bars, d.value], note: () => d.lead,
+  }[sc.type];
+  return `${sc.type}:${JSON.stringify(main ? main() : d).toLowerCase().replace(/[^a-z0-9]+/g, '')}`;
 }
 
 /**
@@ -911,6 +932,9 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
     if (!canon.key || !heroFits(sc)) { delete sc.hero; continue; }
     const h = sc.hero;
     h.key = canon.key; h.kind = canon.kind; h.n = N;
+    if (canon.unit) h.unit = canon.unit;
+    if (!h.pieces && !seenHero && canon.pieces) h.pieces = canon.pieces;
+    if (h.pieces) h.pieces = Array.from({ length: N }, (_, j) => h.pieces[j] || '');
     if (canon.text) h.text = canon.text; else delete h.text;
     if (!seenHero) {
       if (!h.label && canon.label) h.label = canon.label;

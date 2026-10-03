@@ -553,6 +553,8 @@
   .hpiece { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; border-radius: 12px; background: #f4f1ea;
     box-shadow: 0 0 0 1.5px rgba(23,22,20,.7), 0 26px 30px -14px rgba(60,45,25,.42); }
   .htile { border-radius: 7px; }
+  .hpc { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ink); background: #f6f3ec; white-space: nowrap; }
   .hpiece .himg { position: absolute; inset: 0; background-repeat: no-repeat; }
   .hpiece .gly { position: absolute; inset: 0; padding: 6px 8px; opacity: 0; overflow: hidden; word-break: break-all;
     font: 700 34px/44px 'JetBrains Mono', monospace; letter-spacing: .08em; color: var(--accent);
@@ -1643,7 +1645,9 @@
       rootEl.className = 'hobj';
       rootEl.style.opacity = 0;
       let html = `<div class="hpiece hwhole" style="width:${HW}px;height:${HH}px"><div class="himg"></div><div class="gly"></div></div>`;
-      for (let j = 0; j < g.n; j++) html += `<div class="hpiece htile" style="width:${g.tw}px;height:${g.th}px;opacity:0"><div class="himg"></div><div class="gly"></div></div>`;
+      // a value split into its parts (bytes, digits, fields) shows each part's own text
+      const pcFont = Math.round(Math.min(g.th * 0.46, (g.tw * 1.5) / Math.max(2, ...(h.pieces || ['00']).map((x) => String(x).length))));
+      for (let j = 0; j < g.n; j++) html += `<div class="hpiece htile" style="width:${g.tw}px;height:${g.th}px;opacity:0"><div class="himg"></div><div class="hpc" style="font-size:${pcFont}px"></div><div class="gly"></div></div>`;
       for (let j = 0; j < g.n; j++) html += '<div class="ttag" style="opacity:0"></div>';
       html += '<div class="hmeta" style="opacity:0"><span></span><b></b></div>';
       rootEl.innerHTML = html;
@@ -1654,7 +1658,8 @@
         im.style.backgroundSize = `${HW}px ${HH}px`;
         if (j) im.style.backgroundPosition = `${-((j - 1) % g.cols) * g.tw}px ${-Math.floor((j - 1) / g.cols) * g.th}px`;
       });
-      heroes.set(h.key, { ...g, key: h.key, root: rootEl, whole: rootEl.querySelector('.hwhole'),
+      heroes.set(h.key, { ...g, key: h.key, kind: h.kind, unit: h.unit || (['number', 'row', 'card'].includes(h.kind) ? 'PIECES' : 'PACKETS'),
+        pcs: [...rootEl.querySelectorAll('.hpc')], lastPieces: null, root: rootEl, whole: rootEl.querySelector('.hwhole'),
         tiles: [...rootEl.querySelectorAll('.htile')], tags: [...rootEl.querySelectorAll('.ttag')],
         meta: rootEl.querySelector('.hmeta'), imgs: [...rootEl.querySelectorAll('.himg')],
         glys: [...rootEl.querySelectorAll('.gly')], last: null, from: null, fade: 0, slot: -1 });
@@ -1741,13 +1746,29 @@
         sl.style.opacity = (swap * vis * (sl.dataset.fade != null ? +sl.dataset.fade : 1)).toFixed(3);
         const g2 = sl.lastChild, src = H.glys[j + 1];
         if (src && g2.textContent !== src.textContent) g2.textContent = src.textContent;
-        g2.style.opacity = cur.e > 0.001 ? 1 : 0;
-        sl.firstChild.style.opacity = cur.e > 0.001 ? (1 - 0.86 * cur.e).toFixed(3) : '';
+        const pc = H.lastPieces && cur.e <= 0.001 ? String(H.lastPieces[j] == null ? '' : H.lastPieces[j]) : null;
+        if (pc != null) {
+          if (g2.textContent !== pc) g2.textContent = pc;
+          g2.style.fontSize = '22px'; g2.style.lineHeight = '1'; g2.style.color = 'var(--ink)';
+          g2.style.opacity = 1; sl.firstChild.style.opacity = 0;
+        } else {
+          g2.style.fontSize = ''; g2.style.lineHeight = ''; g2.style.color = '';
+          g2.style.opacity = cur.e > 0.001 ? 1 : 0;
+          sl.firstChild.style.opacity = cur.e > 0.001 ? (1 - 0.86 * cur.e).toFixed(3) : '';
+        }
       });
 
       // scramble: glyphs sweep across left to right and reshuffle ten times a second
       const e = cur.e;
       H.imgs.forEach((im) => { im.style.opacity = e > 0.001 ? (1 - 0.86 * e).toFixed(3) : ''; });
+      const pieces = mine ? (sc.hero.pieces || H.lastPieces) : H.lastPieces;
+      if (mine && sc.hero.pieces) H.lastPieces = sc.hero.pieces;
+      H.pcs.forEach((pc, j) => {
+        const txt = pieces ? String(pieces[j] == null ? '' : pieces[j]) : '';
+        if (pc.textContent !== txt) pc.textContent = txt;
+        pc.style.opacity = pieces ? (1 - e).toFixed(3) : 0;
+        if (pieces) H.imgs[j + 1].style.opacity = 0;
+      });
       H.glys.forEach((gl) => {
         gl.style.opacity = e > 0.001 ? 1 : 0;
         gl.style.clipPath = `inset(0 ${((1 - e) * 100).toFixed(2)}% 0 0)`;
@@ -1800,7 +1821,7 @@
         H.meta.style.opacity = 1;
         const { bFrom, bTo } = sc._h;
         const bytes = bFrom && bTo ? Math.exp(lerp(Math.log(bFrom), Math.log(bTo), cur.bp)) : bTo;
-        const label = cur.p > 0.5 ? `${H.n} PACKETS` : (h.label || '');
+        const label = cur.p > 0.5 ? `${H.n} ${H.unit}` : (h.label || '');
         const sp = H.meta.firstChild, bb = H.meta.lastChild;
         if (sp.textContent !== label) sp.textContent = label;
         const bt = bytes ? fmtBytes(bytes) : '';
@@ -2229,7 +2250,7 @@
     const T = 0.5;
     const carried = B.morph.size > 0 || !!B.carry;
     // after a full frame scene the new one waits a moment, so the two never overlap
-    const late = outgoing && built[outgoing.k] && isFull(scenes[outgoing.k].type) ? 0.14 : 0;
+    const late = outgoing && built[outgoing.k] ? 0.14 : 0;
     const tin = carried ? 1 : easeOut((local - late) / T);
     const prog = clamp01(local / span);
     const push = isFull(sc.type) ? '' : `scale(${(1 + 0.02 * prog).toFixed(4)})`;
@@ -2242,7 +2263,7 @@
       if (q >= 1 || carried) { O.wrap.style.display = 'none'; outgoing = null; }
       else {
         O.wrap.style.display = 'flex';
-        O.wrap.style.opacity = (isFull(scenes[outgoing.k].type) ? 1 - clamp01(q * 1.8) : 1 - q * q).toFixed(3);
+        O.wrap.style.opacity = (1 - clamp01(q * 1.8)).toFixed(3);
         O.wrap.style.filter = '';
       }
     }
