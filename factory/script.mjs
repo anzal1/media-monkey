@@ -398,9 +398,10 @@ export async function writeScript(topic, opts = {}) {
     ? `SERIES: this is part ${ser.number} of "${ser.seriesTitle}". ${ser.seriesPitch}\n` +
       `Concept: ${ser.concept}. Angle to build on: ${ser.angle}.\n` +
       (ser.previous ? `The previous part covered: ${ser.previous}. You may nod to it in one clause, never rely on it.\n` : '') +
-      `Structure the beats as: the textbook version everyone learned, in plain words; the everyday ` +
-      `analogy; then what the real machine or real system actually does, step by step; the number that ` +
-      `proves it; and what an engineer does differently once they know. Explain it from the ground up ` +
+      `Structure the beats as: the everyday moment a non-engineer has lived, which is also the hook; ` +
+      `the everyday analogy; then what the real machine or real system actually does, step by step, ` +
+      `saying in a clause where it differs from the textbook version; the number that proves it; and ` +
+      `what changes once they know, returning to the opening moment. Explain it from the ground up ` +
       `so a smart beginner follows every step, without ever talking down to an expert.\n` +
       `In the caption, right before the hashtags, add exactly this line: ` +
       `"${ser.seriesTitle}, part ${ser.number}. Follow for part ${ser.number + 1}."\n\n`
