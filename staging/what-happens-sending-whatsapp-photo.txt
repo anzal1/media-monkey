@@ -1,28 +1,27 @@
-Priya taps send on a raw photo of her cat.
-Before her brother's phone buzzes, WhatsApp media encryption turns the entire image into unreadable noise.
-The servers route the data without ever seeing the pixels. 🔒
+Aisha taps send on a photo of her cat.
+Before her brother's phone buzzes, WhatsApp media encryption splits the entire delivery in two.
+The company's servers never actually see the image you shared 📸
 
-WhatsApp media encryption separates the heavy payload of a photo from the secret cryptographic keys needed to unlock it.
+WhatsApp handles media by completely separating the heavy file storage from the secret keys that unlock it.
 
 Picture this:
-→ Sending an eight megabyte file directly through chat channels would crush the messaging servers.
-→ Storing unencrypted images in a media bucket leaves private moments exposed.
-→ Encrypting huge media directly with peer-to-peer session keys stalls the message pipeline.
+→ You upload an eleven megabyte raw photo
+→ The chat server sees pure random static
+→ Only the recipient can assemble the pixels
 
-Here is how WhatsApp actually delivers a photo:
-1. Your phone compresses the photo and generates a unique, single-use thirty-two-byte symmetric encryption key.
-2. The image is encrypted right on your device using AES-CBC, creating an opaque scrambled file.
-3. Your phone uploads this encrypted binary blob to a central media server, which only sees random noise.
-4. Your phone places the media URL, a cryptographic hash, and the decryption key inside a standard text payload.
-5. That metadata package is end-to-end encrypted through the Signal protocol and routed to the recipient's phone.
-6. The recipient's phone unpacks the key, downloads the scrambled blob from the URL, and decrypts the image locally.
+1. Your phone compresses the photo locally and mints a unique 32-byte AES key in device memory.
+2. The phone encrypts the image using AES-CBC with an HMAC, producing scrambled ciphertext and an integrity tag.
+3. Your client uploads that encrypted blob directly to an HTTPS media server.
+4. Your phone builds an end-to-end encrypted chat message containing the download URL, the integrity hash, and the decryption key.
+5. That metadata travels across the Signal Protocol channel directly to your recipient.
+6. The recipient phone downloads the scrambled blob and decrypts it directly in memory.
 
-Meta handles petabytes of media uploads daily, but mathematically cannot decode a single image resting on their servers.
+The media server hosts billions of encrypted blobs every single day, but lacks the cryptographic keys to render even a single preview thumbnail.
 
-Remember this pipeline next time you share something private.
+Next time you tap send, that photo is locked before it ever touches a radio tower.
+
+Did you know your phone did all of that encryption locally before uploading?
 
 Behind the tap, part 1. Follow for part 2.
 
-Would you trust client-side hashing if apps started checking media hashes locally before encrypting?
-
-#whatsapp #cryptography #systemdesign #signalprotocol #cybersecurity
+#whatsapp #cryptography #signalprotocol #cybersecurity #systemdesign
