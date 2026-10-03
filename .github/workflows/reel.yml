@@ -4,18 +4,20 @@ on:
   schedule:
     # GitHub starts scheduled runs three to five hours late, so each cron fires
     # 5h30 BEFORE its slot. The render happens whenever GitHub gets to it; the
-    # post itself waits for the slot (factory/slot.mjs). Slots, in IST:
-    - cron: "30 21 * * *"  # 08:30 IST  morning commute
+    # post itself waits for the slot (factory/slot.mjs). Two posts a day, not
+    # four: the account's own reels posted since 2026-09-25 did best at 13:00
+    # (median 1.4K views over 8 reels) and 19:00 (1.2K over 5), and worse in the
+    # 23:00 late-night window (0.9K over 14); 08:30 had one reel, too few to
+    # judge. So 13:00 and 19:00 are kept. Slots, in IST:
     - cron: "0 2 * * *"    # 13:00 IST  lunch
     - cron: "0 8 * * *"    # 19:00 IST  evening peak
-    - cron: "0 12 * * *"   # 23:00 IST  late-night scroll
   workflow_dispatch:
     inputs:
       topic:
         description: "Optional topic (blank = auto)"
         required: false
       track:
-        description: "Optional track: root | ai | production (blank = auto mix)"
+        description: "Optional track: everyday | root | ai | production (blank = auto mix)"
         required: false
       dry_run:
         description: "Render only, publish nowhere, record nothing"
