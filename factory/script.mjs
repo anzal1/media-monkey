@@ -410,13 +410,40 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
  * correction message for the writer, or null when the script is clean or the
  * check itself could not run.
  */
+const issueText = (issues) => issues.map((x) => `beat ${x.beat}: "${x.claim}" is wrong; true: ${x.fix}`).join('; ');
+
+/**
+ * Rewrites only the flagged beats with the checker's corrections. Regenerating
+ * the whole script instead brought in new claims every time: a real run went
+ * five attempts, the checker found something new in each, and the reel died.
+ */
+export async function repairBeats(parsed, issues, { model, log = () => {} } = {}) {
+  const prompt =
+    'Here is the JSON script of a short explainer reel. A fact checker found these problems:\n' +
+    issues.map((x) => `- beat ${x.beat}: "${x.claim}". What is true: ${x.fix}`).join('\n') +
+    '\n\nRewrite ONLY those beats so every statement is true. Use the correction where it is solid; where ' +
+    'a detail cannot be stated with certainty, say what happens in plain general terms instead of naming ' +
+    'a number, a mode or a UI detail. Keep each rewritten beat within three words of its original length, ' +
+    'keep its headline, accent and source fields consistent with the new text, and fix the caption if it ' +
+    'repeats a wrong claim. Change nothing else. Return the full JSON object.\n\n' +
+    JSON.stringify(parsed);
+  try {
+    const raw = await gemini({ prompt, system: PERSONA, model, json: true, maxOutputTokens: 8192, thinkingBudget: 0, temperature: 0.4 });
+    return JSON.parse(stripFence(raw));
+  } catch (e) {
+    log(`  repair failed: ${e.message}`);
+    return null;
+  }
+}
+
 export async function factCheck(script, { log = () => {} } = {}) {
   const lines = script.beats.map((b, i) => `${i + 1}. ${b.text}  [source: ${b.source}]`).join('\n');
   const prompt =
-    'You are a strict technical fact checker. Use web search. Below are the spoken beats of a short ' +
-    'explainer video, each with the source it claims. Find claims that are FALSE or stated with more ' +
-    'precision than the evidence supports (wrong algorithm or mode, wrong protocol, wrong number, a ' +
-    'product detail that is not documented), and sources that do not exist under that title. Ignore ' +
+    'You are a careful technical fact checker. Use web search. Below are the spoken beats of a short ' +
+    'explainer video, each with the source it claims. Flag only (a) claims a reliable source shows are ' +
+    'FALSE (wrong algorithm or mode, wrong protocol, wrong number) and (b) specific numbers or product ' +
+    'details stated as fact that no source supports. If you are not sure something is wrong, do not ' +
+    'flag it; a checker that flips its verdict between runs is worse than a lenient one. Ignore ' +
     'simplifications and analogies that are fair for a general audience. Do not flag style. Flag a ' +
     'source only if no such document exists at all; a loose or descriptive title for a real document ' +
     '(for example "RFC 1700 network byte order") is fine. Mark each issue with kind "claim" or "source".\n\n' +
@@ -452,9 +479,8 @@ export async function factCheck(script, { log = () => {} } = {}) {
       log('  fact check: clean');
       return null;
     }
-    const msg = issues.map((x) => `beat ${x.beat}: "${x.claim}" is wrong (${x.problem}); true: ${x.fix}`).join('; ');
-    log(`  fact check flagged: ${msg}`);
-    return msg + '. Rewrite those beats with the true facts, keep everything else.';
+    log(`  fact check flagged: ${issueText(issues)}`);
+    return issues;
   } catch (e) {
     log(`  fact check skipped: ${e.message}`);
     return null;
@@ -520,13 +546,25 @@ export async function writeScript(topic, opts = {}) {
       const script = validate(parsed, topic, lang, { lenientLength: attempt === ATTEMPTS, log, length: mode });
       // A test reel said WhatsApp encrypts media with AES-GCM (it is CBC plus
       // HMAC). The format checks cannot catch that, so a grounded second read
-      // does, on every attempt: a lost slot costs less than a wrong fact. If
-      // the check itself cannot run, the script ships.
-      const problems = await factCheck(script, { log });
-      if (problems) throw new Error(`fact check: ${problems}`);
-      script.lengthMode = mode;
-      log(`  script ok on attempt ${attempt}: ${script.beats.length} beats, slug ${script.slug}`);
-      return script;
+      // does. If the check itself cannot run, the script ships.
+      let final = script;
+      const issues = await factCheck(script, { log });
+      if (issues) {
+        // repair in place, then ship it without a second check: the checker
+        // has contradicted itself between runs, and the repair uses its own
+        // corrections
+        const fixed = await repairBeats(parsed, issues, { model, log });
+        if (!fixed) throw new Error(`fact check: ${issueText(issues)}. Rewrite those beats with the true facts.`);
+        try {
+          final = validate(fixed, topic, lang, { lenientLength: true, log, length: mode });
+        } catch (e) {
+          throw new Error(`fact check: ${issueText(issues)}. Rewrite those beats with the true facts.`);
+        }
+        log(`  fact check: repaired beats ${issues.map((x) => x.beat).join(', ')}`);
+      }
+      final.lengthMode = mode;
+      log(`  script ok on attempt ${attempt}: ${final.beats.length} beats, slug ${final.slug}`);
+      return final;
     } catch (e) {
       lastErr = e.message;
       rejections.push(lastErr);
