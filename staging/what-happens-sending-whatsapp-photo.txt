@@ -1,0 +1,26 @@
+Priya taps send on a photo of her cat.
+Before her brother's phone buzzes, WhatsApp media encryption splits the job into two completely different paths.
+Meta never actually sees the image.
+
+WhatsApp media encryption is a hybrid system where bulk files are encrypted with ephemeral keys and stored on standard media hosts, while the keys travel via the Signal Protocol.
+
+Picture this:
+→ You upload an uncompressed 10MB photo on shaky 4G
+→ Passing that through an end-to-end messaging pipeline would stall the conversation
+→ Storing unencrypted copies on cloud servers would violate privacy
+
+1. Priya's phone compresses the photo and generates a random 32-byte AES key.
+2. The phone encrypts the photo with AES-GCM and posts the ciphertext blob to a media storage server.
+3. The storage server returns a content pointer and cryptographic hash.
+4. Priya's device wraps that pointer, hash, and the AES key into a standard text envelope encrypted with the Signal Protocol.
+5. Her brother's device receives the envelope, pulls the encrypted blob from the link, and unlocks it locally.
+
+Meta handles millions of photo transfers a day without ever reading the raw image data on their central disks.
+
+Next time you send a high-res photo across the country, check the speed.
+
+Did you realize media attachments never flow through the same pipeline as normal chat messages?
+
+Behind the tap, part 1. Follow for part 2.
+
+#whatsapp #cryptography #signalprotocol #infosec #systemdesign
