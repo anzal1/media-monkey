@@ -143,3 +143,59 @@ Not done yet, in rough order of value:
 Check any layout change with `node factory/explainer/shoot.mjs out/_shots 1,5,10
 --zones`, which screenshots the scene page with the Instagram crop zones drawn
 on top instead of costing a three minute render.
+
+## Why his reels get the views (2026-10-03, 20 reels, Sep 20 to Oct 3)
+
+Pulled from his public reels grid and post pages. 380K followers, 135 posts.
+
+| views | posted | opening line |
+|---|---|---|
+| 1.2M | Sep 29 | Your photo takes one second to reach Tokyo. (135s) |
+| 1.2M | Sep 25 | Nobody ever wrote the code that lets ChatGPT write Python. |
+| 932K | Sep 24 | Load balancer. Cache. Queue. CDN. Replica. Shard. |
+| 378K | Sep 22 | ChatGPT writes. Jev decides. (sponsored) |
+| 237K | Sep 21 | That enemy who spotted you, ran behind cover... (game AI) |
+| 186K | Oct 2 | For 60 years, we threw away the most expensive part of every rocket. |
+| 146K | Sep 23 | your app is asking the server "anything new yet?" every second |
+| 140K | Oct 1 | Your password is a secret you've already handed to every website. |
+| 132K | Sep 26 | Every answer from ChatGPT or Claude is a fight over 80 GB. |
+| 130K | Sep 28 | Every app on your phone runs on a database. But not the same one. |
+| 125K | Sep 27 | The AI ranked #1 might still be the wrong model for your work. |
+| 115K | Sep 20 | ChatGPT answers you in about a second. |
+| 75K | Sep 25 | JWT vs sessions isn't old vs modern. |
+| 6.7K | Sep 22 | Uploading files is easy. Until a 20 GB video. |
+| 5.3K | Sep 27 | Prediction market contract at sixty-three cents. |
+| 2.1K | Oct 1 | Minecraft's $2.5 billion empire. |
+| 2.0K | Sep 21 | We taught sand how to compute. |
+| 472 | Sep 28 | Benchmarks (same topic as the 125K, reposted) |
+
+What separates the hits from the flops, in order of weight:
+
+1. **Audience size of the topic.** Every hit starts from something everyone
+   touches: a photo you send, ChatGPT, your password, the apps on your phone,
+   an enemy in a game, a rocket. The flops are builder topics (file upload
+   service, URL shortener) or off-lane (Minecraft business, prediction
+   markets). Our production track ("your p99", epoll, deadlocks) only speaks
+   to on-call backend engineers, a pool maybe a hundredth the size.
+2. **A person in the first line of the caption.** "Lena taps send on a
+   picture of her cat. Before her brother sees it..." A tiny story with a
+   named human, then the mechanism.
+3. **Character.** The account is an unofficial Rick Sanchez parody: the AI
+   cloned cartoon voice and the face are the hook before a word lands. The
+   bio links brainrotshorts.com, a paid tool ($29 to $99 a month) that sells
+   Rick, Peter Griffin and Homer voices, so the account is partly a showcase
+   for it, and it carries sponsored posts. We ruled cloned character voices
+   out on IP grounds; the lesson to take is an original character with an
+   attitude, not his character.
+4. **Length is not the issue.** The 1.2M reel is 135 seconds. Likes run 3 to
+   5 percent of views and comments 250 to 320 on the hits.
+5. **He tests.** The benchmark topic went out twice a day apart: 125K and
+   472. Same idea, different execution, and the loser stays up.
+6. **Cadence.** About 1.5 reels a day, not 4.
+7. **Numbered captions work for him.** The 1.2M caption walks the seven OSI
+   layers as a numbered list. Our ban on numbered steps came from burned-in
+   captions reading like titles; it does not obviously hurt a written caption.
+
+Caveat: 380K followers means every reel starts with a big seeded audience.
+Absolute views are not comparable to ours at 156 followers; the ranking of
+hit and flop topics is.
