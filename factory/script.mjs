@@ -419,13 +419,15 @@ const issueText = (issues) => issues.map((x) => `beat ${x.beat}: "${x.claim}" is
  */
 export async function repairBeats(parsed, issues, { model, log = () => {} } = {}) {
   const prompt =
-    'Here is the JSON script of a short explainer reel. A fact checker found these problems:\n' +
+    'Here is the JSON script of a short explainer reel. A fact checker found these problems ' +
+    '(beat 0 means the hook):\n' +
     issues.map((x) => `- beat ${x.beat}: "${x.claim}". What is true: ${x.fix}`).join('\n') +
     '\n\nRewrite ONLY those beats so every statement is true. Use the correction where it is solid; where ' +
     'a detail cannot be stated with certainty, say what happens in plain general terms instead of naming ' +
     'a number, a mode or a UI detail. Keep each rewritten beat within three words of its original length, ' +
-    'keep its headline, accent and source fields consistent with the new text, and fix the caption if it ' +
-    'repeats a wrong claim. Change nothing else. Return the full JSON object.\n\n' +
+    'keep its headline, accent and source fields consistent with the new text. Then make the hook, the ' +
+    'caption and every other beat agree with the corrected facts: the same number must never appear two ' +
+    'different ways. Change nothing else. Return the full JSON object.\n\n' +
     JSON.stringify(parsed);
   try {
     const raw = await gemini({ prompt, system: PERSONA, model, json: true, maxOutputTokens: 8192, thinkingBudget: 0, temperature: 0.4 });
@@ -437,7 +439,10 @@ export async function repairBeats(parsed, issues, { model, log = () => {} } = {}
 }
 
 export async function factCheck(script, { log = () => {} } = {}) {
-  const lines = script.beats.map((b, i) => `${i + 1}. ${b.text}  [source: ${b.source}]`).join('\n');
+  // the hook is item 0: it is the title card and the cover, so a wrong number
+  // there is the most visible one (a cover once said sixty-seven million
+  // after the beats had been corrected to 16,777,216)
+  const lines = [`0. ${script.hook}  [the hook]`, ...script.beats.map((b, i) => `${i + 1}. ${b.text}  [source: ${b.source}]`)].join('\n');
   const prompt =
     'You are a careful technical fact checker. Use web search. Below are the spoken beats of a short ' +
     'explainer video, each with the source it claims. Flag only (a) claims a reliable source shows are ' +
@@ -447,7 +452,7 @@ export async function factCheck(script, { log = () => {} } = {}) {
     'simplifications and analogies that are fair for a general audience. Do not flag style. Flag a ' +
     'source only if no such document exists at all; a loose or descriptive title for a real document ' +
     '(for example "RFC 1700 network byte order") is fine. Mark each issue with kind "claim" or "source".\n\n' +
-    `Hook: ${script.hook}\n${lines}\n\n` +
+    `${lines}\n\n` +
     // Line format, not JSON: grounded replies come back as prose-wrapped text,
     // and a JSON parse error once let an AES-GCM claim through unchecked.
     'Reply with one line per issue and nothing else, exactly:\n' +
