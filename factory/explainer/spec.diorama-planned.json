@@ -83,20 +83,6 @@
       "of": 2
     },
     {
-      "type": "card",
-      "headline": "Sealed, but addressed.",
-      "subhead": "",
-      "data": {
-        "kind": "file",
-        "title": "a sealed envelope",
-        "pill": "",
-        "sub": "a sealed envelope"
-      },
-      "beat": 1,
-      "half": 0,
-      "of": 2
-    },
-    {
       "type": "compare",
       "headline": "Address outside, secret inside.",
       "subhead": "",
@@ -117,6 +103,28 @@
             "right": "nobody reads"
           }
         ]
+      },
+      "beat": 1,
+      "half": 0,
+      "of": 2
+    },
+    {
+      "type": "stack3d",
+      "headline": "Same picture again.",
+      "subhead": "",
+      "data": {
+        "key": "net",
+        "active": 0
+      },
+      "hero": {
+        "key": "payment",
+        "state": "whole",
+        "kind": "card",
+        "n": 6,
+        "art": "credit-card.webp",
+        "aspect": "1:1",
+        "artKind": "object",
+        "label": "₹450 to Corner Bakery"
       },
       "beat": 1,
       "half": 1,
@@ -235,7 +243,7 @@
         "traffic": "flowing",
         "hop": [
           0,
-          1
+          2
         ]
       },
       "hero": {
@@ -328,7 +336,8 @@
         "name": "Bank",
         "kind": "money",
         "title": "Balance",
-        "value": "",
+        "value": "₹12,550",
+        "from": "13,000",
         "rows": [
           {
             "label": "Corner Bakery",

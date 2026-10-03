@@ -20,7 +20,7 @@ const script = {
   keyword: 'card payment',
   cta: 'Follow for what happens when it fails.',
   beats: [
-    { headline: 'You tap pay.', text: 'You tap pay on your phone at the corner bakery and ₹450 has to move before the cashier looks up.' },
+    { headline: 'You tap pay.', text: 'You tap pay on your phone at the corner bakery and four hundred and fifty rupees has to move before the cashier looks up.' },
     { headline: 'Like a sealed envelope.', text: 'Think of it as a sealed envelope passed hand to hand, where every hand can read the address but nobody can open it.' },
     { headline: 'The card becomes a token.', text: 'Your phone never sends the real card number. It sends a one time token, encrypted, so a stolen copy is useless.' },
     { headline: 'Cut into packets.', text: 'The request is cut into packets, each numbered, and each stamped with the address of the payment gateway.' },
@@ -47,7 +47,6 @@ const batches = [
       { type: 'phone', headline: 'You tap pay and the bakery gets paid.', data: { form: 'terminal', app: 'pos', merchant: 'Corner Bakery', amount: '₹450.00' }, hero: { key: 'payment', state: 'whole' } },
       { type: 'stack3d', headline: 'It starts at the top.', subhead: 'the app hands it over', data: { key: 'net', active: 0 }, hero: { key: 'payment', state: 'whole' } } ] },
     { beat: 2, scenes: [
-      { type: 'card', headline: 'Sealed, but addressed.', data: { kind: 'file', title: 'sealed_envelope.bin', sub: 'a sealed envelope' } },
       { type: 'compare', headline: 'Address outside, secret inside.', data: { left: { label: 'Envelope', sub: 'address visible', kind: 'file' }, right: { label: 'Letter', sub: 'sealed', kind: 'lock' }, rows: [{ left: 'anyone reads', right: 'nobody reads' }] } },
       { type: 'stack3d', headline: 'Same picture again.', data: { key: 'net', active: 0 }, hero: { key: 'payment', state: 'whole' } } ] },
     { beat: 3, scenes: [
@@ -63,7 +62,7 @@ const batches = [
       { type: 'flow', headline: 'The bank checks it.', data: { nodes: [{ label: 'Gateway', kind: 'shield' }, { label: 'Bank', kind: 'database', state: 'busy', becomes: 'ok' }], active: 1 } } ] },
     { beat: 6, scenes: [
       { type: 'stat', headline: 'Yes, in a blink.', data: { value: '300 ms', label: 'tap to approved', tone: 'plain' } },
-      { type: 'phone', headline: 'Your balance, a blink later.', data: { app: 'app', mode: 'dark', name: 'Bank', kind: 'money', title: 'Balance', value: '-₹12,551', from: '13,000', rows: [{ label: 'Corner Bakery', value: '-₹450' }] } },
+      { type: 'phone', headline: 'Your balance, a blink later.', data: { app: 'app', mode: 'dark', name: 'Bank', kind: 'money', title: 'Balance', value: '₹12,550', from: '13,000', rows: [{ label: 'Corner Bakery', value: '-₹450' }] } },
       { type: 'list', headline: 'What it never sent.', data: { title: 'never on the wire', items: [{ label: 'your card number', tone: 'good' }, { label: 'your PIN', tone: 'good' }, { label: 'your balance', tone: 'good' }] } } ] },
   ] },
 ];
