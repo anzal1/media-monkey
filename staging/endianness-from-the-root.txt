@@ -1,0 +1,24 @@
+Arjun taps pay on a one dollar song.
+A bank ledger corrupted by raw endianness deducts sixteen million dollars.
+His balance shows negative millions before the receipt even renders.
+
+Endianness defines the exact sequence in which a computer places multi-byte integers into linear memory.
+
+Picture this:
+→ An ARM phone transmits binary data to a legacy mainframe.
+→ A network packet drops its payload directly into an integer struct.
+→ A save file copied across two game consoles displays astronomical stats.
+
+Your CPU splits a 32-bit number into four bytes. In big-endian systems, the most significant byte sits first in memory, identical to human writing. In little-endian processors like x86 and ARM, silicon puts the least significant byte first so arithmetic hardware can propagate addition carries instantly.
+
+When a program sends raw memory across a network without conversion, the other end reads the byte holding 1 as the highest order position instead of the lowest. A single unit instantly evaluates as 16,777,216.
+
+Failing to convert byte order corrupts game saves, crashes routers, and can silently inflate financial balances.
+
+Remember this when deserializing raw binary buffers across network sockets.
+
+Have you ever shipped a little-endian struct directly over TCP and watched your data implode?
+
+From the root, part 3. Follow for part 4.
+
+#endianness #systemdesign #lowlevel #networking #computerscience
