@@ -259,6 +259,7 @@
   .card1 .top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
   .card1 .ico { width: 60px; height: 60px; }
   .card1 .title { margin-top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 38px; font-weight: 700; word-break: break-all; }
+  html.diorama .card1 .title { word-break: normal; white-space: nowrap; }
   .card1 .sub { margin-top: 14px; font-size: 24px; color: var(--mute); }
 
   /* list */
@@ -318,16 +319,8 @@
     background: linear-gradient(to bottom, #f7f5f1 0%, #f5f2ec 36%, #efebe3 100%); }
   /* the floor's vanishing point is the perspective origin, so the horizon
      sits at y=700 whatever the plane's size */
-  #wfloor { position: absolute; inset: 0; overflow: hidden; pointer-events: none;
-    perspective: 700px; perspective-origin: 540px 700px; }
-  #wplane { position: absolute; left: -2460px; top: -3100px; width: 6000px; height: 5200px;
-    transform-origin: 50% 100%; transform: rotateX(80deg);
-    background-image:
-      linear-gradient(to right, rgba(23,22,20,.085) 2px, transparent 2px),
-      linear-gradient(to bottom, rgba(23,22,20,.085) 2px, transparent 2px);
-    background-size: 140px 140px;
-    -webkit-mask-image: linear-gradient(to top, #000 0%, #000 30%, transparent 88%);
-    mask-image: linear-gradient(to top, #000 0%, #000 30%, transparent 88%); }
+  #wfloor { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  #wcanvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
   #wvig { position: absolute; inset: 0; pointer-events: none;
     background: radial-gradient(120% 80% at 50% 48%, transparent 60%, rgba(120,100,70,.10) 100%); }
   #wstage, #hobjs { position: absolute; inset: 0; pointer-events: none; }
@@ -350,11 +343,11 @@
 
   /* ---- stack3d: matte slabs on the table ---- */
   .s3wrap { position: absolute; inset: 0; }
-  .s3 { position: absolute; inset: 0; perspective: 1700px; perspective-origin: 540px 1070px;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 430px, #000 600px, #000 1300px, transparent 1470px);
-    mask-image: linear-gradient(to bottom, transparent 430px, #000 600px, #000 1300px, transparent 1470px); }
+  .s3 { position: absolute; inset: 0; perspective: 1700px; perspective-origin: 540px 1130px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 470px, #000 640px, #000 1360px, transparent 1520px);
+    mask-image: linear-gradient(to bottom, transparent 470px, #000 640px, #000 1360px, transparent 1520px); }
   .s3wrap.twin .s3 { -webkit-mask-image: none; mask-image: none; }
-  .s3rig { position: absolute; left: 540px; top: 1070px; width: 0; height: 0; transform-style: preserve-3d; }
+  .s3rig { position: absolute; left: 540px; top: 1130px; width: 0; height: 0; transform-style: preserve-3d; }
   .s3wrap.twin .s3rig[data-side="l"] { left: 285px; top: 1075px; }
   .s3wrap.twin .s3rig[data-side="r"] { left: 795px; top: 1075px; }
   .s3plate { position: absolute; transform-style: preserve-3d; }
@@ -370,13 +363,14 @@
   .s3plate.on .s3face { background-color: #fffdf8; border-color: var(--accent); }
   .s3plate.on .s3side { background: color-mix(in srgb, var(--accent) 55%, #d9d3c7); }
   .s3plate.on .s3side.b { background: color-mix(in srgb, var(--accent) 70%, #cfc8bb); border-color: var(--accent); }
-  .s3shad { background: rgba(60,45,25,.30); filter: blur(10px); }
+  /* a pre-blurred bitmap (shadowImg): a live blur on seven slabs cost ~18 ms a frame in CI */
+  .s3shad { inset: -40px; border-radius: 0; background-size: 100% 100%; background-repeat: no-repeat; }
   .s3lab { position: absolute; left: 32px; bottom: 24px; white-space: nowrap;
     font: 700 28px 'JetBrains Mono', monospace; letter-spacing: .14em; color: rgba(23,22,20,.42); }
   .s3plate.on .s3lab { color: var(--accent); }
   .s3bb, .f3bb { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
   .s3pt { position: absolute; width: 2px; height: 2px; }
-  .s3tag { position: absolute; left: 80px; top: 590px; height: 200px; width: 620px; }
+  .s3tag { position: absolute; left: 80px; top: 610px; height: 200px; width: 620px; }
   .s3t { position: absolute; left: 0; top: 0; display: flex; align-items: flex-start; gap: 22px; }
   .s3t b { position: relative; font-size: 168px; font-weight: 800; line-height: .82; letter-spacing: -.05em; color: var(--ink); padding-bottom: 16px; }
   .s3t b::after { content: ''; position: absolute; left: 4px; right: 4px; bottom: 0; height: 8px; border-radius: 4px; background: var(--accent); }
@@ -509,7 +503,7 @@
 
   /* ---- flow on the floor: ink wires on paper, tokens moving along them ---- */
   .f3 { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 540px 640px; }
-  .f3plane { position: absolute; left: 20px; top: 560px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
+  .f3plane { position: absolute; left: 20px; top: 650px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
   .f3svg { position: absolute; inset: 0; width: 1000px; height: 1000px; overflow: visible; }
   .f3svg path { fill: none; stroke-linecap: round; }
   .f3base { stroke: rgba(23,22,20,.16); stroke-width: 3; stroke-dasharray: 2 12; }
@@ -518,13 +512,14 @@
   .f3pk { fill: var(--accent); stroke: var(--ink); stroke-width: 2; }
   .f3pkh { fill: rgba(60,45,25,.25); }
   .f3n { position: absolute; width: 0; height: 0; transform-style: preserve-3d; }
-  .f3foot { position: absolute; left: -95px; top: -95px; width: 190px; height: 190px; border-radius: 30px;
-    border: 1px solid rgba(23,22,20,.3); background: rgba(255,253,248,.55); }
-  .f3fglow { position: absolute; inset: -1px; border-radius: 30px; border: 3px solid var(--accent); opacity: 0; }
-  .f3card { width: 270px; padding: 20px 18px 18px; border-radius: 22px; text-align: center;
+  .f3foot { position: absolute; left: -110px; top: -110px; width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(60,45,25,.20), rgba(60,45,25,0)); }
+  .f3fglow { position: absolute; inset: 0; border-radius: 50%; opacity: 0;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 34%, transparent), transparent); }
+  .f3card { width: 290px; padding: 22px 18px 20px; border-radius: 22px; text-align: center;
     background: #fffdf8; border: 1px solid rgba(23,22,20,.55); box-shadow: 0 6px 0 #ddd7cb, 0 7px 0 rgba(23,22,20,.4), 0 30px 40px -12px rgba(60,45,25,.3); }
   .f3card .ico { display: block; width: 58px; height: 58px; margin: 0 auto 10px; }
-  .f3card b { display: block; font: 700 36px Inter, sans-serif; letter-spacing: -.01em; }
+  .f3card b { display: block; font: 700 40px Inter, sans-serif; letter-spacing: -.01em; }
   .f3card small { display: block; margin-top: 6px; font: 400 22px 'JetBrains Mono', monospace; color: var(--mute); }
   .f3card .st { display: none; margin-top: 10px; font: 500 16px 'JetBrains Mono', monospace; letter-spacing: .14em; }
   .f3n.s-blocked .f3card, .f3n.s-dead .f3card { border-color: var(--bad); }
@@ -624,7 +619,7 @@
     const root = document.documentElement;
     root.classList.add('diorama');
     document.body.insertAdjacentHTML('afterbegin',
-      '<div id="wsky"></div><div id="wfloor"><div id="wplane"></div></div><div id="wvig"></div>');
+      '<div id="wsky"></div><div id="wfloor"><canvas id="wcanvas" width="1080" height="1920"></canvas></div><div id="wvig"></div>');
     $('stage').insertAdjacentHTML('afterbegin', '<div id="wstage"></div>');
     $('hero').insertAdjacentHTML('afterend', '<div id="hobjs"></div>');
     $('title').insertAdjacentHTML('afterbegin', '<div class="tback"></div>');
@@ -651,9 +646,56 @@
   function updateGround(t) {
     if (!WORLD) return;
     const a = DRIFT;
-    $('wplane').style.backgroundPosition =
-      `${(46 * Math.sin(t * 0.13) * a).toFixed(2)}px ${(90 * Math.sin(t * 0.09) * a).toFixed(2)}px`;
-    $('wfloor').style.perspectiveOrigin = `${(540 + 34 * Math.sin(t * 0.17) * a).toFixed(2)}px 700px`;
+    drawFloor(46 * Math.sin(t * 0.13) * a, 90 * Math.sin(t * 0.09) * a, 540 + 34 * Math.sin(t * 0.17) * a);
+  }
+  /*
+   * The floor grid, projected by hand onto a canvas. It is the same plane the
+   * first version drew with CSS (6000x5200 px, rotateX(80deg) about its bottom
+   * edge at y=2100, perspective 700px from (ox, 700), 2px lines every 140px,
+   * faded out toward the horizon), but a 3D-transformed, masked layer that size
+   * cost about 200 ms a frame under software raster in CI. These are a few
+   * dozen filled quads.
+   */
+  const FL = { W: 6000, H: 5200, X0: -2460, OY: 2100, D: 700, VY: 700, ca: Math.cos(80 * Math.PI / 180), sa: Math.sin(80 * Math.PI / 180) };
+  let floorCtx = null;
+  function drawFloor(bx, by, ox) {
+    if (!floorCtx) floorCtx = $('wcanvas').getContext('2d');
+    const c = floorCtx;
+    c.globalCompositeOperation = 'source-over';
+    c.clearRect(0, 560, 1080, 1360);
+    // local plane (lx from its left edge, ly from its top edge) to screen
+    const P = (lx, ly) => {
+      const dy = ly - FL.H, k = FL.D / (FL.D - dy * FL.sa);
+      return [ox + (FL.X0 + lx - ox) * k, FL.VY + (FL.OY + dy * FL.ca - FL.VY) * k];
+    };
+    // the fade: opaque over the near 30% of the plane, gone by 88%. A plane
+    // row maps to one screen row, so the fade is a vertical screen gradient
+    // used as the lines' own fill (no full-frame mask pass)
+    const y0 = P(0, FL.H * 0.12)[1], y1 = P(0, FL.H * 0.70)[1];
+    const g = c.createLinearGradient(0, y0, 0, y1);
+    for (let i = 0; i <= 10; i++) {
+      const ly = FL.H * (0.12 + 0.58 * i / 10);
+      g.addColorStop(Math.max(0, Math.min(1, (P(0, ly)[1] - y0) / ((y1 - y0) || 1))), `rgba(23,22,20,${(0.085 * i / 10).toFixed(4)})`);
+    }
+    c.fillStyle = g;
+    c.beginPath();
+    const quad = (x0, y0q, x1, y1q) => {
+      const p = [P(x0, y0q), P(x1, y0q), P(x1, y1q), P(x0, y1q)];
+      c.moveTo(p[0][0], p[0][1]); c.lineTo(p[1][0], p[1][1]); c.lineTo(p[2][0], p[2][1]); c.lineTo(p[3][0], p[3][1]); c.closePath();
+    };
+    // only the far 88% of the plane is masked out, so lines start where the fade ends
+    const yTop = FL.H * 0.12;
+    for (let x = ((bx % 140) + 140) % 140; x < FL.W; x += 140) {
+      const pa = P(x, FL.H), pb = P(x + 2, FL.H);
+      if (Math.max(pa[0], pb[0]) < -400 || Math.min(pa[0], pb[0]) > 1480) continue;
+      quad(x, yTop, x + 2, FL.H);
+    }
+    for (let y = ((by % 140) + 140) % 140; y < FL.H; y += 140) {
+      if (y + 2 < yTop) continue;
+      quad(0, y, FL.W, y + 2);
+    }
+    c.fill();
+    c.globalCompositeOperation = 'source-over';
   }
 
   $('eyebrow').textContent = S.eyebrow || '';
@@ -798,6 +840,20 @@
     '<svg viewBox="0 0 26 12"><rect x=".7" y=".7" width="21.6" height="10.6" rx="3" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.3"/>' +
     '<rect x="2.5" y="2.5" width="15" height="7" rx="1.6" fill="currentColor"/><rect x="23.4" y="4" width="1.8" height="4" rx=".9" fill="currentColor" fill-opacity=".5"/></svg>';
 
+  /** A soft slab shadow, blurred once into a bitmap and reused by every slab of that size. */
+  const SHADOWS = {};
+  function shadowImg(P) {
+    if (SHADOWS[P]) return SHADOWS[P];
+    const cv = document.createElement('canvas');
+    cv.width = P + 80; cv.height = P + 80;
+    const c = cv.getContext('2d');
+    c.filter = 'blur(10px)';
+    c.fillStyle = 'rgba(60,45,25,.30)';
+    c.beginPath();
+    if (c.roundRect) c.roundRect(40, 40, P, P, 24); else c.rect(40, 40, P, P);
+    c.fill();
+    return (SHADOWS[P] = `url(${cv.toDataURL('image/png')})`);
+  }
   /** flow on the floor: node positions on a 1000x1000 plane, zigzagging into depth */
   function f3Layout(n) {
     if (n <= 1) return [[500, 520]];
@@ -1104,7 +1160,7 @@
           }
           if (i === n - 1 || (twin && i === 0)) extra += `<i class="s3pt" data-top="${i === 0 ? 1 : 0}" style="left:${P / 2}px;top:${P / 2}px"></i>`;
           h += `<div class="s3plate" data-i="${i}" data-z="${(n - 1 - i) * GAP}" style="width:${P}px;height:${P}px;left:${-P / 2}px;top:${-P / 2}px">` +
-            `<div class="s3shad"></div><div class="s3side b"></div><div class="s3side" data-d="10"></div><div class="s3side" data-d="5"></div><div class="s3face"></div>` +
+            `<div class="s3shad" style="background-image:${shadowImg(P)}"></div><div class="s3side b"></div><div class="s3side" data-d="8"></div><div class="s3face"></div>` +
             extra + `</div>`;
         });
         return h + '</div>';
@@ -1221,7 +1277,7 @@
     const prev = wrap.style.display;
     wrap.style.display = 'flex';
     const room = hero.clientWidth * 0.97;
-    for (const el of wrap.querySelectorAll('.stat .v, .chart .ends .b, .meter .read')) {
+    for (const el of wrap.querySelectorAll(WORLD ? '.stat .v, .chart .ends .b, .meter .read, .card1 .title' : '.stat .v, .chart .ends .b, .meter .read')) {
       // only swap the text when there is a final value to measure; writing
       // textContent back unconditionally flattened the meter readout's inner
       // spans and crashed its animation on the next frame
@@ -1801,7 +1857,6 @@
         }
         const drop = (P.i === n - 1 ? 30 : GAP) + lift;
         P.shad.style.transform = `translate3d(${(4 + lift * 0.35).toFixed(1)}px, ${(6 + lift * 0.35).toFixed(1)}px, ${(-drop + 2).toFixed(1)}px) scale(${(1 + lift * 0.0015).toFixed(4)})`;
-        P.shad.style.filter = `blur(${(9 + lift * 0.45).toFixed(1)}px)`;
         P.shad.style.opacity = ((P.i === n - 1 ? 0.55 : 1) * (1 - 0.35 * on)).toFixed(3);
         P.bbs.forEach((e) => { e.style.transform = `translate3d(${e.dataset.x}px, ${e.dataset.y}px, 2px) ${bb}`; });
       });
@@ -1964,7 +2019,7 @@
       return cur;
     });
     F.cards.forEach((c, i) => {
-      const q = easeOut((local - 0.15 - i * 0.16) / 0.6);
+      const q = B.carry ? 1 : easeOut((local - 0.15 - i * 0.16) / 0.6);
       c.style.opacity = q.toFixed(3);
       c.style.transform = `translate3d(0, -92px, 0) ${bb} translateY(${(-6 + (1 - q) * 18).toFixed(1)}px)`;
       F.nodes[i].querySelector('.f3foot').style.opacity = q.toFixed(3);
@@ -1974,7 +2029,7 @@
       F.edge.style.opacity = easeOut((local - 0.9) / 0.5).toFixed(3);
     }
     F.cores.forEach((p, i) => {
-      const q = easeInOut(clamp01((local - 0.5 - i * 0.3) / 0.6));
+      const q = B.carry ? 1 : easeInOut(clamp01((local - 0.5 - i * 0.3) / 0.6));
       p.style.strokeDashoffset = (p.dataset.len * (1 - q)).toFixed(1);
       const bad = state[i + 1] === 'blocked' || state[i + 1] === 'dead';
       p.style.stroke = bad && local >= flipAt ? 'var(--bad)' : '';
@@ -1983,22 +2038,28 @@
     let glowAt = null;
     if (sc.hero && F.anchor) {
       const prog = eio((local - 0.9) / Math.max(1.4, span * 0.8));
-      // the whole train runs into the last node and is absorbed there
-      const L = (F.len + F.slots.length * 44 + 60) * prog;
-      const pt = (l) => F.all.getPointAtLength(Math.max(0, Math.min(F.len, l)));
-      const at = pt(Math.min(L, F.len - 60));
+      // "hop": [from, to] runs the hero between two nodes of the map, either
+      // way; without it the whole train runs from the first node to the last
+      const nn = F.cum.length - 1;
+      const hop = Array.isArray(d.hop) && d.hop.length === 2 ? d.hop.map((x) => Math.max(0, Math.min(nn, x | 0))) : [0, nn];
+      const s0 = F.cum[hop[0]], dir = hop[1] >= hop[0] ? 1 : -1;
+      const travel = Math.abs(F.cum[hop[1]] - s0) || 1;
+      const L = (travel + F.slots.length * 44 + 60) * prog;
+      const pt = (l) => F.all.getPointAtLength(Math.max(0, Math.min(F.len, s0 + dir * Math.max(0, Math.min(travel, l)))));
+      const at = pt(Math.min(L, Math.max(0, travel - 60)));
       F.anchor.style.transform = `translate3d(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px, 0) ${bb}`;
       F.slots.forEach((s, j) => {
         const lj = L - j * 44;
         const p2 = pt(lj);
         // a packet passes THROUGH a node: it fades going in and comes out the far side
-        const near = Math.min(...F.cum.map((c) => Math.abs(lj - c)));
-        s.dataset.fade = (lj > F.len - 30 ? 0 : clamp01((near - 25) / 40)).toFixed(3);
+        const abs = s0 + dir * Math.max(0, Math.min(travel, lj));
+        const near = Math.min(...F.cum.map((c) => Math.abs(abs - c)));
+        s.dataset.fade = (lj > travel - 30 ? 0 : clamp01((near - 25) / 40)).toFixed(3);
         s.style.transform = `translate3d(${p2.x.toFixed(1)}px, ${p2.y.toFixed(1)}px, 0) ${bb}`;
       });
-      glowAt = Math.min(L, F.len);
+      glowAt = s0 + dir * Math.min(L, travel);
       F.glos.forEach((g, i) => {
-        const inside = L > F.cum[i] + 5 && L < F.cum[i + 1] - 5;
+        const inside = glowAt > F.cum[i] + 5 && glowAt < F.cum[i + 1] - 5 && L < travel;
         g.style.opacity = (inside ? 0.28 : 0).toString();
       });
     }
@@ -2073,6 +2134,9 @@
         const old = b.wrap.querySelector('.s3t.old'), mine = built[i - 1].wrap.querySelector('.s3t.new');
         if (old && mine && b.s3prevAct !== (sc.data.active || 0)) old.innerHTML = mine.innerHTML;
       }
+      // the same floor map again: it stays put and only what moves on it changes
+      if (sc.type === 'flow' && pv.type === 'flow' && (sc.data.nodes || []).map((n) => keyOf(n.label)).join('|') ===
+          (pv.data.nodes || []).map((n) => keyOf(n.label)).join('|')) b.carry = true;
       if (sc.type === 'phone' && pv.type === 'phone' && (sc.data.device || 'a') === (pv.data.device || 'a') &&
           (sc.data.app || 'chat') === (pv.data.app || 'chat')) b.carry = true;
     });
@@ -2123,7 +2187,7 @@
       const kwEl = document.querySelector('#title .kw');
       const top = Math.round(kwEl.getBoundingClientRect().top + 76);
       titleB.phTop = top;
-      titleB.phS = Math.max(0.8, Math.min(PH_S, (1600 - top) / 780));
+      titleB.phS = Math.max(0.72, Math.min(PH_S, (1300 - top) / 780));
     }
     if (titleB) animWorld(titleB, titleB.sc, 99, 5, tSec, null);
   }
@@ -2147,8 +2211,9 @@
         const hb = $('headline').getBoundingClientRect().bottom;
         if (hb + 30 > 466) {
           B.phFit.top = Math.round(hb + 30);
-          B.phFit.s = Math.max(0.85, Math.min(PH_S, (1540 - B.phFit.top) / 780));
         }
+        // and ends above the burned-in caption, which sits at about y=1320
+        B.phFit.s = Math.max(0.8, Math.min(PH_S, (1300 - B.phFit.top) / 780));
       }
       B.phTop = B.phFit.top; B.phS = B.phFit.s;
       // the closing scene glides the handset to where it sits on the cover
@@ -2163,7 +2228,9 @@
 
     const T = 0.5;
     const carried = B.morph.size > 0 || !!B.carry;
-    const tin = carried ? 1 : easeOut(local / T);
+    // after a full frame scene the new one waits a moment, so the two never overlap
+    const late = outgoing && built[outgoing.k] && isFull(scenes[outgoing.k].type) ? 0.14 : 0;
+    const tin = carried ? 1 : easeOut((local - late) / T);
     const prog = clamp01(local / span);
     const push = isFull(sc.type) ? '' : `scale(${(1 + 0.02 * prog).toFixed(4)})`;
     B.wrap.style.transform = carried ? push : `translateY(${((1 - tin) * 16).toFixed(1)}px) ${push}`;
@@ -2175,7 +2242,7 @@
       if (q >= 1 || carried) { O.wrap.style.display = 'none'; outgoing = null; }
       else {
         O.wrap.style.display = 'flex';
-        O.wrap.style.opacity = (1 - q * q).toFixed(3);
+        O.wrap.style.opacity = (isFull(scenes[outgoing.k].type) ? 1 - clamp01(q * 1.8) : 1 - q * q).toFixed(3);
         O.wrap.style.filter = '';
       }
     }
@@ -2184,7 +2251,7 @@
     // the phone wants the height, so its scenes run the headline alone
     $('subhead').style.visibility = sc.type === 'phone' ? 'hidden' : '';
     // the mascot stands on the floor where the scene leaves room for it
-    const room = sc.mascot != null ? !!sc.mascot : !(sc.type === 'stack3d' || sc.type === 'flow' || sc.type === 'compare' || sc.type === 'list');
+    const room = sc.mascot != null ? !!sc.mascot : (sc.type === 'stat' || sc.type === 'note' || sc.type === 'phone');
     const mq = room ? easeOut((local - 0.2) / 0.6) : 0;
     mascot.style.opacity = (mq * (w == null ? 1 : 1 - w)).toFixed(3);
     mascot.style.display = mq > 0 ? 'block' : 'none';

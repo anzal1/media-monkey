@@ -182,28 +182,32 @@
         "nodes": [
           {
             "label": "Terminal",
-            "sub": "",
+            "sub": "at the counter",
             "kind": "mobile",
             "state": "ok",
             "becomes": ""
           },
           {
             "label": "Gateway",
-            "sub": "",
+            "sub": "checks the token",
             "kind": "shield",
             "state": "ok",
             "becomes": ""
           },
           {
             "label": "Bank",
-            "sub": "",
+            "sub": "your balance",
             "kind": "database",
             "state": "ok",
             "becomes": ""
           }
         ],
         "edge": "packets",
-        "traffic": "flowing"
+        "traffic": "flowing",
+        "hop": [
+          0,
+          2
+        ]
       },
       "hero": {
         "key": "payment",
@@ -225,21 +229,21 @@
         "nodes": [
           {
             "label": "Terminal",
-            "sub": "",
+            "sub": "at the counter",
             "kind": "mobile",
             "state": "ok",
             "becomes": ""
           },
           {
             "label": "Gateway",
-            "sub": "",
+            "sub": "checks the token",
             "kind": "shield",
             "state": "ok",
             "becomes": ""
           },
           {
             "label": "Bank",
-            "sub": "",
+            "sub": "your balance",
             "kind": "database",
             "state": "busy",
             "becomes": "ok"
@@ -247,11 +251,23 @@
         ],
         "edge": "",
         "traffic": "flowing",
-        "active": 2
+        "active": 2,
+        "hop": [
+          1,
+          2
+        ]
       },
       "beat": 4,
       "half": 1,
-      "of": 2
+      "of": 2,
+      "hero": {
+        "key": "payment",
+        "state": "labelled",
+        "tag": "#{i}",
+        "kind": "card",
+        "n": 6,
+        "label": "₹450 to Corner Bakery"
+      }
     },
     {
       "type": "stat",
@@ -276,10 +292,6 @@
         "items": [
           {
             "label": "your card number",
-            "tone": "good"
-          },
-          {
-            "label": "your PIN",
             "tone": "good"
           },
           {

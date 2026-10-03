@@ -25,12 +25,14 @@ const script = {
     { headline: 'The card becomes a token.', text: 'Your phone never sends the real card number. It sends a one time token, encrypted, so a stolen copy is useless.' },
     { headline: 'Cut into packets.', text: 'The request is cut into packets, each numbered, and each stamped with the address of the payment gateway.' },
     { headline: 'Three hops away.', text: 'The packets hop from the shop terminal to the gateway to your bank, which checks the token and your balance.' },
-    { headline: 'Approved in a blink.', text: 'The bank says yes in about three hundred milliseconds and the answer races back along the same path.' },
+    { headline: 'Approved in a blink.', text: 'The bank says yes in about 300 ms and the answer races back along the same path.' },
   ],
 };
 
 const bible = {
   eyebrow: 'PAYMENTS',
+  people: { sender: 'Asha', receiver: 'Ravi' },
+  map: { nodes: [{ label: 'Terminal', sub: 'at the counter', kind: 'mobile' }, { label: 'Gateway', sub: 'checks the token', kind: 'shield' }, { label: 'Bank', sub: 'your balance', kind: 'database' }] },
   hero: { key: 'payment', kind: 'card', label: '₹450 to Corner Bakery', bytes: '2 KB' },
   stack: { key: 'net', unit: 'LAYER', plates: [
     { label: 'APPLICATION', sub: 'the payment app' }, { label: 'SECURITY', sub: 'token and encryption' },
@@ -57,7 +59,7 @@ const batches = [
   { beats: [
     { beat: 5, scenes: [
       { type: 'flow', headline: 'Terminal, gateway, bank.', data: { nodes: [{ label: 'Terminal', kind: 'mobile' }, { label: 'Gateway', kind: 'shield' }, { label: 'Bank', kind: 'database' }], edge: 'packets' }, hero: { key: 'payment', state: 'labelled', tag: '#{i}' } },
-      { type: 'flow', headline: 'The bank checks it.', data: { nodes: [{ label: 'Terminal', kind: 'mobile' }, { label: 'Gateway', kind: 'shield' }, { label: 'Bank', kind: 'database', state: 'busy', becomes: 'ok' }], active: 2 } } ] },
+      { type: 'flow', headline: 'The bank checks it.', data: { nodes: [{ label: 'Gateway', kind: 'shield' }, { label: 'Bank', kind: 'database', state: 'busy', becomes: 'ok' }], active: 1 } } ] },
     { beat: 6, scenes: [
       { type: 'stat', headline: 'Yes, in a blink.', data: { value: '300 ms', label: 'tap to approved', tone: 'plain' } },
       { type: 'list', headline: 'What it never sent.', data: { title: 'never on the wire', items: [{ label: 'your card number', tone: 'good' }, { label: 'your PIN', tone: 'good' }, { label: 'your balance', tone: 'good' }] } } ] },

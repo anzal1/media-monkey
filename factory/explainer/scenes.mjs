@@ -380,6 +380,8 @@ export function normaliseScene(raw, fallbackHeadline, ctx = {}) {
   if (world && type === 'flow') {
     const a = Number(d.active);
     if (Number.isInteger(a) && a >= 0 && a < data.nodes.length) data.active = a;
+    const hop = Array.isArray(d.hop) ? d.hop.map(Number) : null;
+    if (hop && hop.length === 2 && hop.every((x) => Number.isInteger(x) && x >= 0 && x < data.nodes.length) && hop[0] !== hop[1]) data.hop = hop;
   }
   if (world) {
     const hero = normaliseHero(raw.hero);
@@ -518,8 +520,10 @@ function worldBrief(bible, batch, offset, prev) {
   return `THE WORLD OF THIS REEL (planned once for the whole video; follow it exactly):\n` +
     (hero
       ? `HERO: ${hero}. Use "key": "${b.hero.key}" on every scene that shows it. It is the one ` +
-        `object the viewer follows from the everyday moment through the machine and back. Show ` +
-        `what happens TO IT at each step by changing its "state" (and "bytes", "n", "tag").\n`
+        `object the viewer follows from the everyday moment through the machine and back, and ` +
+        `it must be ON SCREEN in most scenes: every scene about the mechanism is a "stack3d", ` +
+        `"flow" or "phone" scene carrying the hero. Show what happens TO IT at each step by ` +
+        `changing its "state" (and "bytes", "n", "tag").\n`
       : '') +
     (b.stack
       ? `STACK: key "${b.stack.key}", slabs top first: ${b.stack.plates.map((pl, i) => `${i} ${pl.label}`).join(', ')}. ` +
@@ -530,6 +534,25 @@ function worldBrief(bible, batch, offset, prev) {
       ? `HERO JOURNEY IN THESE BEATS: ${journey.map((j) => `beat ${j.beat}: ${j.state}${j.change ? `, ${j.change}` : ''}`).join('; ')}.\n`
       : '') +
     (prev ? `THE PREVIOUS SCENE (end of the last batch): ${prev}. Your first scene must change something visible from it.\n` : '') +
+    (b.people ? `PEOPLE: the sender is ${b.people.sender}, the receiver is ${b.people.receiver}. Use exactly ` +
+      `these names everywhere. On the sender's phone (device "a", contact = ${b.people.receiver}) the ` +
+      `hero leaves as a "me" message with "send": true; on the receiver's phone (device "b", contact = ` +
+      `${b.people.sender}) it ARRIVES as a "them" message with "receive": true.\n` : '') +
+    (b.map
+      ? `FLOOR MAP: every "flow" scene uses EXACTLY these nodes in this order: ` +
+        `${b.map.nodes.map((n, i) => `${i} "${n.label}"`).join(', ')}. The map is drawn once and stays; ` +
+        `each flow scene only says where the hero goes with "hop": [from, to] (node indices, ` +
+        `either direction) and which node is busy with "active". Never draw a two-node flow ` +
+        `of a part of this map; never redraw it to make the same point twice.\n`
+      : '') +
+    `\nFACTS: scene data may only show what the beat's narration says. Never add a ` +
+    `technical detail (an algorithm, a mode, a protocol name, a size, a URL, a number) ` +
+    `that is not in that beat's words. When in doubt, leave the field out.\n` +
+    `MOTION: every scene must visibly change within its first second and again halfway ` +
+    `(the hero changing state or moving a hop, a node flipping, a number counting, a line ` +
+    `typing). A card or compare that just sits there is a wasted scene; prefer a hero scene.\n` +
+    `ONE FACT ONCE: never spend two scenes on the same fact (a "stat" of 32 bytes and then ` +
+    `"cells" of those same bytes is one fact: pick one).\n` +
     `\nNEVER REDUNDANT. Every scene must change something the viewer can SEE: a new slab, a ` +
     `new hero state, a new node, a new number, a new screen. Never show the same picture ` +
     `twice (same type, same data, same hero state). A "stat" only for a number the narration ` +
@@ -571,9 +594,13 @@ async function scenesForBatch(topic, batch, offset, opts, cast = [], bible = nul
       ? `HEADLINES: every scene has its own headline, written by you: max 5 words, sentence ` +
         `case, ending in a full stop. The narration is already captioned on screen word by ` +
         `word, so the headline must NEVER quote the narration; it states the CLAIM the ` +
-        `viewer should take away ("Smaller, same picture.", "Only Arjun can read it.", ` +
-        `"Six pieces, numbered."). Never a chapter title, never the hook line, and never ` +
-        `the same headline twice in a row.\n\n`
+        `viewer should take away, the way a person would say it out loud to a friend. ` +
+        `GOOD: "Now it is noise.", "Two trips, not one.", "Smaller, same picture.", "Only ` +
+        `Arjun can open it.", "The server is blind.", "Six pieces, numbered.", "Back in one ` +
+        `piece." BAD (robotic, telegraphic, jargon): "Image pixels transform into ` +
+        `ciphertext.", "Photo body separates now.", "Cat photo reconstituted cleanly.", ` +
+        `"Media routes outside message transport.", "Blind upload to bucket." Never a ` +
+        `chapter title, never the hook line, never the same headline twice in a row.\n\n`
       : `The first scene keeps the beat's own headline verbatim. Every later scene needs ` +
         `a NEW headline you write: max 5 words, sentence case, a spoken fragment usually ` +
         `ending in a full stop ("The lock never releases.", "Now it costs you."). ` +
@@ -643,7 +670,8 @@ async function planWorld(topic, script, opts) {
   const beats = (script.beats || []).map((b, i) => `BEAT ${i + 1}: ${b.text}`).join('\n');
   const prompt =
     `You are planning the visual world of a short vertical explainer video about: ${topic}\n\n` +
-    `HOOK (spoken first, also the cover text): ${script.hook}\n${beats}\n\n` +
+    `HOOK (spoken first, also the cover text): ${script.hook}\n${beats}\n` +
+    (script.caption ? `CAPTION: ${String(script.caption).slice(0, 600)}\n` : '') + `\n` +
     `The look is a calm daylight tabletop diorama: matte slabs, a phone, cards standing on a ` +
     `paper floor. ONE object, the HERO, travels through the whole video and visibly changes ` +
     `at each step. The hero is the explanation: the viewer understands the mechanism by ` +
@@ -659,6 +687,12 @@ async function planWorld(topic, script, opts) {
     `by "|", e.g. "42 | Priya | 450").\n` +
     `Hero states, in order of what can happen to it: whole, compressed, encrypted, split, ` +
     `labelled (pieces get a label each). "whole" again means reassembled.\n\n` +
+    `PEOPLE: one sender and one receiver, by first name. Use the names the script or caption ` +
+    `already uses; if it names nobody, pick two short common first names.\n` +
+    `If the hero travels a PATH (phone, server, storage, another phone), define a "map": the ` +
+    `3 or 4 places it passes, in order, with real component names from the script (label max ` +
+    `2 words, "sub" max 3 words, "kind" an icon like mobile, server, database, cloud, network, ` +
+    `lock, globe). Every later path scene reuses this one map; otherwise "map": null.\n` +
     `If the mechanism is LAYERED (network layers, memory hierarchy, storage stack, model ` +
     `layers, stages in a fixed order) define a "stack" of 3 to 8 slabs, top first; otherwise ` +
     `"stack": null.\n` +
@@ -675,6 +709,8 @@ async function planWorld(topic, script, opts) {
     `  "hero": { "key": "short-id", "kind": "photo|card|file|packet|message|number|row", ` +
     `"label": "its name on screen, max 3 words, e.g. IMG_2041.JPG or ₹450 to Corner Bakery", ` +
     `"bytes": "real size like 4.2 MB, or empty", "text": "for message, number, row" },\n` +
+    `  "people": { "sender": "Priya", "receiver": "Arjun" },\n` +
+    `  "map": null or { "nodes": [ { "label": "Your phone", "sub": "sender", "kind": "mobile" } ] },\n` +
     `  "stack": null or { "key": "short-id", "unit": "LAYER", "plates": [ { "label": "max 2 words", "sub": "max 5 words" } ] },\n` +
     `  "cover": { ... },\n` +
     `  "journey": [ { "beat": 1, "state": "whole", "change": "what visibly happens to the hero, max 10 words" } ] }\n` +
@@ -697,6 +733,15 @@ export function normaliseBible(b, nBeats) {
     if (!hero.label) hero.label = hero.text || hero.key;
     if (!hero.n) hero.n = 6;
     out.hero = hero;
+  }
+  if (b.people && typeof b.people === 'object') {
+    const one = (v) => clip(clean(v), 1).replace(/[^\p{L}'-]/gu, '').slice(0, 14);
+    const sender = one(b.people.sender), receiver = one(b.people.receiver);
+    if (sender && receiver && sender.toLowerCase() !== receiver.toLowerCase()) out.people = { sender, receiver };
+  }
+  if (b.map && typeof b.map === 'object') {
+    const f = normaliseScene({ type: 'flow', data: { nodes: b.map.nodes } }, '', { theme: 'diorama' });
+    if (f && f.data.nodes.length >= 3) out.map = { nodes: f.data.nodes.map((n) => ({ label: n.label, sub: n.sub, kind: n.kind })) };
   }
   if (b.stack && typeof b.stack === 'object') {
     const st = normaliseStack3d(b.stack);
@@ -751,7 +796,7 @@ function signature(sc) {
     const m = (d.messages || []).map((x) => (x.photo ? '[photo]' : x.text)).join('/');
     return `ph:${d.device || 'a'}:${d.app}:${m}:${d.send ? 's' : ''}${d.receive ? 'r' : ''}:${d.amount || ''}:${d.code || d.body || ''}:${d.url || ''}${h}`;
   }
-  if (sc.type === 'flow') return `fl:${d.nodes.map((n) => `${wordsOfText(n.label).join('')}.${n.state}.${n.becomes}`).join('>')}:${d.traffic}:${d.active ?? ''}${h}`;
+  if (sc.type === 'flow') return `fl:${d.nodes.map((n) => `${wordsOfText(n.label).join('')}.${n.state}.${n.becomes}`).join('>')}:${d.traffic}:${d.active ?? ''}:${d.hop || ''}${h}`;
   return `${sc.type}:${JSON.stringify(d)}`;
 }
 
@@ -765,6 +810,94 @@ function signature(sc) {
  */
 export function polishDiorama(scenes, { beats = [], hook = '', bible = null, durations = [], log = () => {} } = {}) {
   const notes = [];
+  const people = bible && bible.people;
+  const map = bible && bible.map;
+  const lk = (t) => wordsOfText(t).join('');
+
+  // ---- one floor map: a flow that names two or more of its places IS the map,
+  // redrawn in full with the hero hopping between the places it named
+  if (map) {
+    const keys = map.nodes.map((n) => lk(n.label));
+    for (const sc of scenes) {
+      if (sc.type !== 'flow') continue;
+      const idx = sc.data.nodes.map((n) => keys.indexOf(lk(n.label)));
+      const hits = idx.filter((i) => i >= 0);
+      if (hits.length < 2 && !(hits.length === 1 && sc.data.nodes.length <= 2)) continue;
+      const nodes = map.nodes.map((m, i) => {
+        const j = idx.indexOf(i);
+        const n = j >= 0 ? sc.data.nodes[j] : null;
+        return { label: m.label, sub: m.sub, kind: m.kind, state: n ? n.state : 'ok', becomes: n ? n.becomes : '' };
+      });
+      const from = hits[0], to = hits[hits.length - 1];
+      const hop = sc.data.hop && sc.data.nodes.length === map.nodes.length ? sc.data.hop : (from !== to ? [from, to] : null);
+      sc.data = { ...sc.data, nodes, ...(hop ? { hop } : {}) };
+      if (!hop) delete sc.data.hop;
+      if (sc.data.active != null && idx[sc.data.active] >= 0) sc.data.active = idx[sc.data.active];
+      else delete sc.data.active;
+      sc._onMap = true;
+    }
+  }
+
+  // ---- one sender, one receiver, the same names on every phone
+  const phones = scenes.filter((sc) => sc.type === 'phone');
+  if (bible && bible.cover && bible.cover.type === 'phone') phones.push(bible.cover);
+  for (const sc of phones) {
+    const d = sc.data;
+    if (d.app !== 'chat') continue;
+    if (people) d.contact = d.device === 'b' ? people.sender : people.receiver;
+    if (sc.hero || d.messages.some((m) => m.photo)) {
+      // the photo leaves the sender's phone and arrives on the receiver's
+      const mine = d.device !== 'b';
+      d.messages = d.messages.filter((m) => !m.photo);
+      d.messages.push({ from: mine ? 'me' : 'them', photo: true });
+      while (d.messages.length > 5) d.messages.shift();
+      if (mine) { d.send = true; delete d.receive; } else { d.receive = true; delete d.send; }
+    }
+  }
+
+  // ---- facts: a detail the beat never says (an algorithm, a mode, a size, a
+  // URL) is blanked; a scene whose main value is such a detail goes
+  const known = [hook, bible ? JSON.stringify({ h: bible.hero, m: bible.map, s: bible.stack, p: bible.people }) : ''].join(' ').toLowerCase();
+  const ungrounded = (text, beatText) => {
+    const hay = (beatText + ' ' + known).toLowerCase();
+    const str = String(text || '');
+    // labels arrive uppercased, where capitals say nothing: only numbers count there
+    const toks = str.match(str === str.toUpperCase() ? /\d[\d.,]*/g : /[A-Za-z]*[A-Z]{2,}[A-Za-z0-9-]*|\d[\d.,]*/g) || [];
+    return toks.some((t) => !hay.includes(t.toLowerCase().replace(/[.,]+$/, '')));
+  };
+  scenes = scenes.filter((sc) => {
+    const bt = (beats[sc.beat] || {}).text || '';
+    const d = sc.data;
+    const blank = (o, k) => { if (o && o[k] && ungrounded(o[k], bt)) { notes.push(`blanked "${o[k]}"`); o[k] = ''; } };
+    blank(sc, 'subhead');
+    if (sc.type === 'flow') { d.nodes.forEach((n) => blank(n, 'sub')); blank(d, 'edge'); }
+    if (sc.type === 'compare') { blank(d.left, 'sub'); blank(d.right, 'sub'); d.rows.forEach((r) => { blank(r, 'left'); blank(r, 'right'); }); d.rows = d.rows.filter((r) => r.left || r.right); }
+    if (sc.type === 'card') { blank(d, 'sub'); blank(d, 'pill'); }
+    if (sc.type === 'list') { d.items.forEach((it) => blank(it, 'label')); d.items = d.items.filter((it) => it.label); }
+    if (sc.type === 'stat') blank(d, 'label');
+    if (sc.type === 'chart') { blank(d, 'label'); blank(d, 'from'); blank(d, 'to'); }
+    if (sc.type === 'sequence') d.steps.forEach((st) => blank(st, 'label'));
+    if (sc.type === 'note') { blank(d, 'lead'); blank(d, 'body'); }
+    const main = sc.type === 'stat' ? d.value : sc.type === 'card' ? d.title : '';
+    const dead = (main && ungrounded(main, bt)) || (sc.type === 'list' && d.items.length < 2) || (sc.type === 'note' && !d.lead);
+    if (dead) notes.push(`dropped ${sc.type} "${main || sc.headline}": not in the narration`);
+    return !dead;
+  });
+
+  // ---- the hero stays on screen: every slab and every map scene carries it,
+  // in the state it was last seen in
+  let lastState = null;
+  for (const sc of scenes) {
+    if (sc.hero) { lastState = sc.hero; continue; }
+    if ((sc.type === 'stack3d' && !sc.data.twin) || sc._onMap) {
+      const h = lastState ? { key: lastState.key, state: lastState.state } : { key: 'hero', state: 'whole' };
+      if (lastState && lastState.tag) h.tag = lastState.tag;
+      if (lastState && lastState.glyphs) h.glyphs = lastState.glyphs;
+      sc.hero = h;
+    }
+  }
+  scenes.forEach((sc) => { delete sc._onMap; });
+
   // ---- one hero
   const first = scenes.find((sc) => sc.hero && heroFits(sc));
   const canon = { ...(first ? first.hero : {}), ...((bible && bible.hero) || {}) };
@@ -784,14 +917,6 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
       if (!h.bytes && canon.bytes) h.bytes = canon.bytes;
       seenHero = true;
     } else if (!h.label && canon.label) h.label = canon.label;
-    if (sc.type === 'phone') {
-      // the hero rides in the photo bubble of a chat; give it one to ride in
-      const msgs = sc.data.messages;
-      if (!msgs.some((m) => m.photo)) {
-        msgs.push({ from: sc.data.receive && !sc.data.send ? 'them' : 'me', photo: true });
-        while (msgs.length > 5) msgs.shift();
-      }
-    }
   }
 
   // ---- stacks define their slabs once
