@@ -147,7 +147,8 @@ const MENU_DIORAMA = `DIORAMA TYPES (this reel uses the tabletop look; prefer th
                   "unit": "LAYER" }
           plates are listed TOP FIRST, 3 to 8 of them, label max 2 words (max 14 letters),
           sub max 5 words, "n" optional (max 4 characters) printed big next to the name; when
-          omitted the slabs are numbered from the bottom. "active" is the 0-based index of the
+          omitted the slabs are numbered from the bottom. "n" is an ordinal or a short tier name
+          (7, L1, RAM), never an address or a value. "active" is the 0-based index of the
           slab this scene is about. Give "plates" ONCE, the first time a stack appears; later
           scenes with the same "key" leave "plates" out and only move "active".
           Examples:
@@ -412,7 +413,9 @@ function normaliseStack3d(d) {
       // words are set in capitals, but an address or a hex value keeps its case (0x00, not 0X00)
       const o = { label: clean(pl.label).split(' ').map((w) => (/\d/.test(w) ? w : w.toUpperCase())).join(' ').slice(0, 16), sub: clip(pl.sub, 5) };
       const n = clean(pl.n).slice(0, 4);
-      if (n) o.n = n;
+      // the big numeral is an ordinal; an address (0x00) printed that large reads as a value
+      if (/^0x/i.test(n) || /^0x/i.test(clean(pl.n))) o.n = '';
+      else if (n) o.n = n;
       return o;
     })
     .filter((pl) => pl.label);
@@ -566,6 +569,11 @@ function worldBrief(bible, batch, offset, prev) {
     `NO "sequence" on this look: a message between places is the hero (or a key token) hopping ` +
     `on the floor map. Use "sequence" only if the beat is literally about the ORDER of messages ` +
     `between two parties and there is no map.\n` +
+    `SAY IT AS SPOKEN: every value on screen is exactly what the narration says, in the ` +
+    `same form ("04/10/2025" against "2025/10/04", not "04 / 10" against "2025 / 10"). An ` +
+    `analogy is drawn faithfully, never paraphrased into something that is no longer true.\n` +
+    `PHONE SCREENS MATCH THE STORY: a chat photo only when the story is a photo; a game, a bank ` +
+    `or a shop is a "browser" screen whose "title" is the thing the person reads (\"Coins: 16,777,216\").\n` +
     `ONE FACT ONCE: never spend two scenes on the same fact (a "stat" of 32 bytes and then ` +
     `"cells" of those same bytes is one fact: pick one).\n` +
     `\nNEVER REDUNDANT. Every scene must change something the viewer can SEE: a new slab, a ` +
@@ -904,8 +912,15 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
     if (sc.type === 'note') { blank(d, 'lead'); blank(d, 'body'); }
     const main = sc.type === 'stat' ? d.value : sc.type === 'card' ? d.title : '';
     const dead = (main && ungrounded(main, bt)) || (sc.type === 'list' && d.items.length < 2) || (sc.type === 'note' && !d.lead);
-    if (dead) notes.push(`dropped ${sc.type} "${main || sc.headline}": not in the narration`);
-    return !dead;
+    if (!dead) return true;
+    const others = scenes.filter((o) => o !== sc && o.beat === sc.beat && !o._gone).length;
+    if (!others || (durations[sc.beat] || 9) / others > 6.5) {
+      notes.push(`kept ${sc.type} "${main || sc.headline}" (its beat would hold too long)`);
+      return true;
+    }
+    sc._gone = true;
+    notes.push(`dropped ${sc.type} "${main || sc.headline}": not in the narration`);
+    return false;
   });
 
   // ---- the hero stays on screen: every slab and every map scene carries it,
@@ -920,7 +935,7 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
       sc.hero = h;
     }
   }
-  scenes.forEach((sc) => { delete sc._onMap; });
+  scenes.forEach((sc) => { delete sc._onMap; delete sc._gone; });
 
   // ---- one hero
   const first = scenes.find((sc) => sc.hero && heroFits(sc));

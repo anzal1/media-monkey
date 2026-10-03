@@ -481,7 +481,7 @@
     background: linear-gradient(to bottom, color-mix(in srgb, var(--accent) 16%, #f7f5f1), #f7f5f1 70%); }
   .pnot .dt { margin-top: 36px; font: 600 19px Inter, sans-serif; color: #4a463f; }
   .pnot .clk { font: 600 104px/1 Inter, sans-serif; letter-spacing: -.04em; margin-top: 4px; }
-  .pban { position: absolute; left: 12px; right: 12px; top: 250px; padding: 14px 16px; border-radius: 24px;
+  .pban { position: absolute; left: 10px; right: 10px; top: 210px; padding: 18px 18px 20px; border-radius: 26px;
     background: rgba(255,255,255,.96); box-shadow: 0 14px 30px rgba(60,45,25,.16); display: flex; gap: 12px; opacity: 0; }
   .pban .ai { flex: 0 0 42px; height: 42px; border-radius: 11px; padding: 9px; background: var(--accent); }
   .pban .bt { flex: 1; min-width: 0; }
@@ -501,6 +501,15 @@
   .pbpage .hero { height: 170px; border-radius: 16px; background-size: cover; }
   .pbpage h3 { font: 700 25px Inter, sans-serif; margin-top: 4px; }
   .pbpage i { display: block; height: 13px; border-radius: 7px; background: #efeeeb; }
+
+  /* the notification is the moment: big enough to read on a phone held at arm's length */
+  .pban .ai { flex: 0 0 54px; height: 54px; border-radius: 14px; padding: 11px; }
+  .pban .row { font-size: 17px; }
+  .pban .ti { margin-top: 4px; font-size: 27px; }
+  .pban .bd { margin-top: 4px; font-size: 25px; line-height: 1.25; }
+  .pban .otp { font-size: 30px; }
+  /* a page with no picture leads with its own words (a balance, a counter) */
+  .pbpage .blk.lead { margin-top: 12px; font: 800 40px/1.1 Inter, sans-serif; letter-spacing: -.02em; color: #171614; }
 
   /* ---- flow on the floor: ink wires on paper, tokens moving along them ---- */
   .f3 { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 540px 640px; }
@@ -834,6 +843,8 @@
   const heroArt = (h) => `url("data:image/svg+xml;utf8,${encodeURIComponent((HERO_SVG[h && h.kind] || HERO_SVG.photo)(h || {}))}")`;
   const heroGrid = (h) => {
     const n = Math.max(1, Math.min(12, (h && h.n) || 6));
+    // named parts (bytes, digits) are an ordered sequence: always one row, low to high
+    if (h && h.pieces) return { n, cols: n, rows: 1, tw: HW / n, th: Math.min(HH, (HW / n) * 0.8) };
     const cols = n <= 3 ? n : Math.ceil(n / 2);
     return { n, cols, rows: Math.ceil(n / cols), tw: HW / cols, th: HH / Math.ceil(n / cols) };
   };
@@ -899,7 +910,7 @@
       const k = 230 / HW;
       hero = `<div class="h-anchor f3bb" data-meta="0" data-tags="0" data-inplane="1" style="width:200px;height:${HH * k * 200 / 230}px"></div>` +
         Array.from({ length: g.n }, (_, j) => {
-          const q = k * 0.62, c = j % g.cols, r = Math.floor(j / g.cols);
+          const q = k * (sc.hero.pieces ? 1.15 : 0.62), c = j % g.cols, r = Math.floor(j / g.cols);
           const bg = `background-image:${heroArt(sc.hero).replace(/"/g, '&quot;')};background-size:${HW * q}px ${HH * q}px;background-position:${-c * g.tw * q}px ${-r * g.th * q}px`;
           return `<div class="h-slot f3bb f3tok" style="width:${g.tw * q}px;height:${g.th * q}px;opacity:0"><div class="himg" style="${bg}"></div><div class="gly"></div></div>`;
         }).join('');
@@ -1160,10 +1171,12 @@
             const k = 370 / HW;
             const [ax, ay] = at(0, 50);
             extra += `<div class="h-anchor s3bb" data-meta="1" data-x="${ax}" data-y="${ay}" style="width:370px;height:${HH * k}px"></div>`;
+            // named parts stand larger: they are read, not just counted
+            const pk = sc.hero.pieces ? Math.min(1.5, 6 / g.n) : 0.86;
             for (let j = 0; j < g.n; j++) {
               const c = j % g.cols, r = Math.floor(j / g.cols);
-              const [sx, sy] = at((c - (g.cols - 1) / 2) * (g.tw * k * 0.86 + 46), (r - (g.rows - 1) / 2) * 300 + 50);
-              extra += `<div class="h-slot s3bb" data-x="${sx}" data-y="${sy}" style="width:${g.tw * k * 0.86}px;height:${g.th * k * 0.86}px"></div>`;
+              const [sx, sy] = at((c - (g.cols - 1) / 2) * (g.tw * k * pk + 40), (r - (g.rows - 1) / 2) * 300 + 50);
+              extra += `<div class="h-slot s3bb" data-x="${sx}" data-y="${sy}" style="width:${g.tw * k * pk}px;height:${g.th * k * pk}px"></div>`;
             }
           }
           if (i === n - 1 || (twin && i === 0)) extra += `<i class="s3pt" data-top="${i === 0 ? 1 : 0}" style="left:${P / 2}px;top:${P / 2}px"></i>`;
@@ -1173,7 +1186,7 @@
         });
         return h + '</div>';
       };
-      const tagOf = (pl, i) => pl ? `<b>${esc(pl.n != null ? pl.n : n - i)}</b><div><small>${esc(d.unit || 'LAYER')}</small>` +
+      const tagOf = (pl, i) => pl ? (pl.n === '' ? '' : `<b>${esc(pl.n != null ? pl.n : n - i)}</b>`) + `<div><small>${esc(d.unit || 'LAYER')}</small>` +
         `<span>${esc(pl.label || '')}</span>` + (pl.sub ? `<em>${esc(pl.sub)}</em>` : '') + '</div>' : '';
       if (twin) {
         return `<div class="s3wrap twin"><svg class="s3wire" viewBox="0 0 1080 1920"><path class="glo"/><path class="core"/></svg>` +
@@ -1229,8 +1242,10 @@
         scr = `<div class="pbrw"><div class="pbbar"><svg viewBox="0 0 15 16"><rect x="1.5" y="7" width="12" height="8" rx="2" fill="#8a9099"/>` +
           `<path d="M4 7V5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="#8a9099" stroke-width="1.8"/></svg>${esc(d.url || 'example.com')}</div>` +
           `<div class="pbprog"><i></i></div><div class="pbpage">` +
-          `<div class="blk hero" style="background-image:${heroArt({ kind: d.image || 'photo' }).replace(/"/g, '&quot;')}"></div>` +
-          `<h3 class="blk">${esc(d.title || '')}</h3><i class="blk"></i><i class="blk" style="width:82%"></i><i class="blk" style="width:64%"></i></div></div>`;
+          (d.image
+            ? `<div class="blk hero" style="background-image:${heroArt({ kind: d.image }).replace(/"/g, '&quot;')}"></div><h3 class="blk">${esc(d.title || '')}</h3>`
+            : `<div class="blk lead">${esc(d.title || '')}</div>`) +
+          `<i class="blk"></i><i class="blk" style="width:82%"></i><i class="blk" style="width:64%"></i></div></div>`;
       }
       return `<div class="ph" data-app="${app}"><div class="phglow"></div><div class="phbody"></div>` +
         `<i class="phb a"></i><i class="phb b"></i><i class="phb c"></i>` +
@@ -1768,7 +1783,7 @@
         const pc = H.lastPieces && cur.e <= 0.001 ? String(H.lastPieces[j] == null ? '' : H.lastPieces[j]) : null;
         if (pc != null) {
           if (g2.textContent !== pc) g2.textContent = pc;
-          g2.style.fontSize = '22px'; g2.style.lineHeight = '1'; g2.style.color = 'var(--ink)';
+          g2.style.fontSize = Math.round(sl.offsetHeight * 0.5) + 'px'; g2.style.lineHeight = sl.offsetHeight + 'px'; g2.style.padding = '0'; g2.style.color = 'var(--ink)';
           g2.style.opacity = 1; sl.firstChild.style.opacity = 0;
         } else {
           g2.style.fontSize = ''; g2.style.lineHeight = ''; g2.style.color = '';
@@ -2084,12 +2099,13 @@
       const hop = Array.isArray(d.hop) && d.hop.length === 2 ? d.hop.map((x) => Math.max(0, Math.min(nn, x | 0))) : [0, nn];
       const s0 = F.cum[hop[0]], dir = hop[1] >= hop[0] ? 1 : -1;
       const travel = Math.abs(F.cum[hop[1]] - s0) || 1;
-      const L = (travel + F.slots.length * 44 + 60) * prog;
+      const gap = F.gap || (F.gap = F.slots.length ? Math.max(44, F.slots[0].offsetWidth + 12) : 44);
+      const L = (travel + F.slots.length * gap + 60) * prog;
       const pt = (l) => F.all.getPointAtLength(Math.max(0, Math.min(F.len, s0 + dir * Math.max(0, Math.min(travel, l)))));
       const at = pt(Math.min(L, Math.max(0, travel - 170)));
       F.anchor.style.transform = `translate3d(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px, 0) ${bb}`;
       F.slots.forEach((s, j) => {
-        const lj = L - j * 44;
+        const lj = L - j * gap;
         const p2 = pt(lj);
         // a packet passes THROUGH a node: it fades going in and comes out the far side
         const abs = s0 + dir * Math.max(0, Math.min(travel, lj));
@@ -2241,7 +2257,10 @@
     // loopTo: the closing scene eases its camera and the drift to rest, the
     // title fades back in over it, and at w=1 the page IS frame 0
     let w = null;
-    if (sc.loopTo != null && titleB) w = easeInOut(clamp01((local - 0.3) / Math.min(2.6, span * 0.6)));
+    if (sc.loopTo != null && titleB) {
+      const dur = Math.min(2.2, span * 0.45);
+      w = easeInOut(clamp01((local - Math.max(0.3, span - dur - 0.3)) / dur));
+    }
     DRIFT = w == null ? 1 : 1 - w;
     updateGround(tSec);
     if (sc.type === 'phone') {
@@ -2357,7 +2376,9 @@
         headWords = [...$('headline').querySelectorAll('.w')];
         // one line wherever possible: a two-line headline pushes nothing, but
         // three lines would collide with the hero column
-        $('headline').style.fontSize = WORLD && sc.type === 'phone'
+        $('headline').style.fontSize = WORLD && sc.loopTo != null
+          ? (h.length > 44 ? '46px' : h.length > 34 ? '52px' : '62px')
+          : WORLD && sc.type === 'phone'
           ? (h.length > 30 ? '52px' : h.length > 24 ? '60px' : '70px')
           : h.length > 42 ? '58px' : h.length > 26 ? '66px' : '76px';
         $('subhead').textContent = sc.subhead || '';
