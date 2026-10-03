@@ -417,14 +417,20 @@ export async function factCheck(script, { log = () => {} } = {}) {
     'explainer video, each with the source it claims. Find claims that are FALSE or stated with more ' +
     'precision than the evidence supports (wrong algorithm or mode, wrong protocol, wrong number, a ' +
     'product detail that is not documented), and sources that do not exist under that title. Ignore ' +
-    'simplifications and analogies that are fair for a general audience. Do not flag style.\n\n' +
+    'simplifications and analogies that are fair for a general audience. Do not flag style. Flag a ' +
+    'source only if no such document exists at all; a loose or descriptive title for a real document ' +
+    '(for example "RFC 1700 network byte order") is fine. Mark each issue with kind "claim" or "source".\n\n' +
     `Hook: ${script.hook}\n${lines}\n\n` +
-    'Reply with ONLY a JSON object: {"issues":[{"beat":<number>,"claim":"...","problem":"...","fix":"what is actually true"}]}. ' +
+    'Reply with ONLY a JSON object: {"issues":[{"beat":<number>,"kind":"claim|source","claim":"...","problem":"...","fix":"what is actually true"}]}. ' +
     'Empty list if everything holds.';
   try {
     const raw = await gemini({ prompt, tools: [{ google_search: {} }], temperature: 0.1, maxOutputTokens: 4096, timeoutMs: 90000 });
     const m = raw.match(/\{[\s\S]*\}/);
-    const issues = m ? (JSON.parse(m[0]).issues || []) : [];
+    const all = m ? (JSON.parse(m[0]).issues || []) : [];
+    // sources are never shown to the viewer, so a bad one is logged, not fatal;
+    // rejecting on a source title once cost a whole run
+    for (const x of all.filter((i) => i.kind === 'source')) log(`  fact check, source note: beat ${x.beat}: ${x.problem}`);
+    const issues = all.filter((i) => i.kind !== 'source');
     if (!issues.length) {
       log('  fact check: clean');
       return null;
@@ -471,12 +477,18 @@ export async function writeScript(topic, opts = {}) {
   // Two attempts was too few. The length constraint is the one the model is
   // worst at, and it tends to overshoot in the opposite direction on the
   // retry: a real run went 325 words, then 490, then died with nothing.
-  const ATTEMPTS = 4;
+  // Feedback is cumulative: told only the last problem, the model fixed it and
+  // broke the one before (a real run went fact check, then length, then
+  // keyword, then length again, and died).
+  const ATTEMPTS = 5;
   let lastErr = null;
+  const rejections = [];
   for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
     const prompt = attempt === 1
       ? base
-      : `${base}\n\nYour previous attempt was rejected: ${lastErr}\nFix exactly that and return the corrected JSON object.`;
+      : `${base}\n\nYour earlier attempts were rejected for these reasons, most recent last:\n` +
+        rejections.map((r, i) => `${i + 1}. ${r}`).join('\n') +
+        '\nReturn one corrected JSON object that fixes ALL of them at once.';
     let raw;
     try {
       // The caption alone is 120-200 words now, so the default 4096 budget can
@@ -490,18 +502,17 @@ export async function writeScript(topic, opts = {}) {
       // the final attempt ships whatever it gets, within tolerance
       const script = validate(parsed, topic, lang, { lenientLength: attempt === ATTEMPTS, log, length: mode });
       // A test reel said WhatsApp encrypts media with AES-GCM (it is CBC plus
-      // HMAC) and cited a whitepaper that does not exist. The format checks
-      // cannot catch that, so a grounded second read does. It can reject any
-      // attempt but the last, and its own failure never costs the slot.
-      if (attempt < ATTEMPTS) {
-        const problems = await factCheck(script, { log });
-        if (problems) throw new Error(`fact check: ${problems}`);
-      }
+      // HMAC). The format checks cannot catch that, so a grounded second read
+      // does, on every attempt: a lost slot costs less than a wrong fact. If
+      // the check itself cannot run, the script ships.
+      const problems = await factCheck(script, { log });
+      if (problems) throw new Error(`fact check: ${problems}`);
       script.lengthMode = mode;
       log(`  script ok on attempt ${attempt}: ${script.beats.length} beats, slug ${script.slug}`);
       return script;
     } catch (e) {
       lastErr = e.message;
+      rejections.push(lastErr);
       log(`  script attempt ${attempt} rejected: ${lastErr}`);
     }
   }
