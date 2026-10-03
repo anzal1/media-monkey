@@ -100,7 +100,26 @@
       },
       "beat": 1,
       "half": 0,
-      "of": 1
+      "of": 2
+    },
+    {
+      "type": "stack3d",
+      "headline": "Same picture again.",
+      "subhead": "",
+      "data": {
+        "key": "net",
+        "active": 0
+      },
+      "hero": {
+        "key": "payment",
+        "state": "whole",
+        "kind": "card",
+        "n": 6,
+        "label": "₹450 to Corner Bakery"
+      },
+      "beat": 1,
+      "half": 1,
+      "of": 2
     },
     {
       "type": "stack3d",
@@ -317,6 +336,7 @@
     3,
     6.6,
     11,
+    15.05,
     20,
     24.05,
     29,

@@ -563,6 +563,9 @@ function worldBrief(bible, batch, offset, prev) {
     `MOTION: every scene must visibly change within its first second and again halfway ` +
     `(the hero changing state or moving a hop, a node flipping, a number counting, a line ` +
     `typing). A card or compare that just sits there is a wasted scene; prefer a hero scene.\n` +
+    `NO "sequence" on this look: a message between places is the hero (or a key token) hopping ` +
+    `on the floor map. Use "sequence" only if the beat is literally about the ORDER of messages ` +
+    `between two parties and there is no map.\n` +
     `ONE FACT ONCE: never spend two scenes on the same fact (a "stat" of 32 bytes and then ` +
     `"cells" of those same bytes is one fact: pick one).\n` +
     `\nNEVER REDUNDANT. Every scene must change something the viewer can SEE: a new slab, a ` +
@@ -971,7 +974,9 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
   // pool: the scenes still in play; prev: the scene that would hold if this one went
   const tryDrop = (sc, why, pool, prev) => {
     const siblings = pool.filter((o) => o !== sc && o.beat === sc.beat && !o._dropped).length;
-    if (siblings > 0) { sc._dropped = true; notes.push(`dropped: ${why}`); return true; }
+    // the beat's other scenes share its time; never so few that one holds past ~6 s
+    if (siblings > 0 && (durations[sc.beat] || 9) / siblings <= 6.5) { sc._dropped = true; notes.push(`dropped: ${why}`); return true; }
+    if (siblings > 0) { notes.push(`kept (its beat would hold too long): ${why}`); return false; }
     // the last scene of its beat: the previous scene would hold over the whole beat
     const hold = prev ? (prev._hold || span(prev)) + (durations[sc.beat] || 9) : 99;
     if (hold <= 11) { prev._hold = hold; sc._dropped = true; notes.push(`merged: ${why}`); return true; }
@@ -1048,11 +1053,13 @@ export async function writeScenes(topic, script, opts = {}) {
   // A scene should hold for about five seconds. The narration duration of each
   // beat is already known by the time this runs, so the split is decided from
   // the real audio rather than from a guess about how long the words take.
-  const TARGET_CUT = 5.5;
+  // the diorama holds a composition for about four seconds at most: its scenes
+  // move inside themselves, but a long beat still needs more of them
+  const TARGET_CUT = opts.theme === 'diorama' ? 4.2 : 5.5;
   const durations = opts.beatDurations || [];
   const beats = (script.beats || []).map((b, i) => ({
     ...b,
-    want: Math.max(2, Math.min(4, Math.round((durations[i] || 9) / TARGET_CUT))),
+    want: Math.max(2, Math.min(opts.theme === 'diorama' ? 5 : 4, Math.round((durations[i] || 9) / TARGET_CUT))),
   }));
   const BATCH = 4;
   const byBeat = new Map();

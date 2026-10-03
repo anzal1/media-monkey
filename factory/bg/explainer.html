@@ -259,7 +259,8 @@
   .card1 .top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
   .card1 .ico { width: 60px; height: 60px; }
   .card1 .title { margin-top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 38px; font-weight: 700; word-break: break-all; }
-  html.diorama .card1 .title { word-break: normal; white-space: nowrap; }
+  html.diorama .card1 .title { word-break: normal; overflow-wrap: normal; font-size: 44px; line-height: 1.15; }
+  html.diorama .card1 .sub { font-size: 28px; }
   .card1 .sub { margin-top: 14px; font-size: 24px; color: var(--mute); }
 
   /* list */
@@ -503,7 +504,7 @@
 
   /* ---- flow on the floor: ink wires on paper, tokens moving along them ---- */
   .f3 { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 540px 640px; }
-  .f3plane { position: absolute; left: 20px; top: 650px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
+  .f3plane { position: absolute; left: 40px; top: 640px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
   .f3svg { position: absolute; inset: 0; width: 1000px; height: 1000px; overflow: visible; }
   .f3svg path { fill: none; stroke-linecap: round; }
   .f3base { stroke: rgba(23,22,20,.16); stroke-width: 3; stroke-dasharray: 2 12; }
@@ -538,10 +539,10 @@
   .s3wrap.twin { transform: translateY(64px); }
   .f3card.c3card { width: 400px; padding: 26px 24px 24px; }
   .c3card .ico { width: 64px; height: 64px; }
-  .c3card b { font-size: 50px; }
-  .c3card small { font-size: 27px; }
+  .c3card b { font-size: 56px; }
+  .c3card small { font-size: 30px; }
   .c3rows { margin-top: 16px; padding-top: 4px; border-top: 1px solid rgba(23,22,20,.14); }
-  .c3rows div { margin-top: 14px; font: 500 33px/1.2 Inter, sans-serif; color: var(--ink); }
+  .c3rows div { margin-top: 14px; font: 500 37px/1.2 Inter, sans-serif; color: var(--ink); }
   .c3vs { font: 700 24px 'JetBrains Mono', monospace; letter-spacing: .22em; color: var(--mute); white-space: nowrap; }
   /* ---- list: each item a card lying on the table, in a column ---- */
   html.diorama .lst .hd { font: 500 22px 'JetBrains Mono', monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); margin-bottom: 22px; }
@@ -775,6 +776,8 @@
   const keyOf = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
   const fmtNum = (n) => Number(n).toLocaleString('en-US', { maximumFractionDigits: 1 });
 
+  /** a long name or URL may wrap after / . _ - but never inside a word */
+  function wbr(s) { return esc(s).replace(/([/._-])/g, '$1<wbr>'); }
   function esc(s) { return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
@@ -859,8 +862,11 @@
   /** flow on the floor: node positions on a 1000x1000 plane, zigzagging into depth */
   function f3Layout(n) {
     if (n <= 1) return [[500, 520]];
-    if (n === 2) return [[220, 560], [780, 460]];
-    return Array.from({ length: n }, (_, i) => [190 + (580 * i) / (n - 1), i % 2 ? 300 : 640]);
+    if (n === 2) return [[260, 600], [740, 440]];
+    // a zigzag across the whole width, front row and back row, so neighbours
+    // never share a column and every card keeps clear floor around it
+    if (n === 3) return [[250, 640], [510, 290], [770, 640]];
+    return [[250, 640], [420, 290], [650, 640], [800, 290]];
   }
   const F3_TILT = 58;
   // wires run along the front edge of each pad, in open floor in front of the cards
@@ -891,7 +897,7 @@
     if (sc && sc.hero) {
       const g = heroGrid(sc.hero);
       const k = 230 / HW;
-      hero = `<div class="h-anchor f3bb" data-meta="0" data-tags="0" data-inplane="1" style="width:230px;height:${HH * k}px"></div>` +
+      hero = `<div class="h-anchor f3bb" data-meta="0" data-tags="0" data-inplane="1" style="width:200px;height:${HH * k * 200 / 230}px"></div>` +
         Array.from({ length: g.n }, (_, j) => {
           const q = k * 0.62, c = j % g.cols, r = Math.floor(j / g.cols);
           const bg = `background-image:${heroArt(sc.hero).replace(/"/g, '&quot;')};background-size:${HW * q}px ${HH * q}px;background-position:${-c * g.tw * q}px ${-r * g.th * q}px`;
@@ -967,7 +973,7 @@
     card(d) {
       return `<div class="card1 panel el" data-key="${keyOf(d.title)}"><div class="top"><span class="ico">${icon(d.kind)}</span>` +
         (d.pill ? `<span class="pill">${esc(d.pill)}</span>` : '') + `</div>` +
-        `<div class="title">${esc(d.title)}</div>` +
+        `<div class="title" data-t="${esc(d.title)}">${WORLD ? wbr(d.title) : esc(d.title)}</div>` +
         (d.sub ? `<div class="sub">${esc(d.sub)}</div>` : '') + `</div>`;
     },
     list(d) {
@@ -1279,7 +1285,7 @@
     const prev = wrap.style.display;
     wrap.style.display = 'flex';
     const room = hero.clientWidth * 0.97;
-    for (const el of wrap.querySelectorAll(WORLD ? '.stat .v, .chart .ends .b, .meter .read, .card1 .title' : '.stat .v, .chart .ends .b, .meter .read')) {
+    for (const el of wrap.querySelectorAll('.stat .v, .chart .ends .b, .meter .read')) {
       // only swap the text when there is a final value to measure; writing
       // textContent back unconditionally flattened the meter readout's inner
       // spans and crashed its animation on the next frame
@@ -1585,7 +1591,19 @@
     }
     if (sc.type === 'code') {
       const lines = B.clines || (B.clines = [...B.wrap.querySelectorAll('.ln')]);
-      const focusAt = Math.max(1.2, span * 0.35), badAt = Math.max(focusAt + 0.6, span * 0.6);
+      let focusAt = Math.max(1.2, span * 0.35);
+      if (WORLD) {
+        // the lines arrive one at a time across the first half of the scene,
+        // so the code is read as it is spoken rather than shown all at once
+        const every = Math.max(0.25, (span * 0.5) / Math.max(1, lines.length));
+        lines.forEach((ln, i) => {
+          const r = easeOut((local - 0.3 - i * every) / 0.35);
+          ln.style.opacity = r.toFixed(3);
+          ln.style.transform = `translateX(${((1 - r) * 14).toFixed(1)}px)`;
+        });
+        focusAt = Math.max(focusAt, 0.3 + lines.length * every + 0.2);
+      }
+      const badAt = Math.max(focusAt + 0.6, span * 0.6);
       const focus = new Set(d.focus || []);
       lines.forEach((ln) => {
         const n = +ln.dataset.n;
@@ -2068,7 +2086,7 @@
       const travel = Math.abs(F.cum[hop[1]] - s0) || 1;
       const L = (travel + F.slots.length * 44 + 60) * prog;
       const pt = (l) => F.all.getPointAtLength(Math.max(0, Math.min(F.len, s0 + dir * Math.max(0, Math.min(travel, l)))));
-      const at = pt(Math.min(L, Math.max(0, travel - 60)));
+      const at = pt(Math.min(L, Math.max(0, travel - 170)));
       F.anchor.style.transform = `translate3d(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px, 0) ${bb}`;
       F.slots.forEach((s, j) => {
         const lj = L - j * 44;
@@ -2209,7 +2227,8 @@
       const kwEl = document.querySelector('#title .kw');
       const top = Math.round(kwEl.getBoundingClientRect().top + 76);
       titleB.phTop = top;
-      titleB.phS = Math.max(0.72, Math.min(PH_S, (1300 - top) / 780));
+      // the hook is not captioned, so the cover phone may run down to the Reels UI line
+      titleB.phS = Math.max(0.72, Math.min(PH_S, (1470 - top) / 780));
     }
     if (titleB) animWorld(titleB, titleB.sc, 99, 5, tSec, null);
   }
@@ -2229,13 +2248,10 @@
       if (!B.phFit) {
         // a two line headline would sit on the handset: start the phone under
         // it and scale it to the room left above the caption band
-        B.phFit = { top: 466, s: PH_S };
         const hb = $('headline').getBoundingClientRect().bottom;
-        if (hb + 30 > 466) {
-          B.phFit.top = Math.round(hb + 30);
-        }
+        B.phFit = { top: Math.round(hb + 22), s: PH_S };
         // and ends above the burned-in caption, which sits at about y=1320
-        B.phFit.s = Math.max(0.8, Math.min(PH_S, (1300 - B.phFit.top) / 780));
+        B.phFit.s = Math.max(0.8, Math.min(PH_S, (1312 - B.phFit.top) / 780));
       }
       B.phTop = B.phFit.top; B.phS = B.phFit.s;
       // the closing scene glides the handset to where it sits on the cover
@@ -2341,7 +2357,9 @@
         headWords = [...$('headline').querySelectorAll('.w')];
         // one line wherever possible: a two-line headline pushes nothing, but
         // three lines would collide with the hero column
-        $('headline').style.fontSize = h.length > 42 ? '58px' : h.length > 26 ? '66px' : '76px';
+        $('headline').style.fontSize = WORLD && sc.type === 'phone'
+          ? (h.length > 30 ? '52px' : h.length > 24 ? '60px' : '70px')
+          : h.length > 42 ? '58px' : h.length > 26 ? '66px' : '76px';
         $('subhead').textContent = sc.subhead || '';
         $('counter').textContent =
           String(k + 1).padStart(2, '0') + ' — ' + String(TOTAL).padStart(2, '0');
@@ -2508,6 +2526,15 @@
         if (rule) rule.style.width = (q * 140).toFixed(1) + 'px';
       }
 
+      // ---- a card's name types itself in on the diorama
+      if (WORLD && sc.type === 'card') {
+        const tt = B.ctitle || (B.ctitle = B.wrap.querySelector('.card1 .title'));
+        if (tt) {
+          const full = tt.dataset.t || '';
+          const n = Math.round(full.length * clamp01((local - 0.45) / Math.min(1.8, span * 0.35)));
+          if (+tt.dataset.n !== n) { tt.dataset.n = n; tt.innerHTML = wbr(full.slice(0, n)) + (n < full.length ? '<span style="opacity:0">' + wbr(full.slice(n)) + '</span>' : ''); }
+        }
+      }
       if (WORLD) worldFrame(k, sc, B, local, span, tSec);
       // ---- camera: every scene drifts and pushes in slowly, so nothing on
       // screen is ever a still frame; transitions ride on the same transform
