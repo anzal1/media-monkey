@@ -872,5 +872,20 @@
     "slot": "2026-10-03T13:30:00.000Z",
     "igMediaId": "18059368100537693",
     "publishedAt": "2026-10-03T13:30:06Z"
+  },
+  {
+    "slug": "how-vector-embeddings-actually-work",
+    "topic": "embeddings",
+    "hook": "Computers do not understand words. They use geometry.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-02",
+    "length": "deep",
+    "seconds": 142.3,
+    "lang": "en",
+    "at": "2026-10-03T16:01:34.606Z",
+    "ytVideoId": "tXG4yBACfNY",
+    "slot": "2026-10-03T17:30:00.000Z"
   }
 ]
