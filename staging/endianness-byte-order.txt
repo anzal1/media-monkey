@@ -1,0 +1,26 @@
+Arjun opens his old console save file on his laptop.
+Instead of holding 1 coin, an unexpected endianness byte order mismatch gives his character 16,777,216 coins.
+The game did not crash, but the numbers no longer make sense. 🪙
+
+Endianness defines the sequence in which computer memory orders the individual bytes of a multi-byte word.
+
+Here is where it bites:
+→ Transferring binary files between x86 desktops and ARM devices.
+→ Parsing raw network packets directly into struct pointers.
+→ Reading shared game assets compiled on a different architecture.
+
+A 32-bit integer needs four bytes. Your laptop's x86 CPU is little-endian: it stores the least significant byte at the lowest memory address, placing the value 1 right at the start.
+
+Standard network protocols use big-endian: they place the most significant byte first, just like reading numbers left to right on paper.
+
+When a program reads those four little-endian bytes without converting them, that single unit moves from position zero straight into the high-order byte. A balance of 1 instantly interprets as 16,777,216.
+
+Forget to normalize your binary structures across boundaries and your data is silently multiplied by powers of 256.
+
+Next time you parse raw binary buffers over a socket, verify which end arrived first.
+
+Have you ever debugged a silent endianness mismatch in production?
+
+From the root, part 3. Follow for part 4.
+
+#endianness #lowlevel #systemsprogramming #networking #computerscience
