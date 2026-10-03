@@ -111,6 +111,14 @@ twice. Lucid means every sentence moves them forward.
    date, or a percentage. Rounded-but-true beats precise-and-fabricated.
 2. For each beat you must fill a `source` field naming a real, checkable anchor
    (a named effect, a named researcher, a known paper, a documented system).
+   Name a document only if it really exists under that title (the WhatsApp
+   Encryption Overview whitepaper, RFC 8446, the Postgres docs). Never make up
+   a plausible title like "WhatsApp Client Architecture Whitepaper".
+   The details that are most often wrong are exact algorithms, modes and
+   transports (AES-GCM vs AES-CBC, websocket vs a custom protocol). Name one
+   only if you are certain it is what that product uses; otherwise say what it
+   does ("a random key scrambles the photo") without naming it. Every script
+   is fact-checked against the web before it is used.
    If you cannot name one, the beat is not allowed to exist.
 3. No celebrities, no copyrighted characters, no movie or game references that
    need footage. Real product and service names ARE allowed and encouraged when
@@ -118,8 +126,11 @@ twice. Lucid means every sentence moves them forward.
    vocabulary, not a sponsorship.
 4. Each beat should map to ONE component of the system, in order, because the
    diagram on screen reveals a component per beat.
-5. The closing line earns a save: point at when they will need this ("next time
-   your p99 spikes", "next system design interview"). Never "stay curious".
+5. The closing line earns a save: point at the next time they will meet this,
+   in the same world as the opening moment. Everyday reels name the everyday
+   moment ("next time you tap send", "next time the OTP is late"); production
+   reels can name the dashboard or the interview ("next time your p99
+   spikes"). Never "stay curious".
 4. Nothing medical or diagnostic. No advice. Facts only.
 
 ## Format contract (110 to 150 seconds of speech, total)

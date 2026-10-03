@@ -405,6 +405,39 @@ export function validate(obj, topic, lang = 'en', opts = {}) {
  * @param {object} [opts] { model, log }
  * @returns {Promise<object>} validated script
  */
+/**
+ * Grounded fact check of the spoken claims and their sources. Returns a
+ * correction message for the writer, or null when the script is clean or the
+ * check itself could not run.
+ */
+export async function factCheck(script, { log = () => {} } = {}) {
+  const lines = script.beats.map((b, i) => `${i + 1}. ${b.text}  [source: ${b.source}]`).join('\n');
+  const prompt =
+    'You are a strict technical fact checker. Use web search. Below are the spoken beats of a short ' +
+    'explainer video, each with the source it claims. Find claims that are FALSE or stated with more ' +
+    'precision than the evidence supports (wrong algorithm or mode, wrong protocol, wrong number, a ' +
+    'product detail that is not documented), and sources that do not exist under that title. Ignore ' +
+    'simplifications and analogies that are fair for a general audience. Do not flag style.\n\n' +
+    `Hook: ${script.hook}\n${lines}\n\n` +
+    'Reply with ONLY a JSON object: {"issues":[{"beat":<number>,"claim":"...","problem":"...","fix":"what is actually true"}]}. ' +
+    'Empty list if everything holds.';
+  try {
+    const raw = await gemini({ prompt, tools: [{ google_search: {} }], temperature: 0.1, maxOutputTokens: 4096, timeoutMs: 90000 });
+    const m = raw.match(/\{[\s\S]*\}/);
+    const issues = m ? (JSON.parse(m[0]).issues || []) : [];
+    if (!issues.length) {
+      log('  fact check: clean');
+      return null;
+    }
+    const msg = issues.map((x) => `beat ${x.beat}: "${x.claim}" is wrong (${x.problem}); true: ${x.fix}`).join('; ');
+    log(`  fact check flagged: ${msg}`);
+    return msg + '. Rewrite those beats with the true facts, keep everything else.';
+  } catch (e) {
+    log(`  fact check skipped: ${e.message}`);
+    return null;
+  }
+}
+
 export async function writeScript(topic, opts = {}) {
   const model = opts.model || CONFIG.model;
   const lang = opts.lang || CONFIG.lang || 'en';
@@ -456,6 +489,14 @@ export async function writeScript(topic, opts = {}) {
       const parsed = JSON.parse(stripFence(raw));
       // the final attempt ships whatever it gets, within tolerance
       const script = validate(parsed, topic, lang, { lenientLength: attempt === ATTEMPTS, log, length: mode });
+      // A test reel said WhatsApp encrypts media with AES-GCM (it is CBC plus
+      // HMAC) and cited a whitepaper that does not exist. The format checks
+      // cannot catch that, so a grounded second read does. It can reject any
+      // attempt but the last, and its own failure never costs the slot.
+      if (attempt < ATTEMPTS) {
+        const problems = await factCheck(script, { log });
+        if (problems) throw new Error(`fact check: ${problems}`);
+      }
       script.lengthMode = mode;
       log(`  script ok on attempt ${attempt}: ${script.beats.length} beats, slug ${script.slug}`);
       return script;
