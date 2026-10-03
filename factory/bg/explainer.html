@@ -488,7 +488,7 @@
 
   /* ---- flow on the floor: ink wires on paper, tokens moving along them ---- */
   .f3 { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 540px 640px; }
-  .f3plane { position: absolute; left: 40px; top: 600px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
+  .f3plane { position: absolute; left: 20px; top: 560px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
   .f3svg { position: absolute; inset: 0; width: 1000px; height: 1000px; overflow: visible; }
   .f3svg path { fill: none; stroke-linecap: round; }
   .f3base { stroke: rgba(23,22,20,.16); stroke-width: 3; stroke-dasharray: 2 12; }
@@ -500,16 +500,21 @@
   .f3foot { position: absolute; left: -95px; top: -95px; width: 190px; height: 190px; border-radius: 30px;
     border: 1px solid rgba(23,22,20,.3); background: rgba(255,253,248,.55); }
   .f3fglow { position: absolute; inset: -1px; border-radius: 30px; border: 3px solid var(--accent); opacity: 0; }
-  .f3card { width: 240px; padding: 18px 18px 16px; border-radius: 22px; text-align: center;
+  .f3card { width: 270px; padding: 20px 18px 18px; border-radius: 22px; text-align: center;
     background: #fffdf8; border: 1px solid rgba(23,22,20,.55); box-shadow: 0 6px 0 #ddd7cb, 0 7px 0 rgba(23,22,20,.4), 0 30px 40px -12px rgba(60,45,25,.3); }
-  .f3card .ico { display: block; width: 50px; height: 50px; margin: 0 auto 10px; }
-  .f3card b { display: block; font: 700 29px Inter, sans-serif; letter-spacing: -.01em; }
-  .f3card small { display: block; margin-top: 5px; font: 400 19px 'JetBrains Mono', monospace; color: var(--mute); }
+  .f3card .ico { display: block; width: 58px; height: 58px; margin: 0 auto 10px; }
+  .f3card b { display: block; font: 700 36px Inter, sans-serif; letter-spacing: -.01em; }
+  .f3card small { display: block; margin-top: 6px; font: 400 22px 'JetBrains Mono', monospace; color: var(--mute); }
   .f3card .st { display: none; margin-top: 10px; font: 500 16px 'JetBrains Mono', monospace; letter-spacing: .14em; }
   .f3n.s-blocked .f3card, .f3n.s-dead .f3card { border-color: var(--bad); }
   .f3n.s-blocked .st, .f3n.s-dead .st, .f3n.s-busy .st { display: block; }
   .f3n.s-blocked .st { color: var(--bad); } .f3n.s-dead .st { color: #8a857c; } .f3n.s-busy .st { color: #b45309; }
   .f3n.s-dead .f3card { filter: grayscale(1); opacity: .6; }
+  .f3tok { overflow: hidden; border-radius: 4px; background: #f4f1ea;
+    box-shadow: 0 0 0 1px rgba(23,22,20,.7), 0 10px 12px -6px rgba(60,45,25,.42); }
+  .f3tok .himg { position: absolute; inset: 0; background-repeat: no-repeat; }
+  .f3tok .gly { position: absolute; inset: 0; opacity: 0; overflow: hidden; white-space: pre; text-align: center;
+    padding: 3px 1px; font: 700 12px/15px 'JetBrains Mono', monospace; color: var(--accent); }
   .f3edge { white-space: nowrap; font: 500 21px 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
 
   /* ---- the hero object: one thing that travels the whole reel ---- */
@@ -735,22 +740,25 @@
   /** flow on the floor: node positions on a 1000x1000 plane, zigzagging into depth */
   function f3Layout(n) {
     if (n <= 1) return [[500, 520]];
-    if (n === 2) return [[250, 560], [750, 460]];
-    return Array.from({ length: n }, (_, i) => [200 + (600 * i) / (n - 1), i % 2 ? 300 : 690]);
+    if (n === 2) return [[220, 560], [780, 460]];
+    return Array.from({ length: n }, (_, i) => [190 + (580 * i) / (n - 1), i % 2 ? 300 : 640]);
   }
-  const F3_TILT = 60;
+  const F3_TILT = 58;
+  // wires run along the front edge of each pad, in open floor in front of the cards
+  const F3_FRONT = 112;
 
   function flow3d(d, sc) {
     const nodes = d.nodes || [];
     const pts = f3Layout(nodes.length);
     let svg = '<svg class="f3svg" viewBox="0 0 1000 1000">';
+    const wp = pts.map((p) => [p[0], p[1] + F3_FRONT]);
     for (let i = 1; i < pts.length; i++) {
-      const [a, b] = [pts[i - 1], pts[i]];
+      const [a, b] = [wp[i - 1], wp[i]];
       const dd = `M${a[0]},${a[1]} L${b[0]},${b[1]}`;
       svg += `<path class="f3base" d="${dd}"/><path class="f3glo" d="${dd}"/><path class="f3core" d="${dd}"/>`;
       for (let j = 0; j < 3; j++) svg += '<circle class="f3pkh" r="20" opacity="0"/><circle class="f3pk" r="8" opacity="0"/>';
     }
-    svg += `<path class="f3all" d="M${pts.map((p) => p.join(',')).join(' L')}" stroke="none"/></svg>`;
+    svg += `<path class="f3all" d="M${wp.map((p) => p.join(',')).join(' L')}" stroke="none"/></svg>`;
     const cards = nodes.map((nd, i) => {
       const st = nd.state || 'ok';
       return `<div class="f3n s-${st}" data-i="${i}"${nd.becomes ? ` data-becomes="${nd.becomes}"` : ''} style="left:${pts[i][0]}px;top:${pts[i][1]}px">` +
@@ -758,14 +766,18 @@
         `<div class="f3card f3bb"><span class="ico">${icon(nd.kind)}</span><b>${esc(nd.label)}</b>` +
         (nd.sub ? `<small>${esc(nd.sub)}</small>` : '') + `<span class="st">${STATE_LABEL[st] || ''}</span></div></div>`;
     }).join('');
-    const mid = pts.length > 1 ? [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2] : pts[0];
-    const edge = d.edge ? `<div class="f3edge f3bb" data-x="${mid[0] + 40}" data-y="${mid[1] + 150}">${esc(d.edge)}</div>` : '';
+    const mid = wp.length > 1 ? [(wp[0][0] + wp[1][0]) / 2, (wp[0][1] + wp[1][1]) / 2] : wp[0];
+    const edge = d.edge && !(sc && sc.hero) ? `<div class="f3edge f3bb" data-x="${mid[0] + 30}" data-y="${mid[1] + 110}">${esc(d.edge)}</div>` : '';
     let hero = '';
     if (sc && sc.hero) {
       const g = heroGrid(sc.hero);
       const k = 230 / HW;
-      hero = `<div class="h-anchor f3bb" data-meta="0" data-tags="0" style="width:230px;height:${HH * k}px"></div>` +
-        Array.from({ length: g.n }, () => `<div class="h-slot f3bb" style="width:${g.tw * k * 0.5}px;height:${g.th * k * 0.5}px"></div>`).join('');
+      hero = `<div class="h-anchor f3bb" data-meta="0" data-tags="0" data-inplane="1" style="width:230px;height:${HH * k}px"></div>` +
+        Array.from({ length: g.n }, (_, j) => {
+          const q = k * 0.62, c = j % g.cols, r = Math.floor(j / g.cols);
+          const bg = `background-image:${heroArt(sc.hero).replace(/"/g, '&quot;')};background-size:${HW * q}px ${HH * q}px;background-position:${-c * g.tw * q}px ${-r * g.th * q}px`;
+          return `<div class="h-slot f3bb f3tok" style="width:${g.tw * q}px;height:${g.th * q}px;opacity:0"><div class="himg" style="${bg}"></div><div class="gly"></div></div>`;
+        }).join('');
     }
     return `<div class="f3"><div class="f3plane">${svg}${cards}${edge}${hero}</div></div>`;
   }
@@ -1578,7 +1590,19 @@
       const split = cur.p > 0.002;
       placeEl(H.whole, st.whole);
       H.whole.style.opacity = split ? 0 : 1;
-      H.tiles.forEach((t, j) => { placeEl(t, st.tiles[j]); t.style.opacity = split ? 1 : 0; });
+      // on the floor the packets hand over to tokens drawn inside the 3D plane,
+      // once the glide has landed, so the cards standing in front hide them
+      const inPlane = mine && split && B.hAnchor && B.hAnchor.dataset.inplane === '1';
+      const swap = inPlane ? (H.from ? clamp01((local - 0.9) / 0.15) : 1) : 0;
+      H.tiles.forEach((t, j) => { placeEl(t, st.tiles[j]); t.style.opacity = split ? (1 - swap).toFixed(3) : 0; });
+      if (B.hSlots) B.hSlots.forEach((sl, j) => {
+        if (!sl.classList.contains('f3tok')) return;
+        sl.style.opacity = (swap * vis * (sl.dataset.fade != null ? +sl.dataset.fade : 1)).toFixed(3);
+        const g2 = sl.lastChild, src = H.glys[j + 1];
+        if (src && g2.textContent !== src.textContent) g2.textContent = src.textContent;
+        g2.style.opacity = cur.e > 0.001 ? 1 : 0;
+        sl.firstChild.style.opacity = cur.e > 0.001 ? (1 - 0.86 * cur.e).toFixed(3) : '';
+      });
 
       // scramble: glyphs sweep across left to right and reshuffle ten times a second
       const e = cur.e;
@@ -1827,7 +1851,7 @@
     if (!B.f3) {
       const all = B.wrap.querySelector('.f3all');
       const nodes = [...B.wrap.querySelectorAll('.f3n')];
-      const pts = nodes.map((n) => [parseFloat(n.style.left), parseFloat(n.style.top)]);
+      const pts = nodes.map((n) => [parseFloat(n.style.left), parseFloat(n.style.top) + F3_FRONT]);
       const cum = [0];
       for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
       B.f3 = { plane: B.wrap.querySelector('.f3plane'), all, len: all.getTotalLength(), cum, pts, nodes,
@@ -1856,7 +1880,7 @@
     F.cards.forEach((c, i) => {
       const q = easeOut((local - 0.15 - i * 0.16) / 0.6);
       c.style.opacity = q.toFixed(3);
-      c.style.transform = `${bb} translateY(${(-26 + (1 - q) * 18).toFixed(1)}px)`;
+      c.style.transform = `translate3d(0, -92px, 0) ${bb} translateY(${(-6 + (1 - q) * 18).toFixed(1)}px)`;
       F.nodes[i].querySelector('.f3foot').style.opacity = q.toFixed(3);
     });
     if (F.edge) {
@@ -1872,17 +1896,21 @@
     // which node is active: the one the hero is passing, or the one named
     let glowAt = null;
     if (sc.hero && F.anchor) {
-      const prog = easeInOut(clamp01((local - 0.7) / Math.max(1.2, span * 0.72)));
-      // the train stops short of the last card so it never sits on its label
-      const L = (F.len - 90) * prog;
+      const prog = eio((local - 0.9) / Math.max(1.4, span * 0.8));
+      // the whole train runs into the last node and is absorbed there
+      const L = (F.len + F.slots.length * 44 + 60) * prog;
       const pt = (l) => F.all.getPointAtLength(Math.max(0, Math.min(F.len, l)));
-      const at = pt(L);
+      const at = pt(Math.min(L, F.len - 60));
       F.anchor.style.transform = `translate3d(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px, 0) ${bb}`;
       F.slots.forEach((s, j) => {
-        const p2 = pt(L - j * 46);
+        const lj = L - j * 44;
+        const p2 = pt(lj);
+        // a packet passes THROUGH a node: it fades going in and comes out the far side
+        const near = Math.min(...F.cum.map((c) => Math.abs(lj - c)));
+        s.dataset.fade = (lj > F.len - 30 ? 0 : clamp01((near - 25) / 40)).toFixed(3);
         s.style.transform = `translate3d(${p2.x.toFixed(1)}px, ${p2.y.toFixed(1)}px, 0) ${bb}`;
       });
-      glowAt = L;
+      glowAt = Math.min(L, F.len);
       F.glos.forEach((g, i) => {
         const inside = L > F.cum[i] + 5 && L < F.cum[i + 1] - 5;
         g.style.opacity = (inside ? 0.28 : 0).toString();
