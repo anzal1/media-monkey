@@ -902,11 +902,318 @@
           "id": "ai-50"
         }
       ]
+    },
+    "everyday": {
+      "title": "Behind the tap",
+      "pitch": "What really happens inside the everyday things everyone touches: sending a photo, tapping to pay, asking ChatGPT. Each episode opens on one ordinary moment a non-engineer has lived, then walks the real machinery behind it at full technical depth, and ends back on the moment. The concept line is the topic, never the hook: the hook is the moment itself. Each episode must stand alone for a new viewer.",
+      "curriculum": [
+        {
+          "module": "messaging",
+          "concept": "what actually happens when you send a photo on WhatsApp",
+          "angle": "the phone shrinks the photo, locks it with a fresh random key, uploads only the scrambled bytes to a media server, then sends the key and link inside an end-to-end encrypted message. The server never sees the picture",
+          "id": "everyday-01"
+        },
+        {
+          "module": "ai",
+          "concept": "what actually happens when you ask ChatGPT a question",
+          "angle": "your words are cut into tokens, the model reads them all at once in the prefill step, then writes the answer one token at a time using a KV cache, streamed to you over server-sent events, which is why text types out",
+          "id": "everyday-02"
+        },
+        {
+          "module": "payments",
+          "concept": "what actually happens when you pay with UPI",
+          "angle": "the app resolves the payee's VPA through NPCI's switch, your UPI PIN is encrypted on the phone and only your own bank can verify it, and NPCI coordinates a debit leg and a credit leg, with a collect request or QR as the entry point",
+          "id": "everyday-03"
+        },
+        {
+          "module": "payments",
+          "concept": "what actually happens when you tap a card to pay at a shop",
+          "angle": "NFC radio over a few centimetres, the chip signing the amount with a key that never leaves it to produce a one-time cryptogram (EMV contactless), so a copied card number is useless the next time",
+          "id": "everyday-04"
+        },
+        {
+          "module": "identity",
+          "concept": "what actually happens when you unlock your phone with Face ID",
+          "angle": "an infrared projector throws more than 30,000 invisible dots, an infrared camera reads the depth map, and a neural network compares it to a stored mathematical model inside the Secure Enclave, so the face data never leaves the chip",
+          "id": "everyday-05"
+        },
+        {
+          "module": "web",
+          "concept": "what actually happens when you type a URL and press enter",
+          "angle": "DNS resolution from resolver cache down to root, TLD and authoritative servers, then a TCP handshake, a TLS handshake that agrees an encryption key, an HTTP request, and the browser painting while the rest still downloads",
+          "id": "everyday-06"
+        },
+        {
+          "module": "streaming",
+          "concept": "what actually happens when you start a Netflix video",
+          "angle": "a popular title is usually already sitting on a cache server inside your ISP (Open Connect), cut into few-second chunks encoded at many bitrates, and the player starts low and climbs with adaptive bitrate streaming, which is why it starts instantly and then sharpens",
+          "id": "everyday-07"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when your phone gets hot",
+          "angle": "power rises with voltage squared times frequency, so a busy chip burns far more than an idle one, there is no fan to remove heat, and the operating system throttles the clock speed (thermal throttling) to protect the battery, and charging adds its own conversion heat",
+          "id": "everyday-08"
+        },
+        {
+          "module": "identity",
+          "concept": "what actually happens when you wait for an OTP SMS",
+          "angle": "the server generates a random six digit code with an expiry and stores only a hash, hands the text to an aggregator, then the carrier's SMSC stores and forwards it, and queues, sender ID registration (DLT in India) and weak signal explain the late ones",
+          "id": "everyday-09"
+        },
+        {
+          "module": "payments",
+          "concept": "what actually happens when you scan a QR code",
+          "angle": "a QR code is just a grid of black and white modules, the three big corner squares tell the camera its orientation, Reed-Solomon error correction restores up to about 30 percent of a damaged code at its highest level, and a payment QR holds a plain text upi:// link",
+          "id": "everyday-10"
+        },
+        {
+          "module": "security",
+          "concept": "what actually happens when you log in with your password",
+          "angle": "the site never stores your password, it stores a salted slow hash (bcrypt or Argon2), hashes what you type and compares, and the slowness is on purpose so a stolen database costs attackers years of guessing",
+          "id": "everyday-11"
+        },
+        {
+          "module": "security",
+          "concept": "what actually happens when you send an end-to-end encrypted message",
+          "angle": "each phone holds a private key that never leaves it, a Diffie-Hellman key agreement lets two phones share a secret through the server without the server learning it, and a ratchet makes a new key for every message so a stolen key cannot read the past",
+          "id": "everyday-12"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when you switch between Wi-Fi and mobile data",
+          "angle": "Wi-Fi shares free unlicensed radio bands and every device listens before talking (CSMA/CA), while a cell tower assigns each phone scheduled slots on licensed spectrum, so crowded Wi-Fi collides and the phone's handoff logic picks which link wins",
+          "id": "everyday-13"
+        },
+        {
+          "module": "social",
+          "concept": "what actually happens when you open the Instagram feed",
+          "angle": "a candidate generator pulls hundreds of recent posts from accounts you follow, a ranking model scores each, the app fetches a cursor-paginated page and prefetches images from a CDN, with fan-out on write or on read depending on how many followers an account has",
+          "id": "everyday-14"
+        },
+        {
+          "module": "maps",
+          "concept": "what actually happens when an Uber matches you with a driver",
+          "angle": "drivers' phones ping their location every few seconds into a geospatial index (Uber open sourced H3 hexagons for this), and dispatch picks by estimated arrival time over a road network rather than straight line distance, batching requests to match well",
+          "id": "everyday-15"
+        },
+        {
+          "module": "maps",
+          "concept": "what actually happens when your phone finds its location from GPS",
+          "angle": "about 30 satellites 20,200 km up broadcast the time from atomic clocks, your phone only listens and measures how late each signal arrives, and it needs at least four satellites, three for position and one to fix its own cheap clock, with relativity corrections baked in",
+          "id": "everyday-16"
+        },
+        {
+          "module": "booking",
+          "concept": "what actually happens when two people book the last seat at once",
+          "angle": "a race condition: both read one seat free, both write booked, and the fix is a database row lock or an atomic compare and swap, or a short hold with a timer, so the second tap loses cleanly",
+          "id": "everyday-17"
+        },
+        {
+          "module": "search",
+          "concept": "what actually happens when you type into Google and autocomplete appears",
+          "angle": "every keystroke fires a request (debounced so it does not fire on each letter), and the suggestions come, in the standard design, from a prefix index such as a trie that stores the most popular completions per prefix, served from the nearest edge in tens of milliseconds",
+          "id": "everyday-18"
+        },
+        {
+          "module": "audio",
+          "concept": "what actually happens when you press shuffle on Spotify",
+          "angle": "a truly random shuffle (Fisher-Yates) clumps and repeats artists, which feels broken, so Spotify's engineers have written about spreading songs by the same artist evenly with a little random jitter, trading true randomness for what people think random sounds like",
+          "id": "everyday-19"
+        },
+        {
+          "module": "streaming",
+          "concept": "what actually happens when a video call freezes",
+          "angle": "WebRTC sends audio and video over UDP because a late packet is worthless, a jitter buffer reorders and smooths arrival, congestion control cuts the bitrate when packets drop, and a selective forwarding unit relays streams, with round trip delay past about 150 ms feeling like talking over each other",
+          "id": "everyday-20"
+        },
+        {
+          "module": "web",
+          "concept": "what actually happens when a website crashes at the start of a sale",
+          "angle": "the cache is cold and thousands of identical requests miss at once (a thundering herd), the database connection pool runs dry, autoscaling takes minutes to boot servers, and the fix is a CDN, a queue or waiting room, and admission control",
+          "id": "everyday-21"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when you get a push notification while the app is closed",
+          "angle": "the phone keeps one persistent connection to Apple's APNs or Google's FCM for all apps, the app's server sends a small message to that service addressed by a device token, and the operating system wakes the app only if it needs to",
+          "id": "everyday-22"
+        },
+        {
+          "module": "payments",
+          "concept": "what actually happens when your bank app shows a strange balance",
+          "angle": "available balance and ledger balance differ because a card swipe places a hold (authorisation) days before the real money moves in settlement, the double-entry ledger posts in batches, and the app shows a view that is only eventually consistent",
+          "id": "everyday-23"
+        },
+        {
+          "module": "messaging",
+          "concept": "what actually happens when you delete a message for everyone",
+          "angle": "a delete control message is sent to the other phone and its client removes the text, but the original may live on in notification previews, backups and in the database as a tombstone until compaction actually reclaims the space",
+          "id": "everyday-24"
+        },
+        {
+          "module": "identity",
+          "concept": "what actually happens when you reset a password by email",
+          "angle": "the server makes a random single use token with at least 128 bits, stores only its hash with a short expiry, emails the link over SMTP signed with DKIM and SPF so it is not spam, and answers identically whether the account exists, so attackers cannot test emails",
+          "id": "everyday-25"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when you turn on dark mode to save battery",
+          "angle": "it only saves power on OLED screens where every pixel makes its own light and a black pixel is simply off, while an LCD keeps a backlight on regardless, so the saving depends on the panel and how much of the screen is truly black",
+          "id": "everyday-26"
+        },
+        {
+          "module": "audio",
+          "concept": "what actually happens when you pair Bluetooth earbuds",
+          "angle": "the earbuds broadcast that they are discoverable, the two devices run a Secure Simple Pairing key exchange (elliptic curve Diffie-Hellman) and store a link key, then hop across 79 channels about 1,600 times a second to dodge Wi-Fi interference, with a codec such as SBC or AAC compressing the audio",
+          "id": "everyday-27"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when autocorrect fixes your typo",
+          "angle": "the keyboard generates candidate words by edit distance and by which keys sit next to each other, then a language model ranks them using the words before, which is why it fixes some typos confidently and mangles names it has never seen",
+          "id": "everyday-28"
+        },
+        {
+          "module": "security",
+          "concept": "what actually happens when you click I am not a robot",
+          "angle": "the checkbox is not the test, the real signal is behaviour: mouse path, timing, cookies and IP reputation scored by a model (reCAPTCHA v3 returns a score from 0.0 to 1.0), and the acronym stands for Completely Automated Public Turing test to tell Computers and Humans Apart",
+          "id": "everyday-29"
+        },
+        {
+          "module": "web",
+          "concept": "what actually happens when you sync photos to Google Photos or iCloud",
+          "angle": "the phone hashes each photo so duplicates can be skipped, uploads in resumable chunks when on Wi-Fi and charging, and a sync token tells every other device exactly which changes it has not seen yet",
+          "id": "everyday-30"
+        },
+        {
+          "module": "web",
+          "concept": "what actually happens when you resume a download after the connection drops",
+          "angle": "TCP is only a stream so the app records how many bytes arrived, then sends an HTTP Range request and the server replies 206 Partial Content, with an ETag proving it is still the same file, and download managers fetch several ranges in parallel",
+          "id": "everyday-31"
+        },
+        {
+          "module": "payments",
+          "concept": "what actually happens when you pay with Apple Pay or Google Pay",
+          "angle": "the real card number is replaced by a device account number (tokenisation) stored on the device, in a secure element on many phones, each payment adds a one-time cryptogram, and the shop never sees your card number, so a breach at the shop leaks nothing reusable",
+          "id": "everyday-32"
+        },
+        {
+          "module": "maps",
+          "concept": "what actually happens when a maps app predicts your arrival time with traffic",
+          "angle": "the road network is a graph with travel times as edge weights, live speeds come from anonymous phone locations, and a shortest path search finds the route, with routing engines using precomputed shortcuts (contraction hierarchies) to answer across a country in milliseconds",
+          "id": "everyday-33"
+        },
+        {
+          "module": "social",
+          "concept": "what actually happens when YouTube picks your next video",
+          "angle": "a first model narrows millions of videos to a few hundred candidates using embeddings, a second heavier model ranks them by predicted watch time, which is a very different goal from predicted clicks, and it is a two stage funnel because ranking everything is too slow",
+          "id": "everyday-34"
+        },
+        {
+          "module": "audio",
+          "concept": "what actually happens when Shazam names a song",
+          "angle": "the audio is turned into a spectrogram, only the loudest peaks are kept as a constellation, pairs of peaks are hashed with their time gap into a fingerprint, and the match is the song whose hashes line up at a consistent time offset, which is why it survives a noisy bar",
+          "id": "everyday-35"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when you AirDrop a file to a nearby phone",
+          "angle": "Bluetooth Low Energy advertisements find nearby devices, then the two phones set up a direct peer to peer Wi-Fi link (AWDL) that needs no router, and the file travels over TLS between them without touching the internet",
+          "id": "everyday-36"
+        },
+        {
+          "module": "ai",
+          "concept": "what actually happens when you wake a voice assistant",
+          "angle": "a tiny always-on model on the device listens only for the wake word, and only after it fires does the audio stream to servers for speech recognition and intent parsing, so it is not recording and uploading everything you say",
+          "id": "everyday-37"
+        },
+        {
+          "module": "web",
+          "concept": "what actually happens when you press send on an email",
+          "angle": "the mail server looks up the recipient domain's MX record in DNS, hands the message hop to hop with SMTP in a store and forward chain, the receiver checks SPF, DKIM and DMARC to decide if it is spoofed, and the recipient fetches it later with IMAP",
+          "id": "everyday-38"
+        },
+        {
+          "module": "payments",
+          "concept": "what actually happens when you withdraw cash at an ATM",
+          "angle": "the PIN is encrypted into a PIN block inside the keypad, travels through the card network's switch to your bank's hardware security module (HSM), which verifies it without it ever appearing in plain form, and the bank's authorisation reply is what makes the machine dispense",
+          "id": "everyday-39"
+        },
+        {
+          "module": "social",
+          "concept": "what actually happens when you upload a video to Instagram",
+          "angle": "the phone compresses it, sends it in resumable chunks, then the servers transcode it into a ladder of resolutions and bitrates and codecs (H.264 and newer ones such as AV1), cut a thumbnail, and push the chunks to CDN edge caches before it appears",
+          "id": "everyday-40"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when you take a night photo on your phone",
+          "angle": "the camera quickly shoots a burst of short exposures instead of one long one, aligns them to cancel hand shake, and merges them to average out sensor noise (as in Google's HDR+ research), so a tiny sensor behaves like a bigger one",
+          "id": "everyday-41"
+        },
+        {
+          "module": "social",
+          "concept": "what actually happens when a million people like the same post",
+          "angle": "one counter row becomes a hot row everyone fights to lock, so counters are sharded into many sub-counters and summed on read, writes are batched, and the number you see is eventually consistent rather than exact in the moment",
+          "id": "everyday-42"
+        },
+        {
+          "module": "maps",
+          "concept": "what actually happens when you track a food delivery on a map",
+          "angle": "the rider's phone pushes a GPS ping every few seconds, the server sends it to your phone over a long-lived WebSocket instead of you polling, map matching snaps it to a road, and the app animates between pings so the dot looks smooth",
+          "id": "everyday-43"
+        },
+        {
+          "module": "security",
+          "concept": "what actually happens when you enter the wrong phone passcode five times",
+          "angle": "your passcode is tangled with a key fused into the chip (the UID) through a deliberately slow key derivation of about 80 milliseconds a guess, so guessing must happen on the phone, and the operating system adds escalating delays and can erase after ten tries",
+          "id": "everyday-44"
+        },
+        {
+          "module": "social",
+          "concept": "what actually happens when an ad follows something you just looked at",
+          "angle": "before the page finishes loading an auction runs in about 100 milliseconds: your device's advertising ID goes into a bid request (OpenRTB) sent to many bidders, who answer with a price, and the highest wins",
+          "id": "everyday-45"
+        },
+        {
+          "module": "payments",
+          "concept": "what actually happens when you drive through a toll with FASTag",
+          "angle": "a passive UHF RFID tag on the windscreen has no battery and is powered by the reader's own radio signal, replying with an ID that is looked up and debited from a linked prepaid wallet or bank account through NPCI's NETC system, in a fraction of a second",
+          "id": "everyday-46"
+        },
+        {
+          "module": "phone",
+          "concept": "what actually happens when an alarm rings on a sleeping phone",
+          "angle": "a low-power real-time clock keeps ticking while the processor sleeps, the operating system programs it with the alarm time, and when it fires it raises a hardware interrupt that wakes the CPU, even when Android Doze or battery saver defers every other background job",
+          "id": "everyday-47"
+        },
+        {
+          "module": "messaging",
+          "concept": "what actually happens when you paste a link into a chat and see a preview",
+          "angle": "someone's server or phone fetches the page and reads its Open Graph meta tags (og:title, og:image, og:description), downloads the image, and caches the result, which is also why a preview can be stale after the page changes",
+          "id": "everyday-48"
+        },
+        {
+          "module": "web",
+          "concept": "what actually happens when two people type in the same document",
+          "angle": "two edits arrive in different order on two machines, so Google Docs style editors use operational transformation (and others use CRDTs) to adjust each edit against the other so every copy converges to the same text without locking the document",
+          "id": "everyday-49"
+        },
+        {
+          "module": "web",
+          "concept": "what actually happens when you run an internet speed test",
+          "angle": "the test opens several parallel TCP connections to a nearby server, because one connection is held back by TCP slow start, measures throughput after the ramp up, and separately times a tiny round trip to report ping, which is why one number can mislead",
+          "id": "everyday-50"
+        }
+      ]
     }
   },
   "tracks": {
-    "root": 0.4,
-    "ai": 0.3,
-    "production": 0.3
+    "everyday": 0.4,
+    "root": 0.25,
+    "ai": 0.2,
+    "production": 0.15
   }
 }

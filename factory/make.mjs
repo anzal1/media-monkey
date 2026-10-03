@@ -50,7 +50,7 @@ function parseArgs(argv) {
     else if (v === '--voice') a.voice = argv[++i];
     else if (v === '--no-live') a.live = false;
     else if (v === '--dry') a.dry = true;
-    else if (v === '--track') a.track = argv[++i];        // root | ai | production
+    else if (v === '--track') a.track = argv[++i];        // everyday | root | ai | production
     else if (v === '--length') a.length = argv[++i];      // tight | deep
     else if (!v.startsWith('--')) a.topics.push(v);
   }

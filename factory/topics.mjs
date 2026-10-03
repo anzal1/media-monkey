@@ -264,7 +264,8 @@ export async function supplyTopics(n = 1, opts = {}) {
 }
 
 /* ------------------------------------------------------------------------ *
- * Tracks. Every run belongs to one of three:
+ * Tracks. Every run belongs to one of four:
+ *   everyday    "Behind the tap": what happens inside things everyone touches
  *   root        "From the root": CS fundamentals in order, textbook vs machine
  *   ai          AI system design, built up from tokens to full designs
  *   production  the original failure-mode reels, by category
@@ -407,12 +408,16 @@ export async function nextTopic(opts = {}) {
   return withLen(await nextTopicFor(track, opts, log));
 }
 
+// series tracks and the category their reels are filed under in history
+const SERIES_CATEGORY = { root: 'fundamentals', ai: 'ai-systems', everyday: 'everyday' };
+
 async function nextTopicFor(track, opts, log) {
-  if (track === 'root' || track === 'ai') {
+  if (SERIES_CATEGORY[track]) {
     const ep = nextEpisode(track);
+    if (!ep) throw new Error(`series "${track}" has no unpublished episodes left; add to factory/topics.json`);
     log(`  episode: ${ep.seriesTitle} #${ep.number}, ${ep.module}: ${ep.concept}`);
     return {
-      topic: ep.concept, source: 'series', track, category: track === 'ai' ? 'ai-systems' : 'fundamentals',
+      topic: ep.concept, source: 'series', track, category: SERIES_CATEGORY[track],
       episodeId: ep.id, series: ep,
     };
   }
