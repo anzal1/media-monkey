@@ -1,0 +1,574 @@
+[
+  {
+    "slug": "cat-photo",
+    "file": "cat-photo.webp",
+    "tags": [
+      "cat",
+      "pet",
+      "photo",
+      "image",
+      "whatsapp",
+      "share",
+      "upload",
+      "jpeg",
+      "compression",
+      "camera"
+    ],
+    "kind": "photo",
+    "aspect": "4:3",
+    "w": 512,
+    "h": 382
+  },
+  {
+    "slug": "dog-photo",
+    "file": "dog-photo.webp",
+    "tags": [
+      "dog",
+      "pet",
+      "photo",
+      "image",
+      "share",
+      "instagram",
+      "feed",
+      "upload",
+      "camera"
+    ],
+    "kind": "photo",
+    "aspect": "4:3",
+    "w": 512,
+    "h": 382
+  },
+  {
+    "slug": "beach-selfie",
+    "file": "beach-selfie.webp",
+    "tags": [
+      "selfie",
+      "beach",
+      "holiday",
+      "photo",
+      "image",
+      "friends",
+      "share",
+      "story",
+      "camera",
+      "face"
+    ],
+    "kind": "photo",
+    "aspect": "4:3",
+    "w": 512,
+    "h": 382
+  },
+  {
+    "slug": "mountain-photo",
+    "file": "mountain-photo.webp",
+    "tags": [
+      "mountain",
+      "landscape",
+      "travel",
+      "photo",
+      "image",
+      "wallpaper",
+      "trip",
+      "nature",
+      "camera"
+    ],
+    "kind": "photo",
+    "aspect": "4:3",
+    "w": 512,
+    "h": 382
+  },
+  {
+    "slug": "city-night",
+    "file": "city-night.webp",
+    "tags": [
+      "city",
+      "skyline",
+      "night",
+      "photo",
+      "image",
+      "lights",
+      "travel",
+      "urban",
+      "video"
+    ],
+    "kind": "photo",
+    "aspect": "4:3",
+    "w": 512,
+    "h": 382
+  },
+  {
+    "slug": "birthday-cake",
+    "file": "birthday-cake.webp",
+    "tags": [
+      "birthday",
+      "cake",
+      "party",
+      "celebration",
+      "reminder",
+      "calendar",
+      "gift",
+      "wish"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "concert-ticket",
+    "file": "concert-ticket.webp",
+    "tags": [
+      "ticket",
+      "concert",
+      "event",
+      "booking",
+      "queue",
+      "sold out",
+      "seat",
+      "music",
+      "barcode"
+    ],
+    "kind": "document",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "receipt",
+    "file": "receipt.webp",
+    "tags": [
+      "receipt",
+      "bill",
+      "payment",
+      "shopping",
+      "checkout",
+      "order",
+      "invoice",
+      "transaction",
+      "ledger"
+    ],
+    "kind": "document",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "credit-card",
+    "file": "credit-card.webp",
+    "tags": [
+      "card",
+      "credit card",
+      "payment",
+      "bank",
+      "tap",
+      "checkout",
+      "fraud",
+      "contactless",
+      "money"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "qr-code",
+    "file": "qr-code.webp",
+    "tags": [
+      "qr",
+      "upi",
+      "scan",
+      "payment",
+      "shop",
+      "pay",
+      "india",
+      "merchant",
+      "code"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "coin-stack",
+    "file": "coin-stack.webp",
+    "tags": [
+      "coins",
+      "money",
+      "savings",
+      "balance",
+      "transfer",
+      "bank",
+      "interest",
+      "account",
+      "ledger"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "game-inventory",
+    "file": "game-inventory.webp",
+    "tags": [
+      "game",
+      "inventory",
+      "coins",
+      "items",
+      "loot",
+      "player",
+      "save",
+      "multiplayer",
+      "gaming",
+      "trade"
+    ],
+    "kind": "screen",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "song-cover",
+    "file": "song-cover.webp",
+    "tags": [
+      "song",
+      "music",
+      "album",
+      "cover",
+      "spotify",
+      "streaming",
+      "playlist",
+      "audio",
+      "vinyl"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "movie-poster",
+    "file": "movie-poster.webp",
+    "tags": [
+      "movie",
+      "film",
+      "poster",
+      "netflix",
+      "streaming",
+      "cinema",
+      "video",
+      "recommendation",
+      "watch"
+    ],
+    "kind": "document",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "map-route",
+    "file": "map-route.webp",
+    "tags": [
+      "map",
+      "route",
+      "gps",
+      "location",
+      "pin",
+      "navigation",
+      "uber",
+      "delivery",
+      "eta",
+      "directions"
+    ],
+    "kind": "screen",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "delivery-bag",
+    "file": "delivery-bag.webp",
+    "tags": [
+      "food",
+      "delivery",
+      "order",
+      "bag",
+      "swiggy",
+      "zomato",
+      "takeaway",
+      "restaurant",
+      "rider"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "parcel-box",
+    "file": "parcel-box.webp",
+    "tags": [
+      "parcel",
+      "package",
+      "box",
+      "shipping",
+      "order",
+      "amazon",
+      "delivery",
+      "warehouse",
+      "tracking"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "passport",
+    "file": "passport.webp",
+    "tags": [
+      "passport",
+      "identity",
+      "id",
+      "travel",
+      "verification",
+      "kyc",
+      "login",
+      "auth",
+      "document"
+    ],
+    "kind": "document",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "calendar-invite",
+    "file": "calendar-invite.webp",
+    "tags": [
+      "calendar",
+      "invite",
+      "meeting",
+      "event",
+      "schedule",
+      "time",
+      "reminder",
+      "timezone",
+      "sync"
+    ],
+    "kind": "screen",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "document-page",
+    "file": "document-page.webp",
+    "tags": [
+      "document",
+      "page",
+      "file",
+      "docs",
+      "pdf",
+      "edit",
+      "collaboration",
+      "text",
+      "save"
+    ],
+    "kind": "document",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "spreadsheet",
+    "file": "spreadsheet.webp",
+    "tags": [
+      "spreadsheet",
+      "table",
+      "rows",
+      "columns",
+      "database",
+      "excel",
+      "data",
+      "sql",
+      "records"
+    ],
+    "kind": "screen",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "chat-sticker",
+    "file": "chat-sticker.webp",
+    "tags": [
+      "sticker",
+      "chat",
+      "emoji",
+      "message",
+      "whatsapp",
+      "reaction",
+      "fun",
+      "send",
+      "meme"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "fitness-ring",
+    "file": "fitness-ring.webp",
+    "tags": [
+      "fitness",
+      "health",
+      "watch",
+      "steps",
+      "rings",
+      "sensor",
+      "wearable",
+      "activity",
+      "heart"
+    ],
+    "kind": "screen",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "weather-card",
+    "file": "weather-card.webp",
+    "tags": [
+      "weather",
+      "forecast",
+      "rain",
+      "sun",
+      "cloud",
+      "widget",
+      "app",
+      "prediction",
+      "temperature"
+    ],
+    "kind": "screen",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "boarding-pass",
+    "file": "boarding-pass.webp",
+    "tags": [
+      "flight",
+      "boarding pass",
+      "plane",
+      "travel",
+      "airport",
+      "ticket",
+      "booking",
+      "seat",
+      "checkin"
+    ],
+    "kind": "document",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "shopping-cart",
+    "file": "shopping-cart.webp",
+    "tags": [
+      "cart",
+      "shopping",
+      "checkout",
+      "ecommerce",
+      "order",
+      "sale",
+      "basket",
+      "stock",
+      "buy"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "lock-key",
+    "file": "lock-key.webp",
+    "tags": [
+      "lock",
+      "key",
+      "security",
+      "encryption",
+      "password",
+      "auth",
+      "secret",
+      "privacy",
+      "https"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "plant",
+    "file": "plant.webp",
+    "tags": [
+      "plant",
+      "growth",
+      "home",
+      "nature",
+      "sensor",
+      "watering",
+      "calm",
+      "garden"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "coffee-cup",
+    "file": "coffee-cup.webp",
+    "tags": [
+      "coffee",
+      "cafe",
+      "morning",
+      "order",
+      "queue",
+      "barista",
+      "cup",
+      "break",
+      "drink"
+    ],
+    "kind": "object",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  },
+  {
+    "slug": "handwritten-note",
+    "file": "handwritten-note.webp",
+    "tags": [
+      "note",
+      "handwriting",
+      "letter",
+      "message",
+      "paper",
+      "reminder",
+      "ocr",
+      "memo",
+      "sticky"
+    ],
+    "kind": "document",
+    "aspect": "1:1",
+    "w": 512,
+    "h": 512
+  }
+]
