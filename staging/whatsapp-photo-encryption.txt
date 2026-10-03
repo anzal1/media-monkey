@@ -1,0 +1,27 @@
+Aisha taps send on a photo of her cat.
+Before her brother's phone buzzes, WhatsApp media encryption turns the image into scrambled static.
+The server holding the file cannot see a single pixel.
+
+WhatsApp media encryption is a two-channel architecture that separates encrypted media storage from end-to-end encrypted key delivery.
+
+Here is where it bites:
+→ Storing media directly inside an encrypted chat message would choke the message broker.
+→ Sending unencrypted files to a media server lets anyone with server access view private photos.
+→ Sharing one symmetric key across multiple uploads allows replay attacks.
+
+1. Aisha's device compresses the image locally.
+2. The phone generates two ephemeral 32-byte keys: one for AES-256 encryption in CBC mode, and one for HMAC-SHA256 integrity.
+3. The phone encrypts the image and uploads the ciphertext to a media storage blob server.
+4. The blob store returns an ordinary URL pointer to the uploaded file.
+5. The phone bundles that URL, the keys, and a SHA-256 hash into an end-to-end encrypted message using the Double Ratchet Algorithm.
+6. The brother's phone decrypts the text payload, fetches the ciphertext from the URL, verifies the HMAC, and decrypts the pixels.
+
+Because the blob store never receives the keys, a database breach on the media CDN yields only unreadable binary noise.
+
+Next time you tap send on a photo, remember the server only holds the locked box.
+
+Behind the tap, part 1. Follow for part 2.
+
+Would you design large media uploads with separate blob storage, or route everything through peer-to-peer tunnels?
+
+#cryptography #whatsapp #systemdesign #infosec #softwareengineering
