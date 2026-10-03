@@ -421,15 +421,32 @@ export async function factCheck(script, { log = () => {} } = {}) {
     'source only if no such document exists at all; a loose or descriptive title for a real document ' +
     '(for example "RFC 1700 network byte order") is fine. Mark each issue with kind "claim" or "source".\n\n' +
     `Hook: ${script.hook}\n${lines}\n\n` +
-    'Reply with ONLY a JSON object: {"issues":[{"beat":<number>,"kind":"claim|source","claim":"...","problem":"...","fix":"what is actually true"}]}. ' +
-    'Empty list if everything holds.';
+    // Line format, not JSON: grounded replies come back as prose-wrapped text,
+    // and a JSON parse error once let an AES-GCM claim through unchecked.
+    'Reply with one line per issue and nothing else, exactly:\n' +
+    'ISSUE | <beat number> | <claim or source> | <the wrong claim> | <what is actually true>\n' +
+    'If everything holds, reply with the single word CLEAN.';
+  let all = null;
+  for (let tries = 0; tries < 2 && all === null; tries++) {
+    try {
+      const raw = await gemini({ prompt, tools: [{ google_search: {} }], temperature: 0.1, maxOutputTokens: 4096, timeoutMs: 90000 });
+      const rows = raw.split('\n').map((l) => l.trim()).filter((l) => /^ISSUE\s*\|/i.test(l))
+        .map((l) => l.split('|').map((x) => x.trim()))
+        .filter((c) => c.length >= 5)
+        .map(([, beat, kind, claim, ...fix]) => ({ beat, kind: /source/i.test(kind) ? 'source' : 'claim', claim, problem: 'incorrect', fix: fix.join(' | ') }));
+      if (rows.length || /\bCLEAN\b/.test(raw)) all = rows;
+    } catch (e) {
+      log(`  fact check try ${tries + 1} failed: ${e.message}`);
+    }
+  }
+  if (all === null) {
+    log('  fact check skipped: no usable answer');
+    return null;
+  }
   try {
-    const raw = await gemini({ prompt, tools: [{ google_search: {} }], temperature: 0.1, maxOutputTokens: 4096, timeoutMs: 90000 });
-    const m = raw.match(/\{[\s\S]*\}/);
-    const all = m ? (JSON.parse(m[0]).issues || []) : [];
     // sources are never shown to the viewer, so a bad one is logged, not fatal;
     // rejecting on a source title once cost a whole run
-    for (const x of all.filter((i) => i.kind === 'source')) log(`  fact check, source note: beat ${x.beat}: ${x.problem}`);
+    for (const x of all.filter((i) => i.kind === 'source')) log(`  fact check, source note: beat ${x.beat}: ${x.fix}`);
     const issues = all.filter((i) => i.kind !== 'source');
     if (!issues.length) {
       log('  fact check: clean');
