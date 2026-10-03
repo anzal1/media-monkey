@@ -24,8 +24,8 @@ import { fileURLToPath } from 'node:url';
 import { writeScript, segmentsOf, slugify } from './script.mjs';
 import { synthSegments } from './tts.mjs';
 import { assemble } from './assemble.mjs';
-import { supplyTopics, appendHistory, nextTopic } from './topics.mjs';
-import { writeScenes } from './explainer/scenes.mjs';
+import { supplyTopics, appendHistory, nextTopic, readHistory } from './topics.mjs';
+import { writeScenes, loadArt } from './explainer/scenes.mjs';
 import { renderExplainer } from './explainer/render.mjs';
 import { probeSummary, firstFrameInk } from './ffmpeg.mjs';
 
@@ -114,6 +114,7 @@ async function makeOne(topicEntry, args, index, count) {
   });
 
   let bg;
+  let artSlug = null;
   {
     // The scene IS the content here, so it replaces the background entirely and
     // is timed to the narration rather than looped under it.
@@ -125,8 +126,12 @@ async function makeOne(topicEntry, args, index, count) {
       episode: 'THE PROD MONKEY',
       handle: CONFIG.handle || '',
       theme: args.theme === 'diorama' ? 'diorama' : '',
+      // the house art library, minus the pictures the last ten reels already used
+      art: loadArt(),
+      recentArt: readHistory().slice(-10).map((h) => h.art).filter(Boolean),
       log,
     });
+    artSlug = board.artSlug || null;
     bg = await renderExplainer({
       board,
       segments,
@@ -175,6 +180,7 @@ async function makeOne(topicEntry, args, index, count) {
     track: topicEntry.track || 'production', category: topicEntry.category || null,
     episodeId: topicEntry.episodeId || null, length: script.lengthMode || null,
     seconds: +Number(probe.format.duration).toFixed(1), lang: args.lang,
+    ...(artSlug ? { art: artSlug } : {}),
   });
 
   const secs = (Date.now() - t0) / 1000;

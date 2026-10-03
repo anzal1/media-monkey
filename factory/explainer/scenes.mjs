@@ -14,7 +14,43 @@
  *      degrades to a plain statement scene built from its own text, because a
  *      slightly duller scene is always better than a lost reel.
  */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { gemini } from '../llm.mjs';
+
+const ART_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'assets', 'art');
+/** The house art library: [{slug, file, tags, kind, aspect}], or [] while it does not exist. */
+export function loadArt() {
+  try {
+    const list = JSON.parse(fs.readFileSync(path.join(ART_DIR, 'index.json'), 'utf8'));
+    return (Array.isArray(list) ? list : []).filter((a) => a && a.slug && a.file && fs.existsSync(path.join(ART_DIR, a.file)));
+  } catch { return []; }
+}
+// hero kinds that are pictures; numbers, rows and messages print their own text
+const ART_KINDS = ['photo', 'card', 'file', 'packet'];
+
+/**
+ * The hero's picture: the planner's pick when it exists and was not used by
+ * one of the last reels, otherwise the unused entry whose tags best match the
+ * story. Returns null when there is no library or the hero is not a picture.
+ */
+export function pickArt(library, hero, words, recent = []) {
+  if (!library.length || !hero || !ART_KINDS.includes(hero.kind)) return null;
+  const avoid = new Set(recent);
+  const ok = library.filter((a) => !avoid.has(a.slug));
+  const pool = ok.length ? ok : library;
+  const chosen = pool.find((a) => a.slug === hero.art);
+  if (chosen) return chosen;
+  const bag = new Set(wordsOfText(words.join(' ')));
+  const want = hero.kind === 'photo' ? 'photo' : hero.kind === 'file' ? 'document' : 'object';
+  let best = null, bestScore = -1;
+  for (const a of pool) {
+    const score = (a.tags || []).filter((t) => bag.has(String(t).toLowerCase())).length * 2 + (a.kind === want ? 1 : 0);
+    if (score > bestScore) { best = a; bestScore = score; }
+  }
+  return best;
+}
 
 /** The closed menu. Adding a type here means adding a renderer in explainer.html. */
 export const SCENE_TYPES = ['flow', 'compare', 'window', 'card', 'list', 'stat', 'chart', 'diff', 'note', 'sequence', 'cells', 'tree', 'stack', 'code', 'stack3d', 'phone'];
@@ -408,7 +444,7 @@ export function normaliseScene(raw, fallbackHeadline, ctx = {}) {
   }
   if (world) {
     const hero = normaliseHero(raw.hero);
-    if (hero) out.hero = hero;
+    if (hero) { delete hero.art; out.hero = hero; }   // the picture is chosen once, for the whole reel
   }
   return out;
 }
@@ -556,6 +592,8 @@ export function normaliseHero(h) {
   }
   const unit = clip(h.unit, 1).toUpperCase().replace(/[^A-Z]/g, '').slice(0, 10);
   if (unit) out.unit = unit;
+  const art = String(h.art || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
+  if (art) out.art = art;
   return out;
 }
 
@@ -728,7 +766,7 @@ async function scenesForBatch(topic, batch, offset, opts, cast = [], bible = nul
 // opts carries pipeline fields too; only the model settings reach the API call
 const llmCall = (opts) => (typeof opts.llm === 'function' ? opts.llm : gemini);
 const llmOpts = (opts) => {
-  const { llm, theme, beatDurations, series, category, episode, handle, log, ...rest } = opts;
+  const { llm, theme, beatDurations, series, category, episode, handle, log, art, recentArt, ...rest } = opts;
   return rest;
 };
 
@@ -796,8 +834,15 @@ async function planWorld(topic, script, opts) {
     `  "journey": [ { "beat": 1, "state": "whole", "change": "what visibly happens to the hero, max 10 words" } ] }\n` +
     `One journey entry per beat, in order. A beat where the hero is not involved (the analogy) ` +
     `repeats the previous state with "change": "off screen".`;
+  const lib = opts.art || [];
+  const recent = new Set(opts.recentArt || []);
+  const artLine = lib.length
+    ? `\nART LIBRARY for a picture hero (photo, card, file, packet): pick the one entry that IS the object ` +
+      `in this story and put its slug in hero "art". Do not pick: ${[...recent].join(', ') || 'none'}.\n` +
+      lib.filter((a) => !recent.has(a.slug)).map((a) => `${a.slug} (${a.kind}): ${(a.tags || []).slice(0, 8).join(', ')}`).join('\n') + '\n'
+    : '';
   const raw = await llmCall(opts)({
-    prompt, json: true, temperature: 0.5, timeoutMs: 60000,
+    prompt: prompt + artLine, json: true, temperature: 0.5, timeoutMs: 60000,
     maxOutputTokens: 3072, thinkingBudget: 0, ...llmOpts(opts),
   });
   return normaliseBible(parseJson(raw), (script.beats || []).length);
@@ -1022,6 +1067,7 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
     if (!canon.key || !heroFits(sc)) { delete sc.hero; continue; }
     const h = sc.hero;
     h.key = canon.key; h.kind = canon.kind; h.n = N;
+    if (canon.art) { h.art = canon.art; h.aspect = canon.aspect; } else { delete h.art; delete h.aspect; }
     if (canon.unit) h.unit = canon.unit;
     if (!h.pieces && !seenHero && canon.pieces) h.pieces = canon.pieces;
     if (h.pieces) h.pieces = Array.from({ length: N }, (_, j) => h.pieces[j] || '');
@@ -1169,8 +1215,12 @@ export async function writeScenes(topic, script, opts = {}) {
         log(`  scenes: world plan attempt ${attempt} failed (${e.message.slice(0, 60)})`);
       }
     }
+    if (bible && bible.hero) {
+      const pick = pickArt(opts.art || [], bible.hero, [topic, script.hook, bible.hero.label || '', ...(script.beats || []).slice(0, 2).map((b) => b.text)], opts.recentArt || []);
+      if (pick) { bible.hero.art = pick.file; bible.hero.aspect = pick.aspect; bible.artSlug = pick.slug; } else delete bible.hero.art;
+    }
     if (bible) {
-      log(`  world: hero ${bible.hero ? `${bible.hero.kind} "${bible.hero.label}"` : 'none'}, ` +
+      log(`  world: art ${bible.artSlug || 'drawn'}, hero ${bible.hero ? `${bible.hero.kind} "${bible.hero.label}"` : 'none'}, ` +
         `stack ${bible.stack ? `${bible.stack.key} (${bible.stack.plates.length})` : 'none'}, cover ${bible.cover ? bible.cover.type : 'none'}`);
     }
   }
@@ -1265,6 +1315,7 @@ export async function writeScenes(topic, script, opts = {}) {
 
   return {
     ...(world ? { theme: 'diorama' } : {}),
+    ...(world && bible && bible.artSlug ? { artSlug: bible.artSlug, art: { kind: 'photo', art: bible.hero.art, aspect: bible.hero.aspect } } : {}),
     // a series episode wears its series and number, which is what makes people
     // follow for the next one
     eyebrow: opts.series

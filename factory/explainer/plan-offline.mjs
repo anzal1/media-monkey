@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { writeScenes } from './scenes.mjs';
+import { writeScenes, loadArt } from './scenes.mjs';
 import { sceneStarts } from './render.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -72,7 +72,7 @@ const llm = async ({ prompt }) => JSON.stringify(/planning the visual world/.tes
 const durations = [8, 9, 9, 8, 9, 8];
 const notes = [];
 const board = await writeScenes('what happens when you pay by card', script, {
-  theme: 'diorama', llm, beatDurations: durations, category: 'security', log: (s) => notes.push(s),
+  theme: 'diorama', llm, beatDurations: durations, art: loadArt(), recentArt: ['coin-stack'], category: 'security', log: (s) => notes.push(s),
 });
 let t = 3;
 const segments = [{ kind: 'hook', duration: 3 }, ...durations.map((d) => ({ kind: 'beat', duration: d })), { kind: 'cta', duration: 3.5 }];

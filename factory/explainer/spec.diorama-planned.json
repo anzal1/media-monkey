@@ -1,5 +1,11 @@
 {
   "theme": "diorama",
+  "artSlug": "credit-card",
+  "art": {
+    "kind": "photo",
+    "art": "credit-card.webp",
+    "aspect": "1:1"
+  },
   "eyebrow": "PAYMENTS",
   "accent": "#b91c1c",
   "episode": "THE PROD MONKEY",
@@ -65,6 +71,8 @@
         "state": "whole",
         "kind": "card",
         "n": 6,
+        "art": "credit-card.webp",
+        "aspect": "1:1",
         "label": "₹450 to Corner Bakery",
         "bytes": "2 KB"
       },
@@ -111,6 +119,8 @@
         "state": "whole",
         "kind": "card",
         "n": 6,
+        "art": "credit-card.webp",
+        "aspect": "1:1",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 1,
@@ -130,6 +140,8 @@
         "state": "encrypted",
         "kind": "card",
         "n": 6,
+        "art": "credit-card.webp",
+        "aspect": "1:1",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 2,
@@ -163,6 +175,8 @@
         "state": "split",
         "n": 6,
         "kind": "card",
+        "art": "credit-card.webp",
+        "aspect": "1:1",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 3,
@@ -183,6 +197,8 @@
         "tag": "#{i} → gateway",
         "kind": "card",
         "n": 6,
+        "art": "credit-card.webp",
+        "aspect": "1:1",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 3,
@@ -230,6 +246,8 @@
         "tag": "#{i}",
         "kind": "card",
         "n": 6,
+        "art": "credit-card.webp",
+        "aspect": "1:1",
         "label": "₹450 to Corner Bakery"
       },
       "beat": 4,
@@ -281,6 +299,8 @@
         "tag": "#{i}",
         "kind": "card",
         "n": 6,
+        "art": "credit-card.webp",
+        "aspect": "1:1",
         "label": "₹450 to Corner Bakery"
       }
     },

@@ -911,7 +911,16 @@
         `</svg>`;
     },
   };
-  const heroArt = (h) => `url("data:image/svg+xml;utf8,${encodeURIComponent((HERO_SVG[h && h.kind] || HERO_SVG.photo)(h || {}))}")`;
+  // a picture from the house art library (assets/art) when the planner chose one,
+  // otherwise the drawn artwork for the hero's kind
+  const heroArt = (h) => (h && h.art && /^[\w.-]+$/.test(h.art)
+    ? `url("../../assets/art/${h.art}")`
+    : `url("data:image/svg+xml;utf8,${encodeURIComponent((HERO_SVG[h && h.kind] || HERO_SVG.photo)(h || {}))}")`);
+  /** where the art sits in the 4:3 hero frame: square art is centre cropped, never stretched */
+  const artBox = (h) => {
+    const a = h && h.art && h.aspect ? (([x, y]) => (+x / +y) || 4 / 3)(String(h.aspect).split(':')) : 4 / 3;
+    return a >= HW / HH ? { w: HH * a, h: HH, ox: -(HH * a - HW) / 2, oy: 0 } : { w: HW, h: HW / a, ox: 0, oy: -(HW / a - HH) / 2 };
+  };
   const heroGrid = (h) => {
     const n = Math.max(1, Math.min(12, (h && h.n) || 6));
     // named parts (bytes, digits) are an ordered sequence: always one row, low to high
@@ -982,7 +991,8 @@
       hero = `<div class="h-anchor f3bb" data-meta="0" data-tags="0" data-inplane="1" style="width:200px;height:${HH * k * 200 / 230}px"></div>` +
         Array.from({ length: g.n }, (_, j) => {
           const q = k * (sc.hero.pieces ? 1.15 : 0.62), c = j % g.cols, r = Math.floor(j / g.cols);
-          const bg = `background-image:${heroArt(sc.hero).replace(/"/g, '&quot;')};background-size:${HW * q}px ${HH * q}px;background-position:${-c * g.tw * q}px ${-r * g.th * q}px`;
+          const ab = artBox(sc.hero);
+          const bg = `background-image:${heroArt(sc.hero).replace(/"/g, '&quot;')};background-size:${ab.w * q}px ${ab.h * q}px;background-position:${(ab.ox - c * g.tw) * q}px ${(ab.oy - r * g.th) * q}px`;
           return `<div class="h-slot f3bb f3tok" style="width:${g.tw * q}px;height:${g.th * q}px;opacity:0"><div class="himg" style="${bg}"></div><div class="gly"></div></div>`;
         }).join('');
     }
@@ -1281,7 +1291,7 @@
         const msgs = (d.messages || []).map((m, i) => {
           const side = m.from === 'me' ? 'me' : 'them';
           const body = m.photo
-            ? `<div class="phimg${sc && sc.hero ? ' h-anchor' : ''}" data-meta="0"${sc && sc.hero ? '' : ` style="background-image:${heroArt({ kind: 'photo' }).replace(/"/g, '&quot;')}"`}></div>`
+            ? `<div class="phimg${sc && sc.hero ? ' h-anchor' : ''}" data-meta="0"${sc && sc.hero ? '' : ` style="background-image:${heroArt(S.art || { kind: 'photo' }).replace(/"/g, '&quot;')}"`}></div>`
             : `<span>${esc(m.text)}</span>`;
           return `<div class="bub ${side}${m.photo ? ' pho' : ''}" data-i="${i}"><div class="bb">${body}` +
             `<i class="tm">${esc(m.time || d.clock || '9:41')}${side === 'me' ? SVG_TICK : ''}</i></div></div>`;
@@ -1780,8 +1790,9 @@
       const art = heroArt(h);
       rootEl.querySelectorAll('.himg').forEach((im, j) => {
         im.style.backgroundImage = art;
-        im.style.backgroundSize = `${HW}px ${HH}px`;
-        if (j) im.style.backgroundPosition = `${-((j - 1) % g.cols) * g.tw}px ${-Math.floor((j - 1) / g.cols) * g.th}px`;
+        const ab = artBox(h);
+        im.style.backgroundSize = `${ab.w}px ${ab.h}px`;
+        im.style.backgroundPosition = j ? `${ab.ox - ((j - 1) % g.cols) * g.tw}px ${ab.oy - Math.floor((j - 1) / g.cols) * g.th}px` : `${ab.ox}px ${ab.oy}px`;
       });
       heroes.set(h.key, { ...g, key: h.key, kind: h.kind, unit: h.unit || (['number', 'row', 'card'].includes(h.kind) ? 'PIECES' : 'PACKETS'),
         pcs: [...rootEl.querySelectorAll('.hpc')], lastPieces: null, root: rootEl, whole: rootEl.querySelector('.hwhole'),
