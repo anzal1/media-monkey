@@ -11,12 +11,10 @@
     "backdrop": {
       "type": "phone",
       "data": {
-        "app": "pay",
+        "app": "pos",
+        "form": "terminal",
         "merchant": "Corner Bakery",
-        "amount": "₹450.00",
-        "method": "Card •••• 0042",
-        "button": "Pay",
-        "done": "Paid"
+        "amount": "₹450.00"
       }
     }
   },
@@ -26,12 +24,10 @@
       "headline": "You tap pay and the bakery",
       "subhead": "",
       "data": {
-        "app": "pay",
+        "app": "pos",
+        "form": "terminal",
         "merchant": "Corner Bakery",
-        "amount": "₹450.00",
-        "method": "Card •••• 0042",
-        "button": "Pay",
-        "done": "Paid"
+        "amount": "₹450.00"
       },
       "beat": 0,
       "half": 0,
@@ -303,19 +299,21 @@
       "of": 2
     },
     {
-      "type": "list",
-      "headline": "What it never sent.",
+      "type": "phone",
+      "headline": "Your balance, a blink later.",
       "subhead": "",
       "data": {
-        "title": "never on the wire",
-        "items": [
+        "app": "app",
+        "mode": "dark",
+        "name": "Bank",
+        "kind": "money",
+        "title": "Balance",
+        "value": "₹12,550",
+        "from": "13,000",
+        "rows": [
           {
-            "label": "your card number",
-            "tone": "good"
-          },
-          {
-            "label": "your balance",
-            "tone": "good"
+            "label": "Corner Bakery",
+            "value": "-₹450"
           }
         ]
       },

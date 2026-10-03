@@ -511,6 +511,77 @@
   /* a page with no picture leads with its own words (a balance, a counter) */
   .pbpage .blk.lead { margin-top: 12px; font: 800 40px/1.1 Inter, sans-serif; letter-spacing: -.02em; color: #171614; }
 
+  /* ---- more screens: a generic app, a stream, a card terminal ---- */
+  .pap { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 12px 16px 40px; background: #f7f6f3; }
+  .paphd { display: flex; align-items: center; gap: 12px; font: 700 22px Inter, sans-serif; }
+  .pai { width: 44px; height: 44px; border-radius: 12px; padding: 9px; background: var(--accent); }
+  .papcard { padding: 20px 20px 18px; border-radius: 20px; background: #fff; box-shadow: 0 6px 18px rgba(60,45,25,.08); }
+  .papcard small { display: block; font: 500 16px Inter, sans-serif; color: #6f6a61; }
+  .papv { margin-top: 6px; font: 800 44px Inter, sans-serif; letter-spacing: -.03em; white-space: nowrap; }
+  .papcard em { display: block; margin-top: 2px; font: 500 16px 'JetBrains Mono', monospace; font-style: normal; color: var(--accent); }
+  .paprows { display: flex; flex-direction: column; gap: 8px; }
+  .papr { display: flex; justify-content: space-between; padding: 13px 16px; border-radius: 14px; background: #fff; font: 400 17px Inter, sans-serif; color: #4a463f; }
+  .papr b { font: 600 17px 'JetBrains Mono', monospace; color: #171614; }
+  .papbtn { margin-top: auto; height: 56px; border-radius: 16px; display: grid; place-items: center; background: var(--accent); font: 700 20px Inter, sans-serif; color: #fff; }
+  .pst { flex: 1; position: relative; background: #0d0e11; overflow: hidden; }
+  .pstglow { position: absolute; inset: 0; background: radial-gradient(80% 60% at 70% 35%, color-mix(in srgb, var(--accent) 55%, transparent), transparent 70%),
+    linear-gradient(to top, #0d0e11 10%, transparent 60%); }
+  .pstt { position: absolute; left: 26px; right: 26px; bottom: 64px; color: #fff; }
+  .pstt small { display: block; font: 600 15px 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; opacity: .7; }
+  .pstt b { display: block; margin-top: 6px; font: 800 34px/1.1 Inter, sans-serif; letter-spacing: -.02em; }
+  .pstbar { position: absolute; left: 26px; right: 26px; bottom: 36px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.22); }
+  .pstbar i { display: block; height: 100%; border-radius: 3px; background: var(--accent); }
+  .pstring { position: absolute; left: 50%; top: 42%; width: 70px; height: 70px; margin: -35px 0 0 -35px; opacity: 0; }
+  .pos { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: #f4f6f3; }
+  .pos small { font: 600 18px Inter, sans-serif; color: #6f6a61; }
+  .pos b { font: 800 54px Inter, sans-serif; letter-spacing: -.03em; }
+  .posst { position: relative; height: 34px; width: 100%; }
+  .posst span { position: absolute; left: 0; right: 0; text-align: center; font: 700 22px 'JetBrains Mono', monospace; letter-spacing: .08em; color: var(--accent); opacity: 0; }
+  .posst .s0 { opacity: 1; }
+  /* ---- device shells: the same screens in another body ---- */
+  .ph.f-laptop { width: 860px; height: 540px; margin-left: -430px; top: 560px; }
+  .ph.f-laptop .phbody { border-radius: 26px; background: #1d1e22; box-shadow: 0 46px 70px -18px rgba(60,45,25,.38), 0 10px 22px rgba(60,45,25,.14); }
+  .ph.f-laptop .phscr { inset: 18px; border-radius: 10px; }
+  .ph.f-laptop .lbase { position: absolute; left: -70px; right: -70px; bottom: -34px; height: 34px; border-radius: 0 0 34px 34px;
+    background: linear-gradient(#d9d4cb, #c6c0b5); border: 1px solid rgba(23,22,20,.4); }
+  .ph.f-tv { width: 900px; height: 520px; margin-left: -450px; top: 560px; }
+  .ph.f-tv .phbody { border-radius: 14px; background: #121316; box-shadow: 0 46px 70px -18px rgba(60,45,25,.38); }
+  .ph.f-tv .phscr { inset: 10px; border-radius: 6px; }
+  .ph.f-tv .tvstand { position: absolute; left: 50%; bottom: -46px; width: 260px; height: 46px; margin-left: -130px;
+    background: linear-gradient(#c9c4bb, #b6b0a6); clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); }
+  .ph.f-watch { width: 300px; height: 360px; margin-left: -150px; top: 560px; }
+  .ph.f-watch .phbody { border-radius: 86px; background: #1a1b1e; }
+  .ph.f-watch .phscr { inset: 16px; border-radius: 72px; background: #000; }
+  .ph.f-watch::before, .ph.f-watch::after { content: ''; position: absolute; left: 60px; right: 60px; height: 120px; background: #3a3b40; z-index: -1; }
+  .ph.f-watch::before { top: -100px; border-radius: 30px 30px 8px 8px; }
+  .ph.f-watch::after { bottom: -100px; border-radius: 8px 8px 30px 30px; }
+  .ph.f-watch .pnot { background: #000; color: #fff; }
+  .ph.f-watch .pnot .dt { display: none; }
+  .ph.f-watch .pnot .clk { font-size: 54px; margin-top: 26px; color: #fff; }
+  .ph.f-watch .pban { left: 6px; right: 6px; top: 104px; padding: 12px; background: #1d1e22; color: #fff; box-shadow: none; }
+  .ph.f-watch .pban .ai { display: none; }
+  .ph.f-watch .pban .row { color: #9a958c; font-size: 13px; }
+  .ph.f-watch .pban .ti { font-size: 20px; } .ph.f-watch .pban .bd { font-size: 18px; color: #ddd; }
+  .ph.f-terminal { width: 400px; height: 700px; margin-left: -200px; top: 520px; }
+  .ph.f-terminal .phbody { border-radius: 46px; background: #2b2c30; box-shadow: 0 46px 70px -18px rgba(60,45,25,.42); }
+  .ph.f-terminal .phscr { inset: 30px 30px auto 30px; height: 300px; border-radius: 18px; }
+  .ph.f-terminal .tkeys { position: absolute; left: 44px; right: 44px; top: 360px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .ph.f-terminal .tkeys i { height: 58px; border-radius: 14px; background: #3c3d42; }
+  .ph:not(.f-phone) .phb, .ph:not(.f-phone) .phisland, .ph:not(.f-phone) .phhome { display: none; }
+  /* ---- dark mode handsets ---- */
+  .ph.dark .phscr { background: #111214; color: #ecebe7; }
+  .ph.dark .phsb { color: #ecebe7; }
+  .ph.dark .pchd, .ph.dark .pcin { background: #17181b; border-color: #26282c; }
+  .ph.dark .pcmsgs { background: #111214; }
+  .ph.dark .bub.them .bb { background: #26282d; color: #ecebe7; }
+  .ph.dark .pcin .fld { background: #222327; }
+  .ph.dark .pap { background: #111214; } .ph.dark .papcard, .ph.dark .papr { background: #1c1d21; color: #ecebe7; box-shadow: none; }
+  .ph.dark .papr b, .ph.dark .papv { color: #ecebe7; }
+  .ph.dark .pnot { background: linear-gradient(to bottom, color-mix(in srgb, var(--accent) 40%, #0d0e11), #0d0e11 75%); color: #fff; }
+  .ph.dark .pnot .dt { color: #c9c4bb; }
+  .ph.dark .pbbar { background: #222327; color: #c9c4bb; } .ph.dark .pbpage i { background: #222327; } .ph.dark .pbpage .blk.lead { color: #ecebe7; }
+  .ph.dark .ppbg i { background: #222327; } .ph.dark .ppsheet, .ph.dark .ppok { background: #17181b; color: #ecebe7; }
+
   /* ---- flow on the floor: ink wires on paper, tokens moving along them ---- */
   .f3 { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 540px 640px; }
   .f3plane { position: absolute; left: 40px; top: 640px; width: 1000px; height: 1000px; transform-style: preserve-3d; transform-origin: 50% 50%; }
@@ -1238,6 +1309,23 @@
           `<div class="pban"><span class="ai">${icon(d.kind || 'lock', '#fff')}</span><div class="bt">` +
           `<div class="row"><span>${esc((d.from || 'Messages').toUpperCase())}</span><span>now</span></div>` +
           `<div class="ti">${esc(d.title || '')}</div><div class="bd">${body}</div></div></div></div>`;
+      } else if (app === 'app') {
+        // a generic app: game, bank, delivery, music, maps. Its own name, icon and numbers.
+        const rows = (d.rows || []).map((r) => `<div class="papr"><span>${esc(r.label)}</span><b>${esc(r.value || '')}</b></div>`).join('');
+        scr = `<div class="pap"><div class="paphd"><span class="pai">${icon(d.kind || 'box', '#fff')}</span><b>${esc(d.name || 'App')}</b></div>` +
+          `<div class="papcard"><small>${esc(d.title || '')}</small><div class="papv" data-v="${esc(d.value || '')}" data-from="${esc(d.from || '')}">${esc(d.value || '')}</div>` +
+          (d.unit ? `<em>${esc(d.unit)}</em>` : '') + `</div><div class="paprows">${rows}</div>` +
+          (d.button ? `<div class="papbtn">${esc(d.button)}</div>` : '') + `</div>`;
+      } else if (app === 'stream') {
+        // a film or a match playing: title, a progress line, and a stall when it buffers
+        scr = `<div class="pst"><div class="pstglow"></div><div class="pstt"><small>${esc(d.sub || '')}</small><b>${esc(d.title || '')}</b></div>` +
+          `<svg class="pstring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="100 60"/></svg>` +
+          `<div class="pstbar"><i></i></div></div>`;
+      } else if (app === 'pos') {
+        // a card terminal at the counter: amount, then tap, processing, approved
+        scr = `<div class="pos"><small>${esc(d.merchant || 'Corner Bakery')}</small><b>${esc(d.amount || '₹450.00')}</b>` +
+          `<div class="posst"><span class="s0">${esc(d.prompt || 'Tap card')}</span><span class="s1">Processing</span>` +
+          `<span class="s2">${d.success === false ? 'Declined' : 'Approved'}</span></div></div>`;
       } else {
         scr = `<div class="pbrw"><div class="pbbar"><svg viewBox="0 0 15 16"><rect x="1.5" y="7" width="12" height="8" rx="2" fill="#8a9099"/>` +
           `<path d="M4 7V5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="#8a9099" stroke-width="1.8"/></svg>${esc(d.url || 'example.com')}</div>` +
@@ -1247,9 +1335,12 @@
             : `<div class="blk lead">${esc(d.title || '')}</div>`) +
           `<i class="blk"></i><i class="blk" style="width:82%"></i><i class="blk" style="width:64%"></i></div></div>`;
       }
-      return `<div class="ph" data-app="${app}"><div class="phglow"></div><div class="phbody"></div>` +
+      const form = d.form || 'phone';
+      const extra = form === 'laptop' ? '<i class="lbase"></i>' : form === 'tv' ? '<i class="tvstand"></i>' :
+        form === 'terminal' ? `<div class="tkeys">${Array.from({ length: 12 }, () => '<i></i>').join('')}</div>` : '';
+      return `<div class="ph f-${form}${d.mode === 'dark' ? ' dark' : ''}" data-app="${app}"><div class="phglow"></div><div class="phbody"></div>` +
         `<i class="phb a"></i><i class="phb b"></i><i class="phb c"></i>` +
-        `<div class="phscr">${sb}${scr}</div><div class="phisland"></div><div class="phhome"></div></div>`;
+        `<div class="phscr">${form === 'phone' ? sb : ''}${scr}</div><div class="phisland"></div><div class="phhome"></div>${extra}</div>`;
     },
     note(d) {
       return `<div class="note"><div class="lead el">${esc(d.lead)}</div>` +
@@ -2030,6 +2121,40 @@
       const a = B.carry ? 1 : easeOut((local - 0.5) / 0.6);
       P.ban.style.opacity = a.toFixed(3);
       P.ban.style.transform = `translateY(${((1 - a) * -44).toFixed(1)}px)`;
+    } else if (app === 'app') {
+      const v = P.papv || (P.papv = B.wrap.querySelector('.papv'));
+      const parts = statParts(v.dataset.v), fromP = statParts(v.dataset.from);
+      if (parts && fromP) {
+        const q = easeInOut(clamp01((local - 0.6) / Math.min(2.2, span * 0.45)));
+        v.textContent = parts.pre + Math.round(fromP.n + (parts.n - fromP.n) * q).toLocaleString('en-US') + (q >= 1 ? parts.frac : '') + parts.post;
+      }
+      v.style.opacity = easeOut((local - 0.35) / 0.5).toFixed(3);
+      (P.paprs || (P.paprs = [...B.wrap.querySelectorAll('.papr')])).forEach((r, j) => {
+        const a = B.carry ? 1 : easeOut((local - 0.8 - j * 0.35) / 0.5);
+        r.style.opacity = a.toFixed(3);
+        r.style.transform = `translateY(${((1 - a) * 12).toFixed(1)}px)`;
+      });
+      const btn = P.papbtn || (P.papbtn = B.wrap.querySelector('.papbtn'));
+      if (btn) {
+        const pr = clamp01((local - Math.max(1.6, span * 0.6)) / 0.3);
+        btn.style.transform = `scale(${(1 - 0.05 * Math.sin(pr * Math.PI)).toFixed(4)})`;
+      }
+    } else if (app === 'stream') {
+      const bar = P.pst || (P.pst = B.wrap.querySelector('.pstbar i'));
+      const ring = P.pstr || (P.pstr = B.wrap.querySelector('.pstring'));
+      const goal = d.progress != null ? d.progress : 0.4;
+      // a buffering stream stalls in the middle of the scene, then picks up again
+      const stall = d.buffering ? clamp01((local - span * 0.35) / 0.3) * (1 - clamp01((local - span * 0.75) / 0.3)) : 0;
+      const run = clamp01(local / span);
+      const pos = goal * 0.85 + 0.15 * goal * (d.buffering ? Math.min(run, 0.4) + Math.max(0, run - 0.8) : run);
+      bar.style.width = (pos * 100).toFixed(2) + '%';
+      ring.style.opacity = stall.toFixed(3);
+      ring.style.transform = `rotate(${(tSec * 300).toFixed(1)}deg)`;
+    } else if (app === 'pos') {
+      const ss = P.posst || (P.posst = [...B.wrap.querySelectorAll('.posst span')]);
+      const t1 = Math.max(1.2, span * 0.35), t2 = t1 + 1.2;
+      const w = [1 - clamp01((local - t1) / 0.25), clamp01((local - t1) / 0.25) * (1 - clamp01((local - t2) / 0.25)), clamp01((local - t2) / 0.3)];
+      ss.forEach((e, j) => { e.style.opacity = (B.carry && j < 2 ? 0 : B.carry ? 1 : w[j]).toFixed(3); });
     } else {
       const goal = d.progress != null ? d.progress : 1;
       const t1 = Math.max(1.8, span * 0.7);
@@ -2102,7 +2227,9 @@
       const gap = F.gap || (F.gap = F.slots.length ? Math.max(44, F.slots[0].offsetWidth + 12) : 44);
       const L = (travel + F.slots.length * gap + 60) * prog;
       const pt = (l) => F.all.getPointAtLength(Math.max(0, Math.min(F.len, s0 + dir * Math.max(0, Math.min(travel, l)))));
-      const at = pt(Math.min(L, Math.max(0, travel - 170)));
+      // the whole object parks midway along the last wire, between two cards, never on one
+      const lastSeg = Math.abs(F.cum[hop[1]] - F.cum[hop[1] - dir]) || travel;
+      const at = pt(Math.min(L, Math.max(0, travel - lastSeg * 0.5)));
       F.anchor.style.transform = `translate3d(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px, 0) ${bb}`;
       F.slots.forEach((s, j) => {
         const lj = L - j * gap;
@@ -2244,7 +2371,10 @@
       const top = Math.round(kwEl.getBoundingClientRect().top + 76);
       titleB.phTop = top;
       // the hook is not captioned, so the cover phone may run down to the Reels UI line
-      titleB.phS = Math.max(0.72, Math.min(PH_S, (1470 - top) / 780));
+      const tform = (titleB.sc.data && titleB.sc.data.form) || 'phone';
+      const th = { laptop: 574, tv: 566, watch: 560, terminal: 700 }[tform];
+      titleB.phS = th ? Math.min(tform === 'watch' ? 1.1 : tform === 'laptop' || tform === 'tv' ? 0.86 : 1, (1470 - top) / th) : Math.max(0.72, Math.min(PH_S, (1470 - top) / 780));
+      if (tform === 'watch') titleB.phTop = top + Math.round(100 * titleB.phS);
     }
     if (titleB) animWorld(titleB, titleB.sc, 99, 5, tSec, null);
   }
@@ -2269,8 +2399,17 @@
         // it and scale it to the room left above the caption band
         const hb = $('headline').getBoundingClientRect().bottom;
         B.phFit = { top: Math.round(hb + 22), s: PH_S };
+        const form = (sc.data && sc.data.form) || 'phone';
+        if (form !== 'phone') {
+          // other bodies are laid out at their real size and centred in the band
+          const hgt = { laptop: 574, tv: 566, watch: 560, terminal: 700 }[form] || 600;
+          const room = 1312 - (hb + 40);
+          // wide bodies stay clear of the Reels button strip on the right
+          B.phFit.s = form === 'watch' ? Math.min(1.25, room / hgt) : Math.min(form === 'laptop' || form === 'tv' ? 0.86 : 1, room / hgt);
+          B.phFit.top = Math.round(hb + 40 + Math.max(0, (room - hgt * B.phFit.s) / 2) + (form === 'watch' ? 100 * B.phFit.s : 0));
+        }
         // and ends above the burned-in caption, which sits at about y=1320
-        B.phFit.s = Math.max(0.8, Math.min(PH_S, (1312 - B.phFit.top) / 780));
+        if (form === 'phone') B.phFit.s = Math.max(0.8, Math.min(PH_S, (1312 - B.phFit.top) / 780));
       }
       B.phTop = B.phFit.top; B.phS = B.phFit.s;
       // the closing scene glides the handset to where it sits on the cover
@@ -2308,7 +2447,8 @@
     // the phone wants the height, so its scenes run the headline alone
     $('subhead').style.visibility = sc.type === 'phone' ? 'hidden' : '';
     // the mascot stands on the floor where the scene leaves room for it
-    const room = sc.mascot != null ? !!sc.mascot : (sc.type === 'stat' || sc.type === 'note' || sc.type === 'phone');
+    const wide = sc.type === 'phone' && sc.data && (sc.data.form === 'laptop' || sc.data.form === 'tv');
+    const room = sc.mascot != null ? !!sc.mascot : (sc.type === 'stat' || sc.type === 'note' || (sc.type === 'phone' && !wide));
     const mq = room ? easeOut((local - 0.2) / 0.6) : 0;
     mascot.style.opacity = (mq * (w == null ? 1 : 1 - w)).toFixed(3);
     mascot.style.display = mq > 0 ? 'block' : 'none';

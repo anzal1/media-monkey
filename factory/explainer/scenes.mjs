@@ -24,7 +24,12 @@ const WORLD_TYPES = ['stack3d', 'phone'];
 const HERO_KINDS = ['photo', 'card', 'file', 'packet', 'message', 'number', 'row'];
 /** Hero states, in the renderer's terms: each is applied on top of the last. */
 const HERO_STATES = ['whole', 'compressed', 'encrypted', 'split', 'labelled'];
-const PHONE_APPS = ['chat', 'pay', 'notify', 'browser'];
+const PHONE_APPS = ['chat', 'pay', 'notify', 'browser', 'app', 'stream', 'pos'];
+/** The body the screen sits in, picked by the everyday moment. */
+const FORMS = ['phone', 'laptop', 'terminal', 'watch', 'tv'];
+// which screens each body can show; anything else is moved to the body's first screen
+const FORM_APPS = { phone: ['chat', 'pay', 'notify', 'browser', 'app', 'stream'], laptop: ['browser', 'app', 'chat'],
+  terminal: ['pos'], watch: ['notify'], tv: ['stream', 'app'] };
 
 /*
  * Icon keys the renderer can draw, baked into assets/icons/icons.json by
@@ -170,6 +175,18 @@ const MENU_DIORAMA = `DIORAMA TYPES (this reel uses the tabletop look; prefer th
             { "app": "notify", "from": "Messages", "title": "Verification code",
               "body": "Use 482 913 to confirm. Never share it.", "code": "482 913" }
             { "app": "browser", "url": "shop.example.com/cart", "title": "Your cart", "progress": 1 }
+            { "app": "app", "name": "Coin Quest", "kind": "<icon kind>", "title": "Inventory",
+              "value": "16,777,216", "unit": "coins", "from": "optional start number, it counts up",
+              "rows": [ { "label": "Gems", "value": "12" } ], "button": "Collect" }
+               (any everyday app: a game, a bank balance, a delivery, a music player, a map ETA)
+            { "app": "stream", "title": "The Final Match", "sub": "Live", "progress": 0.4, "buffering": true }
+            { "app": "pos", "merchant": "Corner Bakery", "amount": "₹450.00", "success": true }
+               (the card terminal at a shop counter: tap, processing, approved)
+          "form" picks the BODY the screen sits in, from the everyday moment: "phone" (default),
+          "laptop" (browser, app or chat on a desk), "terminal" (the shop's card machine, pos only),
+          "watch" (a notification on the wrist), "tv" (stream or app on a TV). "mode": "dark" for a
+          dark handset (night, games, streaming). Vary them: the opening scene is the device of the
+          moment, not always a phone in the middle.
 "hero"    NOT a type: a field on a scene, next to "type", "headline" and "data". It puts the
           one travelling object into the scene in its CURRENT state. It is drawn on a
           "stack3d" slab, on the wire of a "flow" (it travels along it), and inside a "phone"
@@ -294,7 +311,8 @@ export function normaliseScene(raw, fallbackHeadline, ctx = {}) {
     if (items.length >= 2) data = { title: clip(d.title, 5), items };
   } else if (type === 'stat') {
     const value = clean(d.value).slice(0, 14);
-    if (value) {
+    // on the diorama a stat is a measured number on a plinth; a word there ("secret") is a caption
+    if (value && !(world && !/\d/.test(value))) {
       data = {
         value, label: clip(d.label, 5).toUpperCase(),
         tone: toneOf(d.tone, ['good', 'bad', 'plain'], 'plain'),
@@ -434,9 +452,13 @@ function normaliseStack3d(d) {
 
 /** phone: one of four app screens, every field defaulted so a thin payload still draws. */
 function normalisePhone(d) {
-  const app = toneOf(d.app, PHONE_APPS, 'chat');
+  const form = toneOf(d.form, FORMS, 'phone');
+  let app = toneOf(d.app, PHONE_APPS, 'chat');
+  if (!FORM_APPS[form].includes(app)) app = FORM_APPS[form][0];
   const short = (v, n) => clean(v).slice(0, n);
   const out = { app };
+  if (form !== 'phone') out.form = form;
+  if (String(d.mode || '').toLowerCase() === 'dark') out.mode = 'dark';
   if (String(d.device || '').toLowerCase() === 'b') out.device = 'b';
   const clock = short(d.clock, 5);
   if (/^\d{1,2}:\d{2}$/.test(clock)) out.clock = clock;
@@ -467,6 +489,32 @@ function normalisePhone(d) {
     out.method = short(d.method, 18) || 'Card •••• 0042';
     out.button = clip(d.button, 2).slice(0, 12) || 'Pay';
     out.done = clip(d.done, 2).slice(0, 14) || 'Paid';
+    if (d.success === false) out.success = false;
+  } else if (app === 'app') {
+    out.name = clip(d.name, 3).slice(0, 18) || 'App';
+    out.kind = kindOf(d.kind);
+    out.title = clip(d.title, 4).slice(0, 26);
+    out.value = short(d.value, 16);
+    const unit = clip(d.unit, 3).slice(0, 18);
+    if (unit) out.unit = unit;
+    const from = short(d.from, 16);
+    if (from && /\d/.test(from)) out.from = from;
+    out.rows = (Array.isArray(d.rows) ? d.rows : []).slice(0, 4)
+      .map((r) => ({ label: clip(r && r.label, 4).slice(0, 22), value: short(r && r.value, 14) })).filter((r) => r.label);
+    const button = clip(d.button, 2).slice(0, 14);
+    if (button) out.button = button;
+    if (!out.value && !out.rows.length) out.value = out.title || out.name;
+  } else if (app === 'stream') {
+    out.title = clip(d.title, 5).slice(0, 30) || 'Now playing';
+    out.sub = clip(d.sub, 4).slice(0, 24);
+    const pr = Number(d.progress);
+    out.progress = Number.isFinite(pr) ? Math.max(0.05, Math.min(1, pr)) : 0.4;
+    if (d.buffering === true) out.buffering = true;
+  } else if (app === 'pos') {
+    out.merchant = clip(d.merchant, 3).slice(0, 22) || 'Corner Bakery';
+    out.amount = short(d.amount, 12) || '₹450.00';
+    const prompt = clip(d.prompt, 3).slice(0, 14);
+    if (prompt) out.prompt = prompt;
     if (d.success === false) out.success = false;
   } else if (app === 'notify') {
     out.from = clip(d.from, 2).slice(0, 16) || 'Messages';
@@ -574,6 +622,8 @@ function worldBrief(bible, batch, offset, prev) {
     `analogy is drawn faithfully, never paraphrased into something that is no longer true.\n` +
     `PHONE SCREENS MATCH THE STORY: a chat photo only when the story is a photo; a game, a bank ` +
     `or a shop is a "browser" screen whose "title" is the thing the person reads (\"Coins: 16,777,216\").\n` +
+    `ONE COMPARE PER REEL: a side by side is used once, for the one contrast that matters; ` +
+    `after that the map and the hero carry the idea. No "note" scenes on this look.\n` +
     `ONE FACT ONCE: never spend two scenes on the same fact (a "stat" of 32 bytes and then ` +
     `"cells" of those same bytes is one fact: pick one).\n` +
     `\nNEVER REDUNDANT. Every scene must change something the viewer can SEE: a new slab, a ` +
@@ -726,7 +776,12 @@ async function planWorld(topic, script, opts) {
     `Phone data is one of: {"app":"chat","contact":"Arjun","messages":[{"from":"me","photo":true}]}, ` +
     `{"app":"pay","merchant":"Corner Bakery","amount":"₹450.00","method":"Card •••• 0042"}, ` +
     `{"app":"notify","from":"Messages","title":"Verification code","body":"Use 482 913 to confirm.","code":"482 913"}, ` +
-    `{"app":"browser","url":"shop.example.com","title":"Checkout"}. Generic names only, no real brands.\n\n` +
+    `{"app":"browser","url":"shop.example.com","title":"Checkout"}, ` +
+    `{"app":"app","name":"Coin Quest","kind":"package","title":"Inventory","value":"16,777,216","unit":"coins"} (a game, bank, delivery, music or maps app), ` +
+    `{"app":"stream","title":"The Final Match","sub":"Live","progress":0.4}, {"app":"pos","merchant":"Corner Bakery","amount":"₹450.00"}. ` +
+    `Add "form" for the body it sits in: "phone", "laptop", "terminal" (a shop's card machine, pos only), "watch", "tv"; ` +
+    `and "mode": "dark" for a dark handset. Pick the body and screen the moment really happens on: a card tapped at a ` +
+    `counter is the terminal, a film is the TV, a login code may land on the watch. Generic names only, no real brands.\n\n` +
     `Return ONLY JSON:\n` +
     `{ "eyebrow": "the field, 1 to 3 words, uppercase",\n` +
     `  "hero": { "key": "short-id", "kind": "photo|card|file|packet|message|number|row", ` +
@@ -922,6 +977,23 @@ export function polishDiorama(scenes, { beats = [], hook = '', bible = null, dur
     notes.push(`dropped ${sc.type} "${main || sc.headline}": not in the narration`);
     return false;
   });
+
+  // ---- one compare per reel: the second side by side of the same idea is
+  // redundant whatever its labels say, and the map carries the idea after that
+  {
+    let compares = 0;
+    scenes = scenes.filter((sc) => {
+      const weak = (sc.type === 'compare' && compares++ > 0) || sc.type === 'note';
+      if (!weak) return true;
+      const others = scenes.filter((o) => o !== sc && o.beat === sc.beat && !o._gone).length;
+      if (others && (durations[sc.beat] || 9) / others <= 6.5) {
+        sc._gone = true;
+        notes.push(`dropped ${sc.type} "${sc.headline}": ${sc.type === 'note' ? 'nothing to see' : 'one compare per reel'}`);
+        return false;
+      }
+      return true;
+    });
+  }
 
   // ---- the hero stays on screen: every slab and every map scene carries it,
   // in the state it was last seen in
@@ -1161,6 +1233,14 @@ export async function writeScenes(topic, script, opts = {}) {
     scenes.length = 0;
     scenes.push(...polished.scenes);
     cover = coverFor(bible, scenes);
+    // about one reel in three wears a dark handset, picked from the topic so a
+    // rerender keeps its look; a mode the planner chose is left alone
+    const devices = [...scenes.filter((sc) => sc.type === 'phone'), ...(cover && cover.type === 'phone' ? [cover] : [])];
+    if (devices.length && !devices.some((sc) => sc.data.mode)) {
+      let h = 0;
+      for (const ch of String(topic)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+      if (h % 3 === 0) devices.forEach((sc) => { if (!sc.data.form || sc.data.form === 'phone') sc.data.mode = 'dark'; });
+    }
     if (!eyebrow && bible && bible.eyebrow) eyebrow = bible.eyebrow;
   }
 

@@ -37,14 +37,14 @@ const bible = {
   stack: { key: 'net', unit: 'LAYER', plates: [
     { label: 'APPLICATION', sub: 'the payment app' }, { label: 'SECURITY', sub: 'token and encryption' },
     { label: 'TRANSPORT', sub: 'chop and number' }, { label: 'NETWORK', sub: 'address and route' }] },
-  cover: { type: 'phone', data: { app: 'pay', merchant: 'Corner Bakery', amount: '₹450.00', method: 'Card •••• 0042' } },
+  cover: { type: 'phone', data: { form: 'terminal', app: 'pos', merchant: 'Corner Bakery', amount: '₹450.00' } },
   journey: [1, 2, 3, 4, 5, 6].map((beat) => ({ beat, state: ['whole', 'whole', 'encrypted', 'split', 'labelled', 'whole'][beat - 1], change: 'step' })),
 };
 
 const batches = [
   { eyebrow: 'PAYMENTS', beats: [
     { beat: 1, scenes: [
-      { type: 'phone', headline: 'You tap pay and the bakery gets paid.', data: { app: 'pay', merchant: 'Corner Bakery', amount: '₹450.00' }, hero: { key: 'payment', state: 'whole' } },
+      { type: 'phone', headline: 'You tap pay and the bakery gets paid.', data: { form: 'terminal', app: 'pos', merchant: 'Corner Bakery', amount: '₹450.00' }, hero: { key: 'payment', state: 'whole' } },
       { type: 'stack3d', headline: 'It starts at the top.', subhead: 'the app hands it over', data: { key: 'net', active: 0 }, hero: { key: 'payment', state: 'whole' } } ] },
     { beat: 2, scenes: [
       { type: 'compare', headline: 'Address outside, secret inside.', data: { left: { label: 'Envelope', sub: 'address visible', kind: 'file' }, right: { label: 'Letter', sub: 'sealed', kind: 'lock' }, rows: [{ left: 'anyone reads', right: 'nobody reads' }] } },
@@ -62,6 +62,7 @@ const batches = [
       { type: 'flow', headline: 'The bank checks it.', data: { nodes: [{ label: 'Gateway', kind: 'shield' }, { label: 'Bank', kind: 'database', state: 'busy', becomes: 'ok' }], active: 1 } } ] },
     { beat: 6, scenes: [
       { type: 'stat', headline: 'Yes, in a blink.', data: { value: '300 ms', label: 'tap to approved', tone: 'plain' } },
+      { type: 'phone', headline: 'Your balance, a blink later.', data: { app: 'app', mode: 'dark', name: 'Bank', kind: 'money', title: 'Balance', value: '₹12,550', from: '13,000', rows: [{ label: 'Corner Bakery', value: '-₹450' }] } },
       { type: 'list', headline: 'What it never sent.', data: { title: 'never on the wire', items: [{ label: 'your card number', tone: 'good' }, { label: 'your PIN', tone: 'good' }, { label: 'your balance', tone: 'good' }] } } ] },
   ] },
 ];
