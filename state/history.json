@@ -889,5 +889,21 @@
     "slot": "2026-10-03T17:30:00.000Z",
     "igMediaId": "18125965060860115",
     "publishedAt": "2026-10-03T17:30:08Z"
+  },
+  {
+    "slug": "what-happens-when-you-send-photo",
+    "topic": "what actually happens when you send a photo on WhatsApp",
+    "hook": "You tap send on a photo of your cat.",
+    "source": "series",
+    "track": "everyday",
+    "category": "everyday",
+    "episodeId": "everyday-01",
+    "length": "tight",
+    "seconds": 89.1,
+    "lang": "en",
+    "art": "cat-photo",
+    "at": "2026-10-04T07:36:37.447Z",
+    "ytVideoId": "-QNRxr5SPZ0",
+    "slot": "2026-10-04T07:30:00.000Z"
   }
 ]
