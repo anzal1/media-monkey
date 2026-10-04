@@ -1,0 +1,26 @@
+Sofia types a question into ChatGPT and taps send.
+Before the first word flickers back, the graphics cards swallow her prompt as tokens in the prefill step.
+A second later, the response begins crawling onto her screen one fragment at a time.
+
+Large language model inference is split into a massive parallel read phase followed by a strict, memory-bound autoregressive generation loop.
+
+Picture this:
+→ You write a complex multi-paragraph coding question
+→ The model sits totally silent for two hundred milliseconds
+→ The answer types out piece by piece instead of appearing all at once
+
+1. The tokenizer divides your raw text string into integer tokens based on a byte-pair vocabulary.
+2. The prefill step passes every token through transformer layers concurrently, computing query, key, and value vectors.
+3. The engine saves calculated keys and values into the KV cache inside high-bandwidth GPU memory.
+4. The autoregressive decode loop predicts the next token from the probability distribution, feeds it back into the model, and repeats.
+5. The application server wraps each newly generated token inside an HTTP server-sent event and flushes it straight to your browser stream.
+
+Because decode passes cannot be parallelized, running large models costs massive memory bandwidth rather than raw compute.
+
+Next time the text stream stutters on your screen, you will know the GPU is memory-bound.
+
+Behind the tap, part 2. Follow for part 3.
+
+Have you had to optimize KV cache memory fragmentation with tools like vLLM in production?
+
+#llminference #transformers #kvcache #systemdesign #softwareengineering

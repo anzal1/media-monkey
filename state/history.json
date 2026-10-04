@@ -907,5 +907,20 @@
     "slot": "2026-10-04T07:30:00.000Z",
     "igMediaId": "17909346504308956",
     "publishedAt": "2026-10-04T07:37:54Z"
+  },
+  {
+    "slug": "what-happens-when-you-ask-chatgpt",
+    "topic": "what actually happens when you ask ChatGPT a question",
+    "hook": "You hit enter on a prompt.",
+    "source": "series",
+    "track": "everyday",
+    "category": "everyday",
+    "episodeId": "everyday-02",
+    "length": "deep",
+    "seconds": 121.6,
+    "lang": "en",
+    "at": "2026-10-04T13:48:58.764Z",
+    "ytVideoId": "rxSqu1K9DkE",
+    "slot": "2026-10-04T13:30:00.000Z"
   }
 ]
