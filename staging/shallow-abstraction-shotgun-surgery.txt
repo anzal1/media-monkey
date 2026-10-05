@@ -1,0 +1,22 @@
+One new database column. Five separate pull requests to deploy it.
+Every layer in your stack is a shallow abstraction that copies fields verbatim.
+Your velocity drops to zero over pure boilerplate 🧵
+
+A shallow abstraction is a software layer whose interface has almost the same complexity as its underlying implementation, providing almost no cognitive leverage.
+
+Here is where it bites:
+→ Modifying one database field touches five distinct files across the backend.
+→ Each layer defines its own nearly identical data transfer class.
+→ Code reviews spend hours checking whether mapped fields were copied correctly.
+
+It happens when architectures mandate layers without giving those layers real responsibilities. The HTTP controller parses JSON and instantly hands it to a request class. The application service catches that class and immediately invokes a repository method with the exact same signature. The repository delegates to an ORM wrapper that converts the model into another internal entity.
+
+In his Stanford systems lectures, John Ousterhout coined the term deep module to describe what good design actually looks like: a small, clean surface concealing deep implementation mechanics. When your layers are paper-thin pass-through methods, you create shotgun surgery without getting any decoupling in return.
+
+Merge the passthrough wrappers. If a layer does not enforce invariants, isolate changes, or hide messy details, remove it.
+
+Next time you open a PR that touches ten files just to rename an argument.
+
+What is the worst pass-through chain you have ever had to maintain?
+
+#softwaredesign #cleancode #systemdesign #softwareengineering #programming
