@@ -924,5 +924,21 @@
     "slot": "2026-10-04T13:30:00.000Z",
     "igMediaId": "18132777145780601",
     "publishedAt": "2026-10-04T13:51:08Z"
+  },
+  {
+    "slug": "what-happens-paying-with-upi",
+    "topic": "what actually happens when you pay with UPI",
+    "hook": "You scan a paper QR code at a stall.",
+    "source": "series",
+    "track": "everyday",
+    "category": "everyday",
+    "episodeId": "everyday-03",
+    "length": "tight",
+    "seconds": 87,
+    "lang": "en",
+    "art": "qr-code",
+    "at": "2026-10-05T07:52:25.317Z",
+    "ytVideoId": "e0mVC6E_pqg",
+    "slot": "2026-10-05T07:30:00.000Z"
   }
 ]
