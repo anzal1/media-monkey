@@ -959,5 +959,20 @@
     "slot": "2026-10-05T13:30:00.000Z",
     "igMediaId": "18161946118494225",
     "publishedAt": "2026-10-05T17:01:20Z"
+  },
+  {
+    "slug": "byte-endianness-explained",
+    "topic": "endianness",
+    "hook": "Four bytes just gave you two completely different numbers.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-04",
+    "length": "tight",
+    "seconds": 99.3,
+    "lang": "en",
+    "at": "2026-10-05T20:30:41.667Z",
+    "ytVideoId": "0WJxkqAly8c",
+    "slot": "2026-10-05T17:30:00.000Z"
   }
 ]
