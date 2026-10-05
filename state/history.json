@@ -942,5 +942,20 @@
     "slot": "2026-10-05T07:30:00.000Z",
     "igMediaId": "18021674828874368",
     "publishedAt": "2026-10-05T07:53:33Z"
+  },
+  {
+    "slug": "chunked-prefill-decode-jitter",
+    "topic": "chunked prefill trades first token latency to eliminate decode jitter",
+    "hook": "Your smooth LLM stream freezes for two seconds.",
+    "source": "live",
+    "track": "production",
+    "category": "ai-systems",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 137.5,
+    "lang": "en",
+    "at": "2026-10-05T16:59:43.694Z",
+    "ytVideoId": "A1SyUcFu9EA",
+    "slot": "2026-10-05T13:30:00.000Z"
   }
 ]
