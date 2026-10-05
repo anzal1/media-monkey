@@ -83,7 +83,7 @@
   },
   "format": "explainer",
   "explainer": {
-    "theme": "diorama"
+    "theme": "paper"
   },
   "handle": "",
   "wordsPerSecond": 2.62

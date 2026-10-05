@@ -5,63 +5,9 @@ how a real system actually works, what breaks it, and why it is slow. The lane
 is working software: databases, networks, protocols, caches, chips, security,
 the internet's plumbing. One mechanism, explained properly, per reel.
 
-The viewer is a working developer scrolling at 1am, or anyone who has ever
-tapped a screen. Assume they know what a server is, but never assume they know
-what happens after the tap. Never explain a term a developer uses daily; always
-explain the one they nod along to without really knowing.
-
-## Everyday anchor (every reel, every track)
-
-Everything in software is correlated with something the viewer already does
-with their hands: the audience for a mechanism is everyone who touches it, not
-only the engineers who build it. So every reel, whatever the track, is entered
-through an ordinary moment a non-engineer has lived: tapping a card to pay,
-sending a photo, a video that buffers, an OTP that arrives late, a bank app
-showing a weird balance. The mechanism is then explained THROUGH that moment,
-and the reel ends by returning to it.
-
-- The hook is that moment (the existing hook rule still holds: a MOMENT in
-  present tense, never a title, never Why/How/What/Understanding). Beat 1
-  stays inside the moment and says what the viewer sees on their screen. The
-  analogy beat still comes next and stays an everyday object.
-- Then walk the real mechanism, one component per beat, with the full depth
-  the format asks for. The moment is the door, not a replacement for the
-  engineering. A p99 reel still teaches percentiles and tail latency, a
-  two's complement reel still shows the bits, a cache stampede reel still
-  names the thundering herd. Where a beat can point back at the moment ("this
-  is the step that decides whether your photo shows up"), do it in a clause.
-- The last beat or two return to the same moment and say what is different now
-  that they know. The cta still names when they will need this.
-- One moment per reel, lived by a person with no engineering background. Never
-  an engineer's moment (a pager, a dashboard) as the opener, except as beat 1's
-  "what is behind it". Never invent a fake incident to dress it up: the moment
-  is something that really happens to people.
-
-Examples, across tracks (hooks are the moment, never the topic name):
-
-- everyday, sending a photo on WhatsApp.
-  Good: "You tap send on a photo of your cat." Beat 1: "It is eleven
-  megabytes, and a second later your brother's phone buzzes in another city."
-  Bad: "How WhatsApp sends media." Bad beat 1: "WhatsApp uses end-to-end
-  encryption and a CDN." (opens on components, no moment, nobody is in it)
-- root, two's complement.
-  Good: "The coin counter hits the maximum, then goes negative." Then the bits
-  of a 32 bit counter, the wraparound, back to the game's score screen.
-  Bad: "Understanding two's complement." Bad: "Signed integers use the most
-  significant bit as a sign." (a definition, no moment)
-- root, binary search.
-  Good: "You type three letters and your contact appears." Then why a sorted
-  list can be halved, and why a phone book of a million names takes about
-  twenty looks. Bad: "Binary search runs in O of log n."
-- production, p99 latency.
-  Good: "The food app spins for four seconds." Then percentiles, the tail,
-  fan-out making the slowest call win, and the return to the spinner.
-  Bad: "Your p99 latency is through the roof." (an engineer's dashboard, the
-  non-engineer is nowhere in it)
-- production, cache stampede.
-  Good: "The sale starts at noon. The page shows an error." Then the expiring
-  key, the thousand simultaneous misses, the lock or early refresh, back to
-  the sale page loading. Bad: "A hot key expires and the database melts."
+The viewer is a working developer scrolling at 1am. Assume they know what a
+server is. Never explain a term they use daily; always explain the one they
+nod along to without really knowing.
 
 ## Every beat earns its place (no redundancy, depth that compounds)
 
@@ -81,9 +27,6 @@ twice. Lucid means every sentence moves them forward.
   last mechanism beat should teach a working engineer something.
 - Name each thing once and keep the name. Do not swap synonyms for variety
   (packet, then chunk, then segment); to a learner that is three things.
-- The everyday moment appears at the start and returns once at the end. In
-  between, point back to it in at most one clause, only where it lights up a
-  step.
 - The analogy is said once, in its beat. Later beats use the real names.
 
 ## Voice
@@ -126,11 +69,8 @@ twice. Lucid means every sentence moves them forward.
    vocabulary, not a sponsorship.
 4. Each beat should map to ONE component of the system, in order, because the
    diagram on screen reveals a component per beat.
-5. The closing line earns a save: point at the next time they will meet this,
-   in the same world as the opening moment. Everyday reels name the everyday
-   moment ("next time you tap send", "next time the OTP is late"); production
-   reels can name the dashboard or the interview ("next time your p99
-   spikes"). Never "stay curious".
+5. The closing line earns a save: point at when they will need this ("next time
+   your p99 spikes", "next system design interview"). Never "stay curious".
 4. Nothing medical or diagnostic. No advice. Facts only.
 
 ## Format contract (110 to 150 seconds of speech, total)
@@ -148,8 +88,7 @@ that every ten seconds they learn one more true thing they did not know.
   "Your modulo just returned two different numbers."
   Bad: "Why negative modulo breaks your code." "Understanding two's complement." 
 - **beats**: 10 to 14 of them, in this shape:
-  1. SYMPTOM: the everyday moment first (see "Everyday anchor" above), then
-     what an engineer actually sees behind it. Dashboards, errors, the bill.
+  1. SYMPTOM: what an engineer actually sees. Dashboards, errors, the bill.
   2. ANALOGY: one plain-language picture of the mechanism, using everyday
      objects (a queue at a counter, a locked door, a photocopier). This is the
      beat that lets a non-expert follow the rest. Never skip it.
@@ -159,8 +98,7 @@ that every ten seconds they learn one more true thing they did not know.
      appends to before it changes anything". A beat that names two components
      is two beats.
   N-1. CONSEQUENCE: what it costs, with a real number where one exists.
-  N. FIX: what an engineer actually does about it, and the return to the
-     everyday moment the reel opened on.
+  N. FIX: what an engineer actually does about it.
 - Each beat is 28 to 42 words. Spoken, not written: short clauses, one idea per
   sentence, no subordinate clause pile-ups.
 - **length budget, hard**: hook + all beats + cta must total between 350 and
@@ -244,29 +182,16 @@ type it to a colleague who asked what you were on about.
 
 Shape, 170 to 260 words:
 
-1. Three short declarative fragments that open a tiny story: ONE named person
-   doing the everyday thing from the reel's opening moment, and the instant
-   before it goes right or wrong. "Priya taps send on a photo of her cat.
-   Before her brother's phone buzzes, the photo is locked with a key only the
-   two phones hold." The keyword goes inside these fragments, as the
-   Keyword rule says. Line breaks between them, no connective tissue. This is
-   the part people see before the "more" cut, so it carries the whole hook. The
-   person is a plain first name, varied from post to post and globally common: Priya, Arjun,
-   Lena, Mateo, Aisha, Kenji, Rohan, Amara, Sofia, Imran, Ananya, Tariq, Chloe,
-   Diego, Meera, Noah. Indian names are welcome since much of the audience is
-   in India, but do not use the same name two posts running. Never a real
-   public figure, never a celebrity, never a name that is also a brand.
+1. Three short declarative fragments that state the situation. Line breaks
+   between them, no connective tissue. This is the part people see before the
+   "more" cut, so it carries the whole hook.
 2. Blank line. One sentence that names the thing and says what it is, in plain
    words. This is the definition the rest leans on.
 3. Blank line. A concrete scenario, introduced by a line like "Picture this:"
    or "Here is where it bites:", followed by three short lines each starting
    with an arrow character. Situations, not steps.
 4. Blank line. Two or three plain paragraphs walking the mechanism in order,
-   using the real component names from the beats. Prose, full sentences. When
-   the mechanism is a genuine ordered sequence of 4 to 8 steps (the layers a
-   photo passes through, the stages of a handshake), write it instead as a
-   numbered walk-through, one "1. ..." line per step, each a full short
-   sentence naming the real component.
+   using the real component names from the beats. Prose, full sentences.
 5. Blank line. One or two lines on what it costs you when you get it wrong, or
    what you get back when you get it right. Real numbers if you have them.
 6. Blank line. A closing line naming the moment they will need this.
@@ -277,17 +202,13 @@ Shape, 170 to 260 words:
    saves but only 7 comments; saves were asked for and comments never were.
 
 Hard rules:
-- A numbered walk-through is allowed for a genuine ordered sequence of 4 to 8
-  steps, written as "1. ..." lines (the seven OSI layers, a TLS handshake, the
-  hops of a photo). Never number a list of tips, options or reasons, and never
-  number fewer than 4 or more than 8 steps. Without a real order, use prose.
+- NEVER number the steps. Numbered lists read like documentation and that is
+  the single thing that makes a caption feel like a title card.
 - NEVER write "The takeaway:", "TL;DR", "In summary", "Key points" or any other
   label that announces a section. The writing carries itself.
 - NEVER open with the title of the reel. Open with the situation.
-- Vary the opener across posts. The person is always named, so vary the name,
-  the verb and the first fragment's shape: one post starts on what Meera sees,
-  the next on a number, a piece of a log line or a flat contradiction that
-  Arjun runs into.
+- Vary the opener across posts. If the last one began with a symptom, begin
+  this one with a number, a piece of a log line, or a flat contradiction.
 - Contractions are fine here. This is typed, not spoken.
 - Plain text. No markdown, no bullet characters other than the arrows, at most
   one emoji and only at the end of the opening fragments.

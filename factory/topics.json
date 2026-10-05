@@ -1211,9 +1211,8 @@
     }
   },
   "tracks": {
-    "everyday": 0.4,
-    "root": 0.25,
-    "ai": 0.2,
-    "production": 0.15
+    "root": 0.4,
+    "ai": 0.3,
+    "production": 0.3
   }
 }
