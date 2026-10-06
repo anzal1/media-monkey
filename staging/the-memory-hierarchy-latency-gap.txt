@@ -1,0 +1,22 @@
+Your CPU runs billions of operations per second.
+Your main memory sits hundreds of cycles away.
+Understanding the memory hierarchy explains your slow loops.
+
+The memory hierarchy is the layered architecture of storage ranging from tiny, single-cycle CPU registers down to massive, high-latency DRAM.
+
+Picture this:
+→ Scanning a flat array runs at wire speed
+→ Traversing a linked list stalls the instruction pipeline
+→ Random hash lookups waste two hundred cycles per miss
+
+When your core requests a byte, it checks the ultra-fast L1 cache first. If the cache line is absent, the hardware searches L2 and L3 before finally asking external DRAM.
+
+Main memory is not a flat pool. A cache miss forces modern processors to burn hundreds of clock cycles doing absolutely nothing while waiting for the memory bus.
+
+Pack data contiguously in flat arrays to let hardware prefetchers saturate L1 cache.
+
+From the root, part 5. Follow for part 6.
+
+Have you ever replaced a linked structure with a flat array and watched runtimes drop?
+
+#memoryhierarchy #cpuarchitecture #cachelocality #systemsperformance #lowlevelcode

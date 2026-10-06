@@ -1027,5 +1027,20 @@
     "slot": "2026-10-06T13:30:00.000Z",
     "igMediaId": "18341829256256454",
     "publishedAt": "2026-10-06T14:59:36Z"
+  },
+  {
+    "slug": "the-memory-hierarchy-latency-gap",
+    "topic": "the memory hierarchy",
+    "hook": "Your code treats all RAM as equal.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-06",
+    "length": "tight",
+    "seconds": 74.2,
+    "lang": "en",
+    "at": "2026-10-06T18:08:25.075Z",
+    "ytVideoId": "kUcvWrvnMrc",
+    "slot": "2026-10-06T17:30:00.000Z"
   }
 ]
