@@ -1010,5 +1010,20 @@
     "slot": "2026-10-06T07:30:00.000Z",
     "igMediaId": "17957620548015429",
     "publishedAt": "2026-10-06T08:24:07Z"
+  },
+  {
+    "slug": "raft-cannot-commit-older-terms",
+    "topic": "why raft forbids committing log entries from older terms directly",
+    "hook": "Your cluster just uncommitted a committed write.",
+    "source": "live",
+    "track": "production",
+    "category": "distributed",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 126.4,
+    "lang": "en",
+    "at": "2026-10-06T14:57:56.037Z",
+    "ytVideoId": "i2MyR3aWYto",
+    "slot": "2026-10-06T13:30:00.000Z"
   }
 ]
