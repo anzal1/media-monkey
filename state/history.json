@@ -1061,5 +1061,20 @@
     "slot": "2026-10-07T03:00:00.000Z",
     "igMediaId": "18075821006448039",
     "publishedAt": "2026-10-07T03:00:08Z"
+  },
+  {
+    "slug": "why-transaction-rollbacks-break-async-tests",
+    "topic": "why transaction rollback testing breaks asynchronous worker verification",
+    "hook": "Your integration test passed, but production dropped everything.",
+    "source": "live",
+    "track": "production",
+    "category": "testing",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 79.3,
+    "lang": "en",
+    "at": "2026-10-07T07:57:47.891Z",
+    "ytVideoId": "uR6ObMddxB4",
+    "slot": "2026-10-07T07:30:00.000Z"
   }
 ]
