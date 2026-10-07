@@ -1,0 +1,22 @@
+Your extractor runs at temperature zero.
+Outputs still drift on batch jobs.
+Debugging sampling and temperature exposes where reproducibility breaks.
+
+Temperature is not a creativity slider, it is a division step applied to raw output logits before the softmax exponential.
+
+Picture this:
+→ A model outputs raw scores across 32,000 vocabulary tokens
+→ Dividing by 0.2 pulls the top logit far ahead of the pack
+→ Softmax turns that gap into a 99 percent certainty
+
+When temperature rises above 1, the division compresses the gap between the best token and the rest of the vocabulary. The probability curve flattens out. To keep flat distributions from picking incoherent words, top-p, or nucleus sampling, sorts candidates descending, accumulates their probabilities, and truncates the distribution the moment that running sum hits your threshold.
+
+Even with temperature set to zero, parallel GPU threads perform floating point additions in non-deterministic order. Because float addition is non-associative, microscopic differences in the final digits flip tied logits and change the selected token.
+
+Pin your random seeds, run deterministic kernel routines, and enforce greedy decoding without top-p sampling on your inference engine if your pipeline depends on strict JSON validation.
+
+AI system design, part 4. Follow for part 5.
+
+How do you enforce deterministic JSON output across parallel batch workers?
+
+#llmops #machinelearning #systemdesign #transformers #softwareengineering

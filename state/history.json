@@ -1044,5 +1044,20 @@
     "slot": "2026-10-06T17:30:00.000Z",
     "igMediaId": "18056696549643185",
     "publishedAt": "2026-10-06T18:10:23Z"
+  },
+  {
+    "slug": "sampling-and-temperature-in-llms",
+    "topic": "sampling and temperature",
+    "hook": "Your prompt returned two completely different answers.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-04",
+    "length": "deep",
+    "seconds": 140.8,
+    "lang": "en",
+    "at": "2026-10-07T01:05:42.982Z",
+    "ytVideoId": "6cBB0Ojek1I",
+    "slot": "2026-10-07T03:00:00.000Z"
   }
 ]
