@@ -1,0 +1,24 @@
+Your evals fail on identical seeds.
+Temperature is pinned strictly at zero.
+Yet nondeterminism at temperature zero keeps flipping tokens. ⚠️
+
+Dynamic batching on production GPUs changes the physical order of floating-point reduction trees.
+
+Here is where it bites:
+→ Golden dataset tests fail randomly on CI
+→ Structured JSON schemas intermittently break formatting
+→ Production regression benchmarks give non-reproducible scores
+
+When you call an LLM API, the inference engine packs your prompt into a dynamic batch alongside other requests. As the workload on the server spikes and drops, your prompt gets tiled differently across thousands of GPU cores.
+
+Because computer hardware uses finite-precision numbers, IEEE 754 floating point addition is not associative. Changing the order in which parallel threads accumulate numbers introduces tiny rounding differences in the final logits. When two candidates sit right next to each other, that micro-shift hands the win to the other token. One flipped token cascades into an entirely different completion.
+
+If you need byte-for-byte reproducibility, you must disable dynamic batching, force a batch size of one, and run deterministic cuBLAS routines.
+
+Next time your eval suite flakes out on identical prompts.
+
+Have you ever caught an automated test failing just because an API server changed its batch size?
+
+AI system design, part 5. Follow for part 6.
+
+#llmops #systemdesign #gpusharding #machinelearning #cuda

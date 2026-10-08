@@ -1095,5 +1095,20 @@
     "slot": "2026-10-07T17:30:00.000Z",
     "igMediaId": "18083262710370071",
     "publishedAt": "2026-10-07T18:45:03Z"
+  },
+  {
+    "slug": "nondeterminism-at-temperature-zero",
+    "topic": "nondeterminism at temperature zero",
+    "hook": "You set temperature to zero. The output changes.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-05",
+    "length": "tight",
+    "seconds": 98.8,
+    "lang": "en",
+    "at": "2026-10-08T01:17:49.188Z",
+    "ytVideoId": "fgj2IW5CHC4",
+    "slot": "2026-10-08T03:00:00.000Z"
   }
 ]
