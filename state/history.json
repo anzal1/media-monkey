@@ -1129,5 +1129,20 @@
     "slot": "2026-10-08T07:30:00.000Z",
     "igMediaId": "18126757723856073",
     "publishedAt": "2026-10-08T08:18:21Z"
+  },
+  {
+    "slug": "arrays-vs-linked-lists-cache",
+    "topic": "arrays vs linked lists",
+    "hook": "Your linked list insert is secretly slower.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-09",
+    "length": "tight",
+    "seconds": 84.1,
+    "lang": "en",
+    "at": "2026-10-08T15:50:59.655Z",
+    "ytVideoId": "tYcuZz_qVjY",
+    "slot": "2026-10-08T13:30:00.000Z"
   }
 ]
