@@ -1,0 +1,24 @@
+Your cache lookups crawl.
+CPU usage spikes to 100% on trivial traffic.
+Power of two hash tables are quietly collapsing your bucket array.
+
+Power-of-two table sizing trades hashing entropy for single-cycle bitwise masking.
+
+Picture this:
+→ Sizing your hash table capacity to powers of two for speed
+→ Inserting memory pointers or IDs that increment with a fixed stride
+→ Watching ninety percent of your buckets sit completely empty
+
+Compilers and runtimes love sizing hash tables to exact powers of two. Division on modern x86 and ARM processors is notoriously slow, costing between ten and twenty clock cycles. A bitwise AND against capacity minus one drops that index mapping cost to a single cycle.
+
+That speed comes with a trap. A bitwise mask only reads the lowest bits of the hash. If your keys are memory addresses with 64-byte cache alignment or database IDs generated in fixed steps, the lowest bits are consistently zero or share common factors with your capacity.
+
+When the stride and the table size share powers of two, the hash collapses into a tiny fraction of available buckets. Your constant-time lookup degrades into an O(N) collision scan that blows out CPU cache lines.
+
+Apply a bit mixer like SplitMix to scramble your bits before masking, or ditch power of two sizing for prime-number capacities using Lemire reduction.
+
+Next time your lookup p99 spikes on integer keys, inspect your bucket distribution.
+
+Have you ever caught a stride-aligned collision storm in production, or did your hash function mask it?
+
+#hashtables #datastructures #latency #softwareengineering #computerscience
