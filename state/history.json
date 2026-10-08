@@ -1146,5 +1146,20 @@
     "slot": "2026-10-08T13:30:00.000Z",
     "igMediaId": "18099002582309336",
     "publishedAt": "2026-10-08T15:53:02Z"
+  },
+  {
+    "slug": "struct-layout-and-padding",
+    "topic": "struct layout and padding",
+    "hook": "You order three fields and waste twelve bytes.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-10",
+    "length": "deep",
+    "seconds": 123.9,
+    "lang": "en",
+    "at": "2026-10-08T18:37:23.970Z",
+    "ytVideoId": "FxNB2IH52dQ",
+    "slot": "2026-10-08T17:30:00.000Z"
   }
 ]
