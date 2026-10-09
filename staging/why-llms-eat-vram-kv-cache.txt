@@ -1,0 +1,24 @@
+Your long prompt hits generation step four hundred.
+Active GPU allocation hits ninety-eight percent.
+The kv cache just silently consumed twenty gigabytes of video memory. 💥
+
+The KV cache is the stored matrix of past attention keys and values kept in memory so an LLM never has to recompute context for prior tokens.
+
+Picture this:
+→ A seventy-billion parameter model loads into eighty gigabytes of VRAM
+→ One user starts a long document analysis chat
+→ Concurrent requests crash with out-of-memory errors
+
+Transformers calculate self-attention using three projections: queries, keys, and values. When generating the next token, the new query needs to dot-product against every previous key to weight every previous value.
+
+Without a cache, decoding token five thousand requires recalculating four thousand nine hundred ninety-nine identical states. So inference engines pin those key-value pairs in high-bandwidth memory. The catch is scale. Across dozens of transformer layers and heads, a long context conversation easily eats hundreds of megabytes per request, starving your batch size.
+
+Grouped query attention cuts head counts down, while paged memory allocation stops fragmentation dead in its tracks.
+
+Remember this before budgeting GPU clusters for long-context workloads.
+
+How do you handle KV cache limits when scaling concurrent users: aggressive context truncation or prompt caching?
+
+AI system design, part 7. Follow for part 8.
+
+#vllm #llminference #transformers #gpu #machinelearning

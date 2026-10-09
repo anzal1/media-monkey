@@ -1214,5 +1214,20 @@
     "slot": "2026-10-09T13:30:00.000Z",
     "igMediaId": "18627887350014141",
     "publishedAt": "2026-10-09T15:13:21Z"
+  },
+  {
+    "slug": "why-llms-eat-vram-kv-cache",
+    "topic": "the KV cache",
+    "hook": "Your twenty-page chat just killed the GPU.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-07",
+    "length": "tight",
+    "seconds": 76.1,
+    "lang": "en",
+    "at": "2026-10-09T18:08:58.892Z",
+    "ytVideoId": "abaox-bY9sQ",
+    "slot": "2026-10-09T17:30:00.000Z"
   }
 ]
