@@ -1163,5 +1163,20 @@
     "slot": "2026-10-08T17:30:00.000Z",
     "igMediaId": "18381251884230437",
     "publishedAt": "2026-10-08T18:38:48Z"
+  },
+  {
+    "slug": "prefill-vs-decode-gpu-bottleneck",
+    "topic": "prefill vs decode",
+    "hook": "Your GPU sits idle while writing one token.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-06",
+    "length": "deep",
+    "seconds": 131.4,
+    "lang": "en",
+    "at": "2026-10-09T01:29:04.683Z",
+    "ytVideoId": "yMeoUgBRs0A",
+    "slot": "2026-10-09T03:00:00.000Z"
   }
 ]
