@@ -1180,5 +1180,20 @@
     "slot": "2026-10-09T03:00:00.000Z",
     "igMediaId": "17969591493158555",
     "publishedAt": "2026-10-09T03:00:09Z"
+  },
+  {
+    "slug": "boolean-flags-cyclomatic-complexity",
+    "topic": "boolean parameter flags in shared functions silently double cyclomatic complexity",
+    "hook": "You add one boolean flag to a shared function.",
+    "source": "live",
+    "track": "production",
+    "category": "code-craft",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 85,
+    "lang": "en",
+    "at": "2026-10-09T08:16:45.478Z",
+    "ytVideoId": "aJyObdca3yc",
+    "slot": "2026-10-09T07:30:00.000Z"
   }
 ]
