@@ -1,0 +1,24 @@
+Your flame graph shows half your CPU time spent in malloc.
+Every hot loop iteration constructs a temporary buffer.
+The performance gap of stack vs heap is hiding in your hardware.
+
+Stack memory is managed with a single hardware register, while heap memory requires a complex dynamic allocator tracking fragmented blocks across virtual memory.
+
+Picture this:
+→ A local function variable is created by moving the stack pointer.
+→ An identical heap buffer searches through linked free lists and arena bins.
+→ Multiple CPU threads stall each other fighting over memory metadata locks.
+
+On the stack, your CPU subtracts a few bytes from the stack pointer register. That single instruction takes under one clock cycle, and the memory address is almost certainly warm in your L1 CPU cache. Deallocation is just moving the pointer back.
+
+The heap cannot do that. An allocator like jemalloc or glibc ptmalloc must categorize allocations into size classes, search thread caches, and fall back to atomic synchronization or kernel page allocations when bins run dry. Over time, freeing memory requires coalescing adjacent blocks to combat heap fragmentation, while scattered pointers destroy your CPU data cache locality.
+
+A stack frame allocation takes under half a nanosecond. An uncontended heap allocation takes ten to fifty nanoseconds, jumping to hundreds of nanoseconds under heavy thread contention.
+
+Keep small, short-lived values local so your compiler avoids escape analysis penalties, or pre-allocate arena buffers for your inner loops.
+
+How much heap churn does your compiler escape analysis catch in your hot paths?
+
+From the root, part 9. Follow for part 10.
+
+#computerscience #systemsengineering #memorymanagement #lowlevel #softwareengineering

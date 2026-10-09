@@ -1197,5 +1197,20 @@
     "slot": "2026-10-09T07:30:00.000Z",
     "igMediaId": "18119625281288526",
     "publishedAt": "2026-10-09T08:18:10Z"
+  },
+  {
+    "slug": "stack-vs-heap-allocation-cost",
+    "topic": "stack vs heap",
+    "hook": "Your tight loop allocates memory ten million times.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-13",
+    "length": "deep",
+    "seconds": 144.6,
+    "lang": "en",
+    "at": "2026-10-09T15:11:17.332Z",
+    "ytVideoId": "KlxIBv6endc",
+    "slot": "2026-10-09T13:30:00.000Z"
   }
 ]
