@@ -1282,5 +1282,20 @@
     "slot": "2026-10-10T13:30:00.000Z",
     "igMediaId": "18075978398725911",
     "publishedAt": "2026-10-10T14:29:14Z"
+  },
+  {
+    "slug": "explicit-socket-buffers-break-window-scaling",
+    "topic": "setting explicit socket receive buffers disables linux dynamic window scaling",
+    "hook": "You tuned your socket buffers and throughput tanked.",
+    "source": "live",
+    "track": "production",
+    "category": "networking",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 91.4,
+    "lang": "en",
+    "at": "2026-10-10T17:07:06.607Z",
+    "ytVideoId": "gZBxZjYcnaI",
+    "slot": "2026-10-10T17:30:00.000Z"
   }
 ]

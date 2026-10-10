@@ -1,0 +1,22 @@
+A 10Gbps link running at 50Mbps.
+Every file transfer stalling on long pipes.
+Hardcoding your TCP socket buffer size killed throughput. 📉
+
+Linux TCP autotuning dynamically expands your receive window based on link latency, unless you manually override it.
+
+Here is where it bites:
+→ An engineer sets SO_RCVBUF to 2MB in production code.
+→ The kernel doubles it for overhead but locks the window ceiling.
+→ Dynamic right-sizing is instantly disabled on that socket.
+
+When you call setsockopt with SO_RCVBUF, the Linux kernel sets a static flag. It doubles the requested allocation to cover internal buffer bookkeeping, then permanently shuts off DRS for that socket. The kernel refuses to advertise a larger window even if system memory is completely free.
+
+Without a dynamic receive window, the sender must stop and wait for round-trip acknowledgments once your small fixed buffer fills up. On a transatlantic pipe with 70ms latency, your throughput is artificially throttled to a fraction of the line rate.
+
+Leaving buffers untouched lets Linux automatically grow windows up to the limit configured in tcp_rmem, saturating multi-gigabit pipes effortlessly.
+
+Next time your network transfer stalls.
+
+Have you ever seen legacy socket tuning tank speeds on modern infrastructure?
+
+#networking #linux #tcp #performance #systems
