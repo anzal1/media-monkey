@@ -1231,5 +1231,20 @@
     "slot": "2026-10-09T17:30:00.000Z",
     "igMediaId": "18372056854241489",
     "publishedAt": "2026-10-09T18:10:13Z"
+  },
+  {
+    "slug": "ssrf-dns-rebinding-time-of-check",
+    "topic": "your ssrf filter checks the hostname before the socket connects",
+    "hook": "Your webhook validator just approved a safe URL.",
+    "source": "live",
+    "track": "production",
+    "category": "security",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 146.9,
+    "lang": "en",
+    "at": "2026-10-10T01:17:13.128Z",
+    "ytVideoId": "sq9DVkMkYz8",
+    "slot": "2026-10-10T03:00:00.000Z"
   }
 ]

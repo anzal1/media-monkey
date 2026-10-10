@@ -1,0 +1,24 @@
+Your ssrf filter checks the hostname before connecting.
+The validator resolves a clean public IP.
+Then your server dumps its cloud credentials 💥
+
+DNS rebinding is a time-of-check to time-of-use flaw where an attacker swaps a domain's IP address between validation and connection.
+
+Here is where it bites:
+→ A customer supplies a webhook URL pointing to their own domain
+→ Your app verifies the domain resolves to an external IP
+→ Your HTTP client re-resolves the domain and fetches your private subnet
+
+The issue comes from checking DNS twice. First, your application runs getaddrinfo to verify the destination is public. The attacker DNS server returns a benign IP address with a zero-second time-to-live.
+
+Because the TTL expired immediately, your HTTP client library cannot use the cached result. When it opens the TCP socket, it resolves the domain a second time. The attacker's authoritative DNS server responds with 169.254.169.254 or 127.0.0.1.
+
+Your client connects directly to your cloud metadata service, leaking runtime tokens and IAM credentials right back to the caller.
+
+Pre-flight URL validation cannot defend against this race condition.
+
+Keep this handy next time you implement external webhooks.
+
+Do you pin socket IPs in custom transport code or isolate outbound requests behind a dedicated egress proxy?
+
+#ssrf #websecurity #dnsrebinding #infosec #systemdesign
