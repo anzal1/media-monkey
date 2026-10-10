@@ -1,0 +1,26 @@
+Your GPU sits at 10% compute.
+Your VRAM is totally exhausted.
+PagedAttention fixes where the memory went. 📉
+
+Traditional LLM inference preallocates static, contiguous memory slabs for the maximum output length of every single request.
+
+Picture this:
+→ You allocate 2,048 tokens worth of KV cache upfront.
+→ The model returns a quick three-word answer.
+→ Over 95% of that reserved memory stays locked and wasted.
+
+In standard serving stacks, internal and external fragmentation wastes between 60% and 80% of total GPU memory. Because memory must be contiguous, the engine cannot pack requests together, leaving compute cores starving for work.
+
+PagedAttention adapts the virtual memory concept from classic operating systems. Instead of contiguous allocations, it slices the KV cache into fixed-size physical blocks of 16 tokens scattered across VRAM. A block table dynamically maps logical positions to physical addresses on demand.
+
+When multiple sequences share a system prompt or beam search branches, they point to the identical physical blocks using copy-on-write mechanics until outputs diverge.
+
+Memory waste drops to under 4%, lifting serving throughput by up to 4x on identical hardware.
+
+Remember this before buying your next GPU node.
+
+How do you handle prompt caching and multi-tenant batching in your production inference pipelines?
+
+AI system design, part 8. Follow for part 9.
+
+#vllm #pagedattention #llminference #systemdesign #gpu
