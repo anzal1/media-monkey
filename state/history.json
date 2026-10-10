@@ -1248,5 +1248,20 @@
     "slot": "2026-10-10T03:00:00.000Z",
     "igMediaId": "18624596212021819",
     "publishedAt": "2026-10-10T03:00:05Z"
+  },
+  {
+    "slug": "pipelining-and-branch-prediction",
+    "topic": "pipelining and branch prediction",
+    "hook": "Sorting an array makes your loop run faster.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-14",
+    "length": "tight",
+    "seconds": 90.3,
+    "lang": "en",
+    "at": "2026-10-10T07:56:40.216Z",
+    "ytVideoId": "ri4uo2XPvGc",
+    "slot": "2026-10-10T07:30:00.000Z"
   }
 ]

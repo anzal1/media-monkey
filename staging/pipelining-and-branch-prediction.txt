@@ -1,0 +1,24 @@
+A sorted array filters six times faster than an unsorted one.
+Your simple if-condition costs twenty cycles on a coin flip.
+Hardware branch prediction explains why random data wrecks throughput. 💥
+
+Branch prediction is the hardware mechanism inside modern processors that guesses which path an if-statement will take before evaluating the condition.
+
+Picture this:
+→ Running an identical filtering loop on unsorted integers
+→ The CPU guessing wrong on half the conditional jumps
+→ The execution pipeline getting completely flushed every misprediction
+
+Modern processors pipeline instructions across dozens of stages to run high clock frequencies. Fetching, decoding, and calculating happens simultaneously like an assembly line. When an if-condition arrives, the CPU cannot afford to pause the line for twenty clock cycles waiting on an answer. It consults an internal history table and gambles on a path.
+
+When your array is sorted, all small numbers come first. The predictor sees thousands of true branches in a row, guesses true every time, and runs at full throttle. On unsorted data, the branch outcome jumps randomly. Every misprediction forces the processor to discard all speculative work, flush the pipeline, and restart.
+
+Eliminating unpredictable branches with bitwise operations or conditional moves cuts inner loop latency by over sixty percent.
+
+Keep this handy next time you optimize hot loops.
+
+From the root, part 10. Follow for part 11.
+
+Have you ever rewritten a hot branch into a branchless mask in production?
+
+#branchprediction #cpuarchitecture #pipelining #systemsperformance #lowlevel
