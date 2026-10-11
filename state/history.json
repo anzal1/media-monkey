@@ -1333,5 +1333,20 @@
     "slot": "2026-10-11T07:30:00.000Z",
     "igMediaId": "18098865278100273",
     "publishedAt": "2026-10-11T08:04:24Z"
+  },
+  {
+    "slug": "how-continuous-batching-fixes-gpu-idle",
+    "topic": "continuous batching",
+    "hook": "Your GPU sits idle while serving five prompts.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-09",
+    "length": "deep",
+    "seconds": 167.3,
+    "lang": "en",
+    "at": "2026-10-11T14:48:58.859Z",
+    "ytVideoId": "DXvIqBWLZHY",
+    "slot": "2026-10-11T13:30:00.000Z"
   }
 ]
