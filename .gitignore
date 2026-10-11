@@ -19,3 +19,5 @@ insights/visuals/ci/*.mp4
 !factory/machines-gen/out/
 factory/machines-gen/out/**/page/
 factory/machines-gen/out/baseline/
+insights/visuals/gen/clips/*.mp4
+insights/visuals/gen/clips/*.txt
