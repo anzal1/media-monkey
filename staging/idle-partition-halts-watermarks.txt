@@ -1,0 +1,22 @@
+Your streaming cluster is consuming fifty thousand records a second.
+Your tumbling window has completely stopped outputting results.
+One silent channel breaks event time watermarks across your entire topology. ⏱️
+
+A watermark is a streaming engine's way of measuring how far event time has actually progressed across all parallel inputs.
+
+Here is where it bites:
+→ Producers stop publishing to a single low-volume Kafka partition
+→ The consumer task computes its output watermark as the minimum of all inputs
+→ The silent partition never emits a new timestamp, stalling downstream windows
+
+When you aggregate streams by event time, late data requires careful handling. Downstream operators cannot close a time window until they are certain no earlier records will arrive. To provide that guarantee, an operator tracking multiple inputs computes its global watermark as the minimum timestamp across every partition it consumes.
+
+If one partition goes completely quiet, its local timestamp never updates. The operator sees that frozen minimum and halts the global watermark. Millions of active records from busy partitions queue up inside RocksDB state waiting for the window to fire, until the task manager runs out of memory.
+
+Setting an idleness timeout tells the framework to temporarily exclude quiet partitions from watermark generation, freeing the active stream to advance.
+
+Remember this next time your streaming pipeline stalls under heavy load.
+
+Have you ever had an idle partition crash a Flink or Spark job in production?
+
+#apacheflink #apachekafka #streamprocessing #dataengineering #systemdesign
