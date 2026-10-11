@@ -1,0 +1,64 @@
+{
+  "concept": "token bucket rate limiter",
+  "model": "gemini-3.8-flash",
+  "modelVersion": "gemini-3.8-flash",
+  "kind": "token-bucket",
+  "mapping": "A slotted vertical coin-hopper whose tokens represent permitted requests; when a request arrives, a push-slide dispenses a bottom brass token, while an overhead trickle chute refills the stack until full, spilling any excess over an overflow weir.",
+  "parts": "Base: four stepped cylindrical feet, main beveled base slab, inset perimeter groove, corner screw rings and dots, raised machine plinth. Structure: four vertical corner guide rods, rear graduated index scale bar with level tick marks, top crown retaining collar, inflow trickle chute with support strut, overflow spillway chute, overflow collection cup, lower slide bed plate, front and rear slide guide rails, slide bearing gland, exit drop collar, inclined exit runway, and machined token catch tray. Mechanism: sliding dispenser shuttle with token pocket, push-button actuator drawbar, knurled plunger cap, and helical return spring split into back and front coils. Subject: precision milled brass token pucks stacked in the hopper column, plus exiting discharged tokens and arriving refill tokens.",
+  "validated": true,
+  "repairs": 0,
+  "firstCallSeconds": 174.3,
+  "genSeconds": 174.3,
+  "wallSeconds": 176.4,
+  "usage": {
+    "prompt": 24949,
+    "output": 7675,
+    "thoughts": 16091,
+    "total": 48715
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 174315,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24949,
+        "output": 7675,
+        "thoughts": 16091,
+        "total": 48715
+      },
+      "validateMs": 2043,
+      "kind": "token-bucket",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.3,
+    "p95": 0.6,
+    "max": 0.7
+  },
+  "pageMs": {
+    "median": 0.2,
+    "max": 0.7
+  },
+  "mountMs": [
+    4.6,
+    1.7,
+    1.6,
+    1.7
+  ],
+  "solids": [
+    30,
+    29,
+    33,
+    34
+  ],
+  "paths": [
+    258,
+    248,
+    288,
+    298
+  ],
+  "tile": "insights/visuals/gen/gemini-3.8-flash/token-bucket.jpg"
+}

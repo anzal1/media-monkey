@@ -1,0 +1,57 @@
+{
+  "scenes": [
+    {
+      "headline": "Thread zero takes the lock.",
+      "subhead": "ram engages the single slot",
+      "params": {
+        "label": "MUTEX INTERLOCK",
+        "readout": "LOCK STATUS"
+      },
+      "state": {
+        "holder": 0,
+        "action": "acquire",
+        "contending": 0
+      }
+    },
+    {
+      "headline": "Thread one hits the wall.",
+      "subhead": "gate pinned, ram stalled",
+      "params": {
+        "label": "MUTEX INTERLOCK",
+        "readout": "LOCK STATUS"
+      },
+      "state": {
+        "holder": 0,
+        "action": "contend",
+        "contending": 1
+      }
+    },
+    {
+      "headline": "Contention stalls every queue.",
+      "subhead": "two threads wait on one",
+      "params": {
+        "label": "MUTEX INTERLOCK",
+        "readout": "LOCK STATUS"
+      },
+      "state": {
+        "holder": 0,
+        "action": "contend",
+        "contending": 2
+      }
+    },
+    {
+      "headline": "Release unlocks the next waiter.",
+      "subhead": "gate shifts, thread one enters",
+      "params": {
+        "label": "MUTEX INTERLOCK",
+        "readout": "LOCK STATUS"
+      },
+      "state": {
+        "holder": 0,
+        "nextHolder": 1,
+        "action": "handover",
+        "contending": 1
+      }
+    }
+  ]
+}

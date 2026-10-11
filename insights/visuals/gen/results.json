@@ -1,0 +1,1035 @@
+[
+  {
+    "concept": "binary search over a sorted array",
+    "model": "gemini-3.1-pro-preview",
+    "modelVersion": "gemini-3.1-pro-preview",
+    "kind": "comparator-rack",
+    "mapping": "A mechanical comparator spans a row of gauge blocks, dropping a balancing beam to weigh the middle block against a target reference, sliding its boundary markers inward to discard half the array based on the tilt.",
+    "parts": "Base: A heavy steel base plate with four screw-in feet, featuring two long inset grooves for the block tray and target track.",
+    "validated": true,
+    "repairs": 1,
+    "firstCallSeconds": 209.5,
+    "genSeconds": 349.9,
+    "wallSeconds": 353.2,
+    "usage": {
+      "prompt": 54681,
+      "output": 9216,
+      "thoughts": 45791,
+      "total": 109688
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.1,
+      "p95": 0.4,
+      "max": 0.6
+    },
+    "pageMs": {
+      "median": 0.1,
+      "max": 0.7
+    },
+    "mountMs": [
+      2.2,
+      1.6,
+      2.2
+    ],
+    "solids": [
+      29,
+      29,
+      29
+    ],
+    "paths": [
+      235,
+      236,
+      235
+    ],
+    "tile": "insights/visuals/gen/gemini-3.1-pro-preview/comparator-rack.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 209457,
+        "usage": {
+          "prompt": 24951,
+          "output": 4543,
+          "thoughts": 26855,
+          "total": 56349
+        },
+        "validateMs": 1392,
+        "errors": [
+          "scene 1: the page fell back to a stat card because text.replace is not a function",
+          "scene 2: the page fell back to a stat card because text.replace is not a function",
+          "scene 3: the page fell back to a stat card because text.replace is not a function",
+          "scene 1: build/mount threw TypeError: text.replace is not a function (at anatomy.js line 415)",
+          "scene 2: build/mount threw TypeError: text.replace is not a function (at anatomy.js line 415)",
+          "scene 3: build/mount threw TypeError: text.replace is not a function (at anatomy.js line 415)"
+        ]
+      },
+      {
+        "round": 1,
+        "genMs": 140441,
+        "usage": {
+          "prompt": 29730,
+          "output": 4673,
+          "thoughts": 18936,
+          "total": 53339
+        },
+        "validateMs": 1748,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "bloom filter",
+    "model": "gemini-3.1-pro-preview",
+    "modelVersion": "gemini-3.1-pro-preview",
+    "kind": "bloom-filter",
+    "mapping": "A mechanical punch gauge tests a metal tag: its three pegs push bit-pins down to add the item, but when checking, any un-pushed pin physically blocks the gauge from closing.",
+    "parts": "The base is a heavy bevelled slab on four round feet, featuring a faint inset groove and four corner screws. The mechanism rests on a raised anvil block with sixteen bore collars along its top. Sixteen cylindrical pins sit in the collars, their tips standing proud when zero and flush when one. Above them, a sliding carriage block rides on two tall cylindrical guide rails that are tied together by a top bar. The carriage holds a placard reading the current item, and features sixteen set-screws on its top, three of which hold long steel pegs pointing down to strike the pins below.",
+    "validated": true,
+    "repairs": 2,
+    "firstCallSeconds": 143.6,
+    "genSeconds": 423.3,
+    "wallSeconds": 433.7,
+    "usage": {
+      "prompt": 86356,
+      "output": 11059,
+      "thoughts": 59034,
+      "total": 156449
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 1.1,
+      "p95": 1.3,
+      "max": 1.4
+    },
+    "pageMs": {
+      "median": 0.8,
+      "max": 1.3
+    },
+    "mountMs": [
+      2.3,
+      1.6,
+      1.7,
+      1.8
+    ],
+    "solids": [
+      55,
+      55,
+      55,
+      55
+    ],
+    "paths": [
+      479,
+      479,
+      479,
+      479
+    ],
+    "tile": "insights/visuals/gen/gemini-3.1-pro-preview/bloom-filter.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 143571,
+        "usage": {
+          "prompt": 24947,
+          "output": 3354,
+          "thoughts": 20779,
+          "total": 49080
+        },
+        "validateMs": 3353,
+        "errors": [
+          "scene 1: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=523",
+          "scene 2: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=524",
+          "scene 3: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=524",
+          "scene 4: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=523"
+        ]
+      },
+      {
+        "round": 1,
+        "genMs": 141824,
+        "usage": {
+          "prompt": 28641,
+          "output": 3783,
+          "thoughts": 19324,
+          "total": 51748
+        },
+        "validateMs": 3407,
+        "errors": [
+          "scene 1: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421",
+          "scene 2: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421",
+          "scene 3: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421",
+          "scene 4: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421"
+        ]
+      },
+      {
+        "round": 2,
+        "genMs": 137906,
+        "usage": {
+          "prompt": 32768,
+          "output": 3922,
+          "thoughts": 18931,
+          "total": 55621
+        },
+        "validateMs": 3446,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "consistent hashing ring",
+    "model": "gemini-3.1-pro-preview",
+    "modelVersion": "gemini-3.1-pro-preview",
+    "kind": "hash-ring",
+    "mapping": "A spinning platter carries dropped tokens clockwise until they hit a diverter arm clamped to the outer rail, routing each token to the first node it encounters.",
+    "parts": "The **base** is a heavy square slab with rounded corners, elevated on four cylindrical feet with inset base screws, providing a solid industrial foundation. The **structure** features a thick, fixed outer ring band acting as a rail, and a towering central spindle that supports a cantilevered drop-chute suspended precisely over the target angle. The **mechanism** centers on a dynamic spinning platter adorned with 72 radial tick marks to represent the hash space, riding smoothly within the outer rail. The **subject** is the routing logic itself: tokens (keys) drop from the static chute onto the spinning platter and ride it until they strike a clamped-on diverter node, sliding along its angled blade radially outward to fall into an external catch bin. Adding or removing a node dynamically drops or lifts its entire clamp assembly from the rail.",
+    "validated": true,
+    "repairs": 1,
+    "firstCallSeconds": 190.1,
+    "genSeconds": 363.1,
+    "wallSeconds": 366.5,
+    "usage": {
+      "prompt": 54289,
+      "output": 8598,
+      "thoughts": 48741,
+      "total": 111628
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.1,
+      "p95": 0.2,
+      "max": 0.4
+    },
+    "pageMs": {
+      "median": 0.1,
+      "max": 0.8
+    },
+    "mountMs": [
+      5.7,
+      2.4,
+      2.7,
+      2.6
+    ],
+    "solids": [
+      31,
+      31,
+      43,
+      25
+    ],
+    "paths": [
+      233,
+      233,
+      317,
+      191
+    ],
+    "tile": "insights/visuals/gen/gemini-3.1-pro-preview/hash-ring.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 190128,
+        "usage": {
+          "prompt": 24948,
+          "output": 4142,
+          "thoughts": 24908,
+          "total": 53998
+        },
+        "validateMs": 1411,
+        "errors": [
+          "scene 1 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+          "scene 2 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+          "scene 3 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+          "scene 4 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+          "page frame 90 (t=3.00s) threw TypeError: G.radialTicks is not a function"
+        ]
+      },
+      {
+        "round": 1,
+        "genMs": 172960,
+        "usage": {
+          "prompt": 29341,
+          "output": 4456,
+          "thoughts": 23833,
+          "total": 57630
+        },
+        "validateMs": 1781,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "LRU cache eviction",
+    "model": "gemini-3.1-pro-preview",
+    "modelVersion": "gemini-3.1-pro-preview",
+    "kind": "lru-chute",
+    "mapping": "A vertical gravity chute where incoming metal blocks push the stack down to evict the bottom one, and a lateral carriage plucks accessed blocks to lift them back to the top, showing exactly how a Least Recently Used cache reorders and drops items.",
+    "parts": "A solid cast base with a collection tray for evicted items; a vertical structure of four rails forming a storage chute, backed by a plate; an input hopper rail at the top left; a solenoid manifold on the left cheek housing four lateral plungers; a vertical lift mast on the right holding a sliding carriage bracket; a carriage-mounted plunger; and up to five engraved metal cache blocks sliding between these channels.",
+    "validated": true,
+    "repairs": 0,
+    "firstCallSeconds": 159.8,
+    "genSeconds": 159.8,
+    "wallSeconds": 163.4,
+    "usage": {
+      "prompt": 24949,
+      "output": 3791,
+      "thoughts": 20861,
+      "total": 49601
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 1.4,
+      "p95": 1.6,
+      "max": 2.1
+    },
+    "pageMs": {
+      "median": 1.1,
+      "max": 1.6
+    },
+    "mountMs": [
+      3.5,
+      1.6,
+      1.7
+    ],
+    "solids": [
+      34,
+      33,
+      33
+    ],
+    "paths": [
+      278,
+      269,
+      269
+    ],
+    "tile": "insights/visuals/gen/gemini-3.1-pro-preview/lru-chute.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 159812,
+        "usage": {
+          "prompt": 24949,
+          "output": 3791,
+          "thoughts": 20861,
+          "total": 49601
+        },
+        "validateMs": 3496,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "mutex lock contention",
+    "model": "gemini-3.1-pro-preview",
+    "modelVersion": "gemini-3.1-pro-preview",
+    "kind": "mutex-interlock",
+    "mapping": "Four spring-loaded thread plungers compete to drop into a single socket on a sliding mutex block; only one can fully enter, while the others strike the surface and must wait.",
+    "parts": "The base consists of a heavy floor plate on four cylindrical feet, corner screws, two end brackets, and two polished horizontal guide rails. The static structure adds a massive overhead gantry beam supported by two rear pillars, housing four vertical actuator bodies with bezel rings and lower flanges. The dynamic mechanism includes the sliding carriage (built from a solid base, a continuous tall back wall, and two front roof segments that form a central open notch) and four plunging threads, each featuring a polished shaft and a solid tip that either drops into the notch or strikes the carriage roof.",
+    "validated": true,
+    "repairs": 3,
+    "firstCallSeconds": 199.8,
+    "genSeconds": 743.7,
+    "wallSeconds": 762.4,
+    "usage": {
+      "prompt": 125711,
+      "output": 16187,
+      "thoughts": 104058,
+      "total": 245956
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.6,
+      "p95": 0.8,
+      "max": 1
+    },
+    "pageMs": {
+      "median": 0.5,
+      "max": 1
+    },
+    "mountMs": [
+      5.4,
+      3,
+      3.3,
+      3.9
+    ],
+    "solids": [
+      41,
+      43,
+      42,
+      41
+    ],
+    "paths": [
+      324,
+      340,
+      332,
+      324
+    ],
+    "tile": "insights/visuals/gen/gemini-3.1-pro-preview/mutex-interlock.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 199779,
+        "usage": {
+          "prompt": 24948,
+          "output": 3868,
+          "thoughts": 26033,
+          "total": 54849
+        },
+        "validateMs": 9874,
+        "errors": [
+          "scene 1: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758",
+          "scene 2: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758",
+          "scene 3: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758",
+          "scene 4: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758"
+        ]
+      },
+      {
+        "round": 1,
+        "genMs": 150641,
+        "usage": {
+          "prompt": 29164,
+          "output": 4111,
+          "thoughts": 20515,
+          "total": 53790
+        },
+        "validateMs": 2919,
+        "errors": [
+          "scene 1: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689",
+          "scene 2: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689",
+          "scene 3: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689",
+          "scene 4: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689"
+        ]
+      },
+      {
+        "round": 2,
+        "genMs": 226169,
+        "usage": {
+          "prompt": 33603,
+          "output": 4060,
+          "thoughts": 33964,
+          "total": 71627
+        },
+        "validateMs": 2857,
+        "errors": [
+          "scene 1: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666",
+          "scene 2: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666",
+          "scene 3: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666",
+          "scene 4: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666"
+        ]
+      },
+      {
+        "round": 3,
+        "genMs": 167110,
+        "usage": {
+          "prompt": 37996,
+          "output": 4148,
+          "thoughts": 23546,
+          "total": 65690
+        },
+        "validateMs": 2741,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "token bucket rate limiter",
+    "model": "gemini-3.1-pro-preview",
+    "modelVersion": "gemini-3.1-pro-preview",
+    "kind": "token-bucket",
+    "mapping": "A token bucket rate limiter is a gravity-fed coin magazine where incoming tokens stack up to a limit, a plunger dispenses one token per successful request, and excess tokens overflow into a spillway.",
+    "parts": "The base includes a heavy foundation slab, four stepped feet, and corner mounting screws. The structure features a tall rear magazine plate, a left plunger housing block, right ramp support blocks, twin vertical front retention rails, and a split top inlet funnel. The mechanism contains a sliding horizontal request plunger with its actuator rod, and twin sloping ejection ramps for accepted and overflowed requests. The subject consists of up to eight stacked coin-like tokens, each detailed with concentric engraved rings and facing dots.",
+    "validated": true,
+    "repairs": 0,
+    "firstCallSeconds": 149.7,
+    "genSeconds": 149.7,
+    "wallSeconds": 151.3,
+    "usage": {
+      "prompt": 24949,
+      "output": 4420,
+      "thoughts": 18940,
+      "total": 48309
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0,
+      "p95": 0.1,
+      "max": 0.3
+    },
+    "pageMs": {
+      "median": 0,
+      "max": 0.4
+    },
+    "mountMs": [
+      4,
+      1.6,
+      1.7,
+      1.9
+    ],
+    "solids": [
+      26,
+      25,
+      22,
+      27
+    ],
+    "paths": [
+      206,
+      197,
+      170,
+      215
+    ],
+    "tile": "insights/visuals/gen/gemini-3.1-pro-preview/token-bucket.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 149692,
+        "usage": {
+          "prompt": 24949,
+          "output": 4420,
+          "thoughts": 18940,
+          "total": 48309
+        },
+        "validateMs": 1553,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "binary search over a sorted array",
+    "model": "gemini-3.8-flash",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "bisection-caliper",
+    "mapping": "A benchtop comparator holds an array of eight stepped gauge blocks; two sliding cursor jaws frame the active search interval while an index carriage drops a dial probe onto the midpoint block, pivoting brass shutter flaps down over the eliminated half until the matching block is pinned.",
+    "parts": "Cast iron base plate, four knurled leveling feet with rubber isolator pads, four corner cap screws, inset oil groove, left and right cast end uprights, two ground steel guide rails, milled gauge bed with eight transverse block pockets, eight stepped brass gauge blocks with engraved numerals, eight pivoting exclusion shutter flaps with hinge pins, left boundary cursor jaw, right boundary cursor jaw, center probe carriage with dual sleeve bushings, vertical dial indicator housing with knurled bezel, indicator spindle plunger, contact feeler foot, and right-hand lead screw thumbwheel.",
+    "validated": true,
+    "repairs": 0,
+    "firstCallSeconds": 57.5,
+    "genSeconds": 57.5,
+    "wallSeconds": 59.4,
+    "usage": {
+      "prompt": 24951,
+      "output": 7070,
+      "thoughts": 1500,
+      "total": 33521
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.3,
+      "p95": 0.4,
+      "max": 0.5
+    },
+    "pageMs": {
+      "median": 0.3,
+      "max": 0.7
+    },
+    "mountMs": [
+      2,
+      1.9,
+      2
+    ],
+    "solids": [
+      30,
+      30,
+      30
+    ],
+    "paths": [
+      286,
+      290,
+      290
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/bisection-caliper.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 57455,
+        "usage": {
+          "prompt": 24951,
+          "output": 7070,
+          "thoughts": 1500,
+          "total": 33521
+        },
+        "validateMs": 1891,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "bloom filter",
+    "model": "gemini-3.8-flash",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "comb-gauge",
+    "mapping": "A multi-tine feeler comb descends over a bank of eight bistable rocker flags: inserting a token stamps its hashed flags flat, while probing a token checks whether any flag remains upright to stop the comb at half stroke.",
+    "parts": "The base consists of a ground plate on four stepped brass feet with four corner set-screws, an inset perimeter oil groove, and a soft base shadow. The structure comprises twin cast pillow blocks, a ground central pivot axle with inter-cell spacer rings, a rear travel-stop beam, a front indicator bezel bar, two polished vertical guide pillars with collar stops, and an arched top bridge bar capped with acorn nuts. The mechanism features a gantry carriage sliding on twin bronze bushings, an underside comb mount with eight tine collars, three solid downward feeler tines, a bridge-mounted operating rocker lever with a knurled spherical brass grip, and an articulated pushrod link. The subject consists of eight counterweighted rocker-flag toggles with anvil strike heads and latch lips, along with eight engraved front-rail register numeral glyphs.",
+    "validated": true,
+    "repairs": 0,
+    "firstCallSeconds": 182.6,
+    "genSeconds": 182.6,
+    "wallSeconds": 184.9,
+    "usage": {
+      "prompt": 24947,
+      "output": 6534,
+      "thoughts": 20146,
+      "total": 51627
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.4,
+      "p95": 0.5,
+      "max": 0.7
+    },
+    "pageMs": {
+      "median": 0.3,
+      "max": 1.4
+    },
+    "mountMs": [
+      6.4,
+      2.8,
+      3,
+      3.7
+    ],
+    "solids": [
+      54,
+      54,
+      54,
+      54
+    ],
+    "paths": [
+      436,
+      434,
+      434,
+      434
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/comb-gauge.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 182575,
+        "usage": {
+          "prompt": 24947,
+          "output": 6534,
+          "thoughts": 20146,
+          "total": 51627
+        },
+        "validateMs": 2289,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "consistent hashing ring",
+    "model": "gemini-3.8-flash",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "annular-sorter",
+    "mapping": "A circular bronze indexing ring with clamped collector chutes at server angles routes key-tokens dropped at hash positions clockwise into the first chute they meet, demonstrating that inserting a new node chute only intercepts tokens in its own sector.",
+    "parts": "Cast rectangular baseplate, four milled leveling feet, four corner hex screws with washers, central pedestal riser, three perimeter deck pillars, graduated annular index ring, outer circular retaining fence, inner circular curb, center bearing spindle, knurled axle cap, rotating radial key-hopper arm with brass counterweight, token drop spout, four clamped node cassettes (each comprising a saddle clamp block, knurled clamping thumbscrew, angled funnel chute, and token receiver bin), rolling brass key token, and token guide rail.",
+    "validated": true,
+    "repairs": 1,
+    "firstCallSeconds": 48.1,
+    "genSeconds": 96.8,
+    "wallSeconds": 99.8,
+    "usage": {
+      "prompt": 56072,
+      "output": 11671,
+      "thoughts": 4881,
+      "total": 72624
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.1,
+      "p95": 0.2,
+      "max": 0.3
+    },
+    "pageMs": {
+      "median": 0.1,
+      "max": 0.6
+    },
+    "mountMs": [
+      10.3,
+      4.8,
+      5.1
+    ],
+    "solids": [
+      35,
+      37,
+      38
+    ],
+    "paths": [
+      292,
+      312,
+      319
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/annular-sorter.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 48068,
+        "usage": {
+          "prompt": 24948,
+          "output": 5934,
+          "thoughts": 1386,
+          "total": 32268
+        },
+        "validateMs": 1293,
+        "errors": [
+          "scene 1: the page fell back to a stat card because k.circleOf is not a function",
+          "scene 2: the page fell back to a stat card because k.circleOf is not a function",
+          "scene 3: the page fell back to a stat card because k.circleOf is not a function",
+          "scene 1: build/mount threw TypeError: k.circleOf is not a function (at module.js line 167)",
+          "scene 2: build/mount threw TypeError: k.circleOf is not a function (at module.js line 167)",
+          "scene 3: build/mount threw TypeError: k.circleOf is not a function (at module.js line 167)"
+        ]
+      },
+      {
+        "round": 1,
+        "genMs": 48691,
+        "usage": {
+          "prompt": 31124,
+          "output": 5737,
+          "thoughts": 3495,
+          "total": 40356
+        },
+        "validateMs": 1755,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "LRU cache eviction",
+    "model": "gemini-3.8-flash",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "cartridge-magazine",
+    "mapping": "A four-slot linear cartridge magazine where accessed records shuttle back to the head (MRU) and push the stack rightward, so the least recently used record at the tail (LRU) is pushed through a spring-loaded trapdoor into an eviction chute.",
+    "parts": "The machine comprises a heavy cast base plate with perimeter groove, four knurled leveling feet with elastomer pads, and four hex-socket corner screws; a left headstock upright, feed barrel, plunger guide, and twin rail clamps; a right tailstock upright with hinge brackets; front and rear hardened guide rails with a central saddle support post; an overhead gantry bridge with twin riser posts and dual slide rods; an eviction slide chute leading to a discard receiver bin with pull knob; a spring-biased trapdoor flap with pivot hinge pin; a feed ram with sliding plunger rod and knurled knob; a front index apron engraved with slot calibrations and MRU/LRU glyphs; and four machined cartridge sleds, each with a solid core block, dual side guide bushings, front faceplate engraved with a key glyph, and top knurled grip pin.",
+    "validated": true,
+    "repairs": 1,
+    "firstCallSeconds": 154.6,
+    "genSeconds": 216.2,
+    "wallSeconds": 222.4,
+    "usage": {
+      "prompt": 57704,
+      "output": 15004,
+      "thoughts": 18860,
+      "total": 91568
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.4,
+      "p95": 0.6,
+      "max": 0.9
+    },
+    "pageMs": {
+      "median": 0.4,
+      "max": 1.2
+    },
+    "mountMs": [
+      15.4,
+      19.8,
+      22.7,
+      21.9
+    ],
+    "solids": [
+      48,
+      52,
+      48,
+      52
+    ],
+    "paths": [
+      396,
+      429,
+      396,
+      429
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/cartridge-magazine.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 154577,
+        "usage": {
+          "prompt": 24949,
+          "output": 7474,
+          "thoughts": 13909,
+          "total": 46332
+        },
+        "validateMs": 3044,
+        "errors": [
+          "scene 1: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=2.50s with bbox x=18 y=40 w=965 h=568",
+          "scene 2: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=73 w=965 h=536",
+          "scene 3: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=2.50s with bbox x=18 y=45 w=965 h=563",
+          "scene 4: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=73 w=965 h=536"
+        ]
+      },
+      {
+        "round": 1,
+        "genMs": 61656,
+        "usage": {
+          "prompt": 32755,
+          "output": 7530,
+          "thoughts": 4951,
+          "total": 45236
+        },
+        "validateMs": 3063,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "LRU cache eviction",
+    "model": "gemini-3.8-flash",
+    "tag": ".v2",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "cassette-magazine",
+    "mapping": "A four-slot indexed cassette magazine where an overhead shuttle claw extracts an accessed record and flies it back to the head (MRU) while intermediate cassettes slide right, and an intake ram pushes new records into slot 0, driving the tail record (LRU) past an escape gate into a discard cradle.",
+    "parts": "Cast iron base plate with perimeter oil groove, four knurled leveling feet with elastomer pads, and four hex-socket corner screws; left intake cheek upright with bronze guide bushings; right tailstock cheek with ejection port and pivot bracket; twin ground steel guide rails with central bridge saddle; overhead shuttle bridge with dual polished gantry rods and end clamps; traveling shuttle carriage with dual runner sleeves, vertical lift rod, knurled thumb knob, and cassette gripping claw; spring-loaded ejection gate with torsion hinge pin; angled bronze discard slide cradle; left feed ram with sliding push rod and knurled drive knob; front index apron with engraved slot calibrations and MRU/LRU glyphs; and four heavy machined brass record cassettes, each with a solid body block, side runner tongues, top pull ring, front recessed label plate, and bold engraved record key.",
+    "validated": true,
+    "repairs": 0,
+    "firstCallSeconds": 91,
+    "genSeconds": 91,
+    "wallSeconds": 94.1,
+    "usage": {
+      "prompt": 34865,
+      "output": 8013,
+      "thoughts": 1871,
+      "total": 44749
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.6,
+      "p95": 0.9,
+      "max": 1.1
+    },
+    "pageMs": {
+      "median": 0.5,
+      "max": 1.4
+    },
+    "mountMs": [
+      12.8,
+      7.8,
+      9.2,
+      8.7
+    ],
+    "solids": [
+      58,
+      58,
+      58,
+      58
+    ],
+    "paths": [
+      469,
+      470,
+      469,
+      470
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/cassette-magazine.v2.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 91005,
+        "usage": {
+          "prompt": 34865,
+          "output": 8013,
+          "thoughts": 1871,
+          "total": 44749
+        },
+        "validateMs": 3063,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "mutex lock contention",
+    "model": "gemini-3.8-flash",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "mutex-gate",
+    "mapping": "Three spring-loaded follower carriages queue along parallel guide rails against a transverse sliding lock gate whose single slot admits only one carriage at a time to the work anvil, holding the others compressed and blocked in contention.",
+    "parts": "Base plate, four corner riser feet, four knurled levelling thumbscrews, perimeter oil groove, two bridge headstocks, three twin guide-rod pairs, six bronze rod bushings, three follower carriages, three carriage index plates, three compression springs, three drive pins, three latch tongues, transverse slide way, transverse locking gate block with hardened entry slot, two transverse way clamps, gate drive link, gate bellcrank, bellcrank pivot pin, gate detent rack, work anvil bridge, critical-section strike anvil, two tie bars, and six guide rod end stops.",
+    "validated": true,
+    "repairs": 1,
+    "firstCallSeconds": 58.5,
+    "genSeconds": 114.1,
+    "wallSeconds": 119.4,
+    "usage": {
+      "prompt": 56580,
+      "output": 12124,
+      "thoughts": 5010,
+      "total": 73714
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.6,
+      "p95": 0.7,
+      "max": 0.8
+    },
+    "pageMs": {
+      "median": 0.5,
+      "max": 1.2
+    },
+    "mountMs": [
+      4.1,
+      1.6,
+      1.5,
+      1.6
+    ],
+    "solids": [
+      36,
+      36,
+      36,
+      36
+    ],
+    "paths": [
+      292,
+      292,
+      292,
+      292
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/mutex-gate.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 58512,
+        "usage": {
+          "prompt": 24948,
+          "output": 6348,
+          "thoughts": 1411,
+          "total": 32707
+        },
+        "validateMs": 2693,
+        "errors": [
+          "scene 1 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\"",
+          "scene 2 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\"",
+          "scene 3 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\"",
+          "scene 4 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\""
+        ]
+      },
+      {
+        "round": 1,
+        "genMs": 55617,
+        "usage": {
+          "prompt": 31632,
+          "output": 5776,
+          "thoughts": 3599,
+          "total": 41007
+        },
+        "validateMs": 2611,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "token bucket rate limiter",
+    "model": "gemini-3.8-flash",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "token-bucket",
+    "mapping": "A slotted vertical coin-hopper whose tokens represent permitted requests; when a request arrives, a push-slide dispenses a bottom brass token, while an overhead trickle chute refills the stack until full, spilling any excess over an overflow weir.",
+    "parts": "Base: four stepped cylindrical feet, main beveled base slab, inset perimeter groove, corner screw rings and dots, raised machine plinth. Structure: four vertical corner guide rods, rear graduated index scale bar with level tick marks, top crown retaining collar, inflow trickle chute with support strut, overflow spillway chute, overflow collection cup, lower slide bed plate, front and rear slide guide rails, slide bearing gland, exit drop collar, inclined exit runway, and machined token catch tray. Mechanism: sliding dispenser shuttle with token pocket, push-button actuator drawbar, knurled plunger cap, and helical return spring split into back and front coils. Subject: precision milled brass token pucks stacked in the hopper column, plus exiting discharged tokens and arriving refill tokens.",
+    "validated": true,
+    "repairs": 0,
+    "firstCallSeconds": 174.3,
+    "genSeconds": 174.3,
+    "wallSeconds": 176.4,
+    "usage": {
+      "prompt": 24949,
+      "output": 7675,
+      "thoughts": 16091,
+      "total": 48715
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.3,
+      "p95": 0.6,
+      "max": 0.7
+    },
+    "pageMs": {
+      "median": 0.2,
+      "max": 0.7
+    },
+    "mountMs": [
+      4.6,
+      1.7,
+      1.6,
+      1.7
+    ],
+    "solids": [
+      30,
+      29,
+      33,
+      34
+    ],
+    "paths": [
+      258,
+      248,
+      288,
+      298
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/token-bucket.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 174315,
+        "usage": {
+          "prompt": 24949,
+          "output": 7675,
+          "thoughts": 16091,
+          "total": 48715
+        },
+        "validateMs": 2043,
+        "errors": []
+      }
+    ]
+  },
+  {
+    "concept": "token bucket rate limiter",
+    "model": "gemini-3.8-flash",
+    "tag": ".v2",
+    "modelVersion": "gemini-3.8-flash",
+    "kind": "token-bucket",
+    "mapping": "A benchtop brass token-metering column with a spring-loaded bottom escapement slide; incoming requests advance the slide to dispense tokens into an exit tray, while an overhead funnel replenishes the column up to a fixed weir that spills excess into an overflow hopper.",
+    "parts": "Base: stepped isolation feet, primary beveled cast baseplate, perimeter oil groove, corner mounting bolts. Structure: twin arched cast-iron upright cheeks with rear stiffening ribs, tie rods with knurled end-nuts, slotted brass magazine column with front inspection window, engraved level gauge plate (1 to 5), overhead feed funnel with mounting bracket, and brass overflow spillway leading to a side catchment bin. Mechanism: milled sliding dispenser drawer with token aperture, guide gib rails, hardened push-rod with knurled button cap, split helical return spring (rear and front coils), and front catch basin. Subject: heavy precision brass token pucks with recessed face rims and central pips, resting in the stack, dropping through the escapement slide, or spilling across the overflow weir.",
+    "validated": true,
+    "repairs": 0,
+    "firstCallSeconds": 65.1,
+    "genSeconds": 65.1,
+    "wallSeconds": 67.4,
+    "usage": {
+      "prompt": 35010,
+      "output": 8144,
+      "thoughts": 1354,
+      "total": 44508
+    },
+    "errors": [],
+    "msPerFrame": {
+      "median": 0.4,
+      "p95": 0.7,
+      "max": 1
+    },
+    "pageMs": {
+      "median": 0.3,
+      "max": 0.8
+    },
+    "mountMs": [
+      7.8,
+      4.6,
+      4.9,
+      5.2
+    ],
+    "solids": [
+      36,
+      35,
+      39,
+      40
+    ],
+    "paths": [
+      311,
+      301,
+      341,
+      351
+    ],
+    "tile": "insights/visuals/gen/gemini-3.8-flash/token-bucket.v2.jpg",
+    "rounds": [
+      {
+        "round": 0,
+        "genMs": 65089,
+        "usage": {
+          "prompt": 35010,
+          "output": 8144,
+          "thoughts": 1354,
+          "total": 44508
+        },
+        "validateMs": 2349,
+        "errors": []
+      }
+    ]
+  }
+]

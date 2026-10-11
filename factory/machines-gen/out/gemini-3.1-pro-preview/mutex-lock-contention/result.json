@@ -1,0 +1,121 @@
+{
+  "concept": "mutex lock contention",
+  "model": "gemini-3.1-pro-preview",
+  "modelVersion": "gemini-3.1-pro-preview",
+  "kind": "mutex-interlock",
+  "mapping": "Four spring-loaded thread plungers compete to drop into a single socket on a sliding mutex block; only one can fully enter, while the others strike the surface and must wait.",
+  "parts": "The base consists of a heavy floor plate on four cylindrical feet, corner screws, two end brackets, and two polished horizontal guide rails. The static structure adds a massive overhead gantry beam supported by two rear pillars, housing four vertical actuator bodies with bezel rings and lower flanges. The dynamic mechanism includes the sliding carriage (built from a solid base, a continuous tall back wall, and two front roof segments that form a central open notch) and four plunging threads, each featuring a polished shaft and a solid tip that either drops into the notch or strikes the carriage roof.",
+  "validated": true,
+  "repairs": 3,
+  "firstCallSeconds": 199.8,
+  "genSeconds": 743.7,
+  "wallSeconds": 762.4,
+  "usage": {
+    "prompt": 125711,
+    "output": 16187,
+    "thoughts": 104058,
+    "total": 245956
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 199779,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24948,
+        "output": 3868,
+        "thoughts": 26033,
+        "total": 54849
+      },
+      "validateMs": 9874,
+      "kind": "mutex-interlock",
+      "errors": [
+        "scene 1: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758",
+        "scene 2: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758",
+        "scene 3: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758",
+        "scene 4: geometry leaves the plate (viewBox 0 0 1000 560) in 51 sampled frames, worst at t=0.00s with bbox x=-231 y=-268 w=1930 h=1758"
+      ]
+    },
+    {
+      "round": 1,
+      "genMs": 150641,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 29164,
+        "output": 4111,
+        "thoughts": 20515,
+        "total": 53790
+      },
+      "validateMs": 2919,
+      "kind": "mutex-interlock",
+      "errors": [
+        "scene 1: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689",
+        "scene 2: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689",
+        "scene 3: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689",
+        "scene 4: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-3 y=-25 w=871 h=689"
+      ]
+    },
+    {
+      "round": 2,
+      "genMs": 226169,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 33603,
+        "output": 4060,
+        "thoughts": 33964,
+        "total": 71627
+      },
+      "validateMs": 2857,
+      "kind": "mutex-interlock",
+      "errors": [
+        "scene 1: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666",
+        "scene 2: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666",
+        "scene 3: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666",
+        "scene 4: geometry leaves the plate (viewBox 0 0 1000 660) in 51 sampled frames, worst at t=0.00s with bbox x=-62 y=-24 w=914 h=666"
+      ]
+    },
+    {
+      "round": 3,
+      "genMs": 167110,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 37996,
+        "output": 4148,
+        "thoughts": 23546,
+        "total": 65690
+      },
+      "validateMs": 2741,
+      "kind": "mutex-interlock",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.6,
+    "p95": 0.8,
+    "max": 1
+  },
+  "pageMs": {
+    "median": 0.5,
+    "max": 1
+  },
+  "mountMs": [
+    5.4,
+    3,
+    3.3,
+    3.9
+  ],
+  "solids": [
+    41,
+    43,
+    42,
+    41
+  ],
+  "paths": [
+    324,
+    340,
+    332,
+    324
+  ],
+  "tile": "insights/visuals/gen/gemini-3.1-pro-preview/mutex-interlock.jpg"
+}

@@ -1,0 +1,64 @@
+{
+  "scenes": [
+    {
+      "headline": "Adding pushes pins down.",
+      "subhead": "hashes to three locations",
+      "params": {},
+      "state": {
+        "item": "USER",
+        "bits": "0000000000000000",
+        "hashes": [
+          4,
+          9,
+          12
+        ],
+        "op": "add"
+      }
+    },
+    {
+      "headline": "Bits overlap harmlessly.",
+      "subhead": "one bit was already set",
+      "params": {},
+      "state": {
+        "item": "ADMIN",
+        "bits": "0000100001001000",
+        "hashes": [
+          2,
+          9,
+          15
+        ],
+        "op": "add"
+      }
+    },
+    {
+      "headline": "Missing bits block the check.",
+      "subhead": "definitively not in set",
+      "params": {},
+      "state": {
+        "item": "GUEST",
+        "bits": "0010100001001001",
+        "hashes": [
+          1,
+          9,
+          12
+        ],
+        "op": "check"
+      }
+    },
+    {
+      "headline": "False positives can slip in.",
+      "subhead": "other items pushed these",
+      "params": {},
+      "state": {
+        "item": "ROOT",
+        "bits": "0010100001001001",
+        "hashes": [
+          2,
+          4,
+          15
+        ],
+        "op": "check"
+      }
+    }
+  ]
+}

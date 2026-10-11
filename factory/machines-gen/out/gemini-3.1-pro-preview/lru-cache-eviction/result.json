@@ -1,0 +1,61 @@
+{
+  "concept": "LRU cache eviction",
+  "model": "gemini-3.1-pro-preview",
+  "modelVersion": "gemini-3.1-pro-preview",
+  "kind": "lru-chute",
+  "mapping": "A vertical gravity chute where incoming metal blocks push the stack down to evict the bottom one, and a lateral carriage plucks accessed blocks to lift them back to the top, showing exactly how a Least Recently Used cache reorders and drops items.",
+  "parts": "A solid cast base with a collection tray for evicted items; a vertical structure of four rails forming a storage chute, backed by a plate; an input hopper rail at the top left; a solenoid manifold on the left cheek housing four lateral plungers; a vertical lift mast on the right holding a sliding carriage bracket; a carriage-mounted plunger; and up to five engraved metal cache blocks sliding between these channels.",
+  "validated": true,
+  "repairs": 0,
+  "firstCallSeconds": 159.8,
+  "genSeconds": 159.8,
+  "wallSeconds": 163.4,
+  "usage": {
+    "prompt": 24949,
+    "output": 3791,
+    "thoughts": 20861,
+    "total": 49601
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 159812,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24949,
+        "output": 3791,
+        "thoughts": 20861,
+        "total": 49601
+      },
+      "validateMs": 3496,
+      "kind": "lru-chute",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 1.4,
+    "p95": 1.6,
+    "max": 2.1
+  },
+  "pageMs": {
+    "median": 1.1,
+    "max": 1.6
+  },
+  "mountMs": [
+    3.5,
+    1.6,
+    1.7
+  ],
+  "solids": [
+    34,
+    33,
+    33
+  ],
+  "paths": [
+    278,
+    269,
+    269
+  ],
+  "tile": "insights/visuals/gen/gemini-3.1-pro-preview/lru-chute.jpg"
+}

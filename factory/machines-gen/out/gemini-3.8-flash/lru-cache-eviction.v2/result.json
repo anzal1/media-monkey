@@ -1,0 +1,65 @@
+{
+  "concept": "LRU cache eviction",
+  "model": "gemini-3.8-flash",
+  "tag": ".v2",
+  "modelVersion": "gemini-3.8-flash",
+  "kind": "cassette-magazine",
+  "mapping": "A four-slot indexed cassette magazine where an overhead shuttle claw extracts an accessed record and flies it back to the head (MRU) while intermediate cassettes slide right, and an intake ram pushes new records into slot 0, driving the tail record (LRU) past an escape gate into a discard cradle.",
+  "parts": "Cast iron base plate with perimeter oil groove, four knurled leveling feet with elastomer pads, and four hex-socket corner screws; left intake cheek upright with bronze guide bushings; right tailstock cheek with ejection port and pivot bracket; twin ground steel guide rails with central bridge saddle; overhead shuttle bridge with dual polished gantry rods and end clamps; traveling shuttle carriage with dual runner sleeves, vertical lift rod, knurled thumb knob, and cassette gripping claw; spring-loaded ejection gate with torsion hinge pin; angled bronze discard slide cradle; left feed ram with sliding push rod and knurled drive knob; front index apron with engraved slot calibrations and MRU/LRU glyphs; and four heavy machined brass record cassettes, each with a solid body block, side runner tongues, top pull ring, front recessed label plate, and bold engraved record key.",
+  "validated": true,
+  "repairs": 0,
+  "firstCallSeconds": 91,
+  "genSeconds": 91,
+  "wallSeconds": 94.1,
+  "usage": {
+    "prompt": 34865,
+    "output": 8013,
+    "thoughts": 1871,
+    "total": 44749
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 91005,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 34865,
+        "output": 8013,
+        "thoughts": 1871,
+        "total": 44749
+      },
+      "validateMs": 3063,
+      "kind": "cassette-magazine",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.6,
+    "p95": 0.9,
+    "max": 1.1
+  },
+  "pageMs": {
+    "median": 0.5,
+    "max": 1.4
+  },
+  "mountMs": [
+    12.8,
+    7.8,
+    9.2,
+    8.7
+  ],
+  "solids": [
+    58,
+    58,
+    58,
+    58
+  ],
+  "paths": [
+    469,
+    470,
+    469,
+    470
+  ],
+  "tile": "insights/visuals/gen/gemini-3.8-flash/cassette-magazine.v2.jpg"
+}

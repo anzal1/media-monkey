@@ -1,0 +1,72 @@
+{
+  "scenes": [
+    {
+      "headline": "The lock is free.",
+      "subhead": "thread 1 claims the block",
+      "params": {
+        "threads": 4,
+        "label": "CRITICAL SECTION"
+      },
+      "state": {
+        "from": [],
+        "to": [
+          1
+        ]
+      }
+    },
+    {
+      "headline": "Mutual exclusion in action.",
+      "subhead": "others strike the surface and wait",
+      "params": {
+        "threads": 4,
+        "label": "CRITICAL SECTION"
+      },
+      "state": {
+        "from": [
+          1
+        ],
+        "to": [
+          1,
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "headline": "The lock is handed over.",
+      "subhead": "thread 1 yields to thread 2",
+      "params": {
+        "threads": 4,
+        "label": "CRITICAL SECTION"
+      },
+      "state": {
+        "from": [
+          1,
+          2,
+          0
+        ],
+        "to": [
+          2,
+          0
+        ]
+      }
+    },
+    {
+      "headline": "The queue advances.",
+      "subhead": "thread 0 takes its turn",
+      "params": {
+        "threads": 4,
+        "label": "CRITICAL SECTION"
+      },
+      "state": {
+        "from": [
+          2,
+          0
+        ],
+        "to": [
+          0
+        ]
+      }
+    }
+  ]
+}

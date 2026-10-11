@@ -1,0 +1,109 @@
+{
+  "scenes": [
+    {
+      "headline": "Insert apple: tines stamp flags flat.",
+      "subhead": "hashes set bits 1, 3, 6",
+      "params": {
+        "label": "BLOOM FILTER"
+      },
+      "state": {
+        "item": "APPLE",
+        "mode": "insert",
+        "bits": [
+          1,
+          3,
+          6
+        ],
+        "prior": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "headline": "Insert berry: bit 6 already flat.",
+      "subhead": "hashes set bits 2, 4, 6",
+      "params": {
+        "label": "BLOOM FILTER"
+      },
+      "state": {
+        "item": "BERRY",
+        "mode": "insert",
+        "bits": [
+          2,
+          4,
+          6
+        ],
+        "prior": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "headline": "Query cherry: upright flags block stroke.",
+      "subhead": "zero bits guarantee definite absence",
+      "params": {
+        "label": "BLOOM FILTER"
+      },
+      "state": {
+        "item": "CHERRY",
+        "mode": "query",
+        "bits": [
+          0,
+          3,
+          5
+        ],
+        "prior": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "headline": "Query date: false positive drops through.",
+      "subhead": "never inserted, but bits collide",
+      "params": {
+        "label": "BLOOM FILTER"
+      },
+      "state": {
+        "item": "DATE",
+        "mode": "query",
+        "bits": [
+          1,
+          3,
+          4
+        ],
+        "prior": [
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0
+        ],
+        "falsePositive": true
+      }
+    }
+  ]
+}

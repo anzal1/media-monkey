@@ -1,0 +1,64 @@
+{
+  "concept": "bloom filter",
+  "model": "gemini-3.8-flash",
+  "modelVersion": "gemini-3.8-flash",
+  "kind": "comb-gauge",
+  "mapping": "A multi-tine feeler comb descends over a bank of eight bistable rocker flags: inserting a token stamps its hashed flags flat, while probing a token checks whether any flag remains upright to stop the comb at half stroke.",
+  "parts": "The base consists of a ground plate on four stepped brass feet with four corner set-screws, an inset perimeter oil groove, and a soft base shadow. The structure comprises twin cast pillow blocks, a ground central pivot axle with inter-cell spacer rings, a rear travel-stop beam, a front indicator bezel bar, two polished vertical guide pillars with collar stops, and an arched top bridge bar capped with acorn nuts. The mechanism features a gantry carriage sliding on twin bronze bushings, an underside comb mount with eight tine collars, three solid downward feeler tines, a bridge-mounted operating rocker lever with a knurled spherical brass grip, and an articulated pushrod link. The subject consists of eight counterweighted rocker-flag toggles with anvil strike heads and latch lips, along with eight engraved front-rail register numeral glyphs.",
+  "validated": true,
+  "repairs": 0,
+  "firstCallSeconds": 182.6,
+  "genSeconds": 182.6,
+  "wallSeconds": 184.9,
+  "usage": {
+    "prompt": 24947,
+    "output": 6534,
+    "thoughts": 20146,
+    "total": 51627
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 182575,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24947,
+        "output": 6534,
+        "thoughts": 20146,
+        "total": 51627
+      },
+      "validateMs": 2289,
+      "kind": "comb-gauge",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.4,
+    "p95": 0.5,
+    "max": 0.7
+  },
+  "pageMs": {
+    "median": 0.3,
+    "max": 1.4
+  },
+  "mountMs": [
+    6.4,
+    2.8,
+    3,
+    3.7
+  ],
+  "solids": [
+    54,
+    54,
+    54,
+    54
+  ],
+  "paths": [
+    436,
+    434,
+    434,
+    434
+  ],
+  "tile": "insights/visuals/gen/gemini-3.8-flash/comb-gauge.jpg"
+}

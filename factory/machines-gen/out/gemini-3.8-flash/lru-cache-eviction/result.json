@@ -1,0 +1,83 @@
+{
+  "concept": "LRU cache eviction",
+  "model": "gemini-3.8-flash",
+  "modelVersion": "gemini-3.8-flash",
+  "kind": "cartridge-magazine",
+  "mapping": "A four-slot linear cartridge magazine where accessed records shuttle back to the head (MRU) and push the stack rightward, so the least recently used record at the tail (LRU) is pushed through a spring-loaded trapdoor into an eviction chute.",
+  "parts": "The machine comprises a heavy cast base plate with perimeter groove, four knurled leveling feet with elastomer pads, and four hex-socket corner screws; a left headstock upright, feed barrel, plunger guide, and twin rail clamps; a right tailstock upright with hinge brackets; front and rear hardened guide rails with a central saddle support post; an overhead gantry bridge with twin riser posts and dual slide rods; an eviction slide chute leading to a discard receiver bin with pull knob; a spring-biased trapdoor flap with pivot hinge pin; a feed ram with sliding plunger rod and knurled knob; a front index apron engraved with slot calibrations and MRU/LRU glyphs; and four machined cartridge sleds, each with a solid core block, dual side guide bushings, front faceplate engraved with a key glyph, and top knurled grip pin.",
+  "validated": true,
+  "repairs": 1,
+  "firstCallSeconds": 154.6,
+  "genSeconds": 216.2,
+  "wallSeconds": 222.4,
+  "usage": {
+    "prompt": 57704,
+    "output": 15004,
+    "thoughts": 18860,
+    "total": 91568
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 154577,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24949,
+        "output": 7474,
+        "thoughts": 13909,
+        "total": 46332
+      },
+      "validateMs": 3044,
+      "kind": "cartridge-magazine",
+      "errors": [
+        "scene 1: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=2.50s with bbox x=18 y=40 w=965 h=568",
+        "scene 2: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=73 w=965 h=536",
+        "scene 3: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=2.50s with bbox x=18 y=45 w=965 h=563",
+        "scene 4: geometry leaves the plate (viewBox 0 0 1000 590) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=73 w=965 h=536"
+      ]
+    },
+    {
+      "round": 1,
+      "genMs": 61656,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 32755,
+        "output": 7530,
+        "thoughts": 4951,
+        "total": 45236
+      },
+      "validateMs": 3063,
+      "kind": "cartridge-magazine",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.4,
+    "p95": 0.6,
+    "max": 0.9
+  },
+  "pageMs": {
+    "median": 0.4,
+    "max": 1.2
+  },
+  "mountMs": [
+    15.4,
+    19.8,
+    22.7,
+    21.9
+  ],
+  "solids": [
+    48,
+    52,
+    48,
+    52
+  ],
+  "paths": [
+    396,
+    429,
+    396,
+    429
+  ],
+  "tile": "insights/visuals/gen/gemini-3.8-flash/cartridge-magazine.jpg"
+}

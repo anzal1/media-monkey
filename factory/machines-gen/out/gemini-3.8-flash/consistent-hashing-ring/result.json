@@ -1,0 +1,82 @@
+{
+  "concept": "consistent hashing ring",
+  "model": "gemini-3.8-flash",
+  "modelVersion": "gemini-3.8-flash",
+  "kind": "annular-sorter",
+  "mapping": "A circular bronze indexing ring with clamped collector chutes at server angles routes key-tokens dropped at hash positions clockwise into the first chute they meet, demonstrating that inserting a new node chute only intercepts tokens in its own sector.",
+  "parts": "Cast rectangular baseplate, four milled leveling feet, four corner hex screws with washers, central pedestal riser, three perimeter deck pillars, graduated annular index ring, outer circular retaining fence, inner circular curb, center bearing spindle, knurled axle cap, rotating radial key-hopper arm with brass counterweight, token drop spout, four clamped node cassettes (each comprising a saddle clamp block, knurled clamping thumbscrew, angled funnel chute, and token receiver bin), rolling brass key token, and token guide rail.",
+  "validated": true,
+  "repairs": 1,
+  "firstCallSeconds": 48.1,
+  "genSeconds": 96.8,
+  "wallSeconds": 99.8,
+  "usage": {
+    "prompt": 56072,
+    "output": 11671,
+    "thoughts": 4881,
+    "total": 72624
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 48068,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24948,
+        "output": 5934,
+        "thoughts": 1386,
+        "total": 32268
+      },
+      "validateMs": 1293,
+      "kind": "annular-sorter",
+      "errors": [
+        "scene 1: the page fell back to a stat card because k.circleOf is not a function",
+        "scene 2: the page fell back to a stat card because k.circleOf is not a function",
+        "scene 3: the page fell back to a stat card because k.circleOf is not a function",
+        "scene 1: build/mount threw TypeError: k.circleOf is not a function (at module.js line 167)",
+        "scene 2: build/mount threw TypeError: k.circleOf is not a function (at module.js line 167)",
+        "scene 3: build/mount threw TypeError: k.circleOf is not a function (at module.js line 167)"
+      ]
+    },
+    {
+      "round": 1,
+      "genMs": 48691,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 31124,
+        "output": 5737,
+        "thoughts": 3495,
+        "total": 40356
+      },
+      "validateMs": 1755,
+      "kind": "annular-sorter",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.1,
+    "p95": 0.2,
+    "max": 0.3
+  },
+  "pageMs": {
+    "median": 0.1,
+    "max": 0.6
+  },
+  "mountMs": [
+    10.3,
+    4.8,
+    5.1
+  ],
+  "solids": [
+    35,
+    37,
+    38
+  ],
+  "paths": [
+    292,
+    312,
+    319
+  ],
+  "tile": "insights/visuals/gen/gemini-3.8-flash/annular-sorter.jpg"
+}

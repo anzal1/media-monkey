@@ -1,0 +1,56 @@
+{
+  "scenes": [
+    {
+      "headline": "Bursts consume stored tokens.",
+      "subhead": "three requests served instantly",
+      "params": {
+        "capacity": 5,
+        "label": "token bucket",
+        "readout": "tokens"
+      },
+      "state": {
+        "initial": 4,
+        "behaviour": "burst"
+      }
+    },
+    {
+      "headline": "Empty bucket throttles traffic.",
+      "subhead": "zero tokens left to grant",
+      "params": {
+        "capacity": 5,
+        "label": "token bucket",
+        "readout": "tokens"
+      },
+      "state": {
+        "initial": 1,
+        "behaviour": "throttle"
+      }
+    },
+    {
+      "headline": "Steady refill restores capacity.",
+      "subhead": "trickle tokens replenish stack",
+      "params": {
+        "capacity": 5,
+        "label": "token bucket",
+        "readout": "tokens"
+      },
+      "state": {
+        "initial": 1,
+        "behaviour": "refill"
+      }
+    },
+    {
+      "headline": "Overflow discards excess tokens.",
+      "subhead": "capacity capped at five",
+      "params": {
+        "capacity": 5,
+        "label": "token bucket",
+        "readout": "tokens"
+      },
+      "state": {
+        "initial": 5,
+        "behaviour": "overflow"
+      }
+    }
+  ]
+}

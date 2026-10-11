@@ -1,0 +1,64 @@
+{
+  "concept": "token bucket rate limiter",
+  "model": "gemini-3.1-pro-preview",
+  "modelVersion": "gemini-3.1-pro-preview",
+  "kind": "token-bucket",
+  "mapping": "A token bucket rate limiter is a gravity-fed coin magazine where incoming tokens stack up to a limit, a plunger dispenses one token per successful request, and excess tokens overflow into a spillway.",
+  "parts": "The base includes a heavy foundation slab, four stepped feet, and corner mounting screws. The structure features a tall rear magazine plate, a left plunger housing block, right ramp support blocks, twin vertical front retention rails, and a split top inlet funnel. The mechanism contains a sliding horizontal request plunger with its actuator rod, and twin sloping ejection ramps for accepted and overflowed requests. The subject consists of up to eight stacked coin-like tokens, each detailed with concentric engraved rings and facing dots.",
+  "validated": true,
+  "repairs": 0,
+  "firstCallSeconds": 149.7,
+  "genSeconds": 149.7,
+  "wallSeconds": 151.3,
+  "usage": {
+    "prompt": 24949,
+    "output": 4420,
+    "thoughts": 18940,
+    "total": 48309
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 149692,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24949,
+        "output": 4420,
+        "thoughts": 18940,
+        "total": 48309
+      },
+      "validateMs": 1553,
+      "kind": "token-bucket",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0,
+    "p95": 0.1,
+    "max": 0.3
+  },
+  "pageMs": {
+    "median": 0,
+    "max": 0.4
+  },
+  "mountMs": [
+    4,
+    1.6,
+    1.7,
+    1.9
+  ],
+  "solids": [
+    26,
+    25,
+    22,
+    27
+  ],
+  "paths": [
+    206,
+    197,
+    170,
+    215
+  ],
+  "tile": "insights/visuals/gen/gemini-3.1-pro-preview/token-bucket.jpg"
+}

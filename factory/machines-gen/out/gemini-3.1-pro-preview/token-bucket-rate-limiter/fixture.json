@@ -1,0 +1,56 @@
+{
+  "scenes": [
+    {
+      "headline": "A token arrives and is stored.",
+      "subhead": "refilling the bucket",
+      "params": {
+        "capacity": 5,
+        "label": "API GATEWAY",
+        "readout": "REQUEST"
+      },
+      "state": {
+        "tokens": 3,
+        "action": "refill"
+      }
+    },
+    {
+      "headline": "A request takes one token.",
+      "subhead": "bucket has capacity",
+      "params": {
+        "capacity": 5,
+        "label": "API GATEWAY",
+        "readout": "REQUEST"
+      },
+      "state": {
+        "tokens": 4,
+        "action": "consume"
+      }
+    },
+    {
+      "headline": "Empty bucket drops the request.",
+      "subhead": "rate limit exceeded",
+      "params": {
+        "capacity": 5,
+        "label": "API GATEWAY",
+        "readout": "REQUEST"
+      },
+      "state": {
+        "tokens": 0,
+        "action": "deny"
+      }
+    },
+    {
+      "headline": "Full bucket spills new tokens.",
+      "subhead": "wasted capacity",
+      "params": {
+        "capacity": 5,
+        "label": "API GATEWAY",
+        "readout": "REQUEST"
+      },
+      "state": {
+        "tokens": 5,
+        "action": "overflow"
+      }
+    }
+  ]
+}

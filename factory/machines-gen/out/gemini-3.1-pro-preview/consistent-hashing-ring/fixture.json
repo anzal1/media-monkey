@@ -1,0 +1,62 @@
+{
+  "scenes": [
+    {
+      "headline": "Consistent hashing maps keys.",
+      "subhead": "rolls clockwise to next node",
+      "params": {},
+      "state": {
+        "action": "route",
+        "nodes": [
+          0,
+          120,
+          240
+        ],
+        "drop": 100
+      }
+    },
+    {
+      "headline": "The hash space wraps around.",
+      "subhead": "end of ring routes to start",
+      "params": {},
+      "state": {
+        "action": "route",
+        "nodes": [
+          0,
+          120,
+          240
+        ],
+        "drop": 350
+      }
+    },
+    {
+      "headline": "Adding a node intercepts keys.",
+      "subhead": "grabs keys that hit it first",
+      "params": {},
+      "state": {
+        "action": "add",
+        "nodes": [
+          0,
+          120,
+          240,
+          300
+        ],
+        "addedNode": 300,
+        "drop": 260
+      }
+    },
+    {
+      "headline": "Removing a node shifts keys.",
+      "subhead": "keys fall to the next node",
+      "params": {},
+      "state": {
+        "action": "remove",
+        "nodes": [
+          0,
+          120
+        ],
+        "removedNode": 240,
+        "drop": 200
+      }
+    }
+  ]
+}

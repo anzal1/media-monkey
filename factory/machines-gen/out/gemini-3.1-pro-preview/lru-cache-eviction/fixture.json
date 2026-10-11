@@ -1,0 +1,52 @@
+{
+  "scenes": [
+    {
+      "headline": "New item evicts the oldest.",
+      "subhead": "chute is full, capacity 4",
+      "params": {
+        "capacity": 4
+      },
+      "state": {
+        "cache": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "next": "E"
+      }
+    },
+    {
+      "headline": "Requested item is a hit.",
+      "subhead": "carriage plucks it out",
+      "params": {
+        "capacity": 4
+      },
+      "state": {
+        "cache": [
+          "E",
+          "A",
+          "B",
+          "C"
+        ],
+        "next": "B"
+      }
+    },
+    {
+      "headline": "Hit moves to the top.",
+      "subhead": "recently used, safe from eviction",
+      "params": {
+        "capacity": 4
+      },
+      "state": {
+        "cache": [
+          "B",
+          "E",
+          "A",
+          "C"
+        ],
+        "next": "C"
+      }
+    }
+  ]
+}

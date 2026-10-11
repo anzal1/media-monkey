@@ -1,0 +1,84 @@
+{
+  "concept": "consistent hashing ring",
+  "model": "gemini-3.1-pro-preview",
+  "modelVersion": "gemini-3.1-pro-preview",
+  "kind": "hash-ring",
+  "mapping": "A spinning platter carries dropped tokens clockwise until they hit a diverter arm clamped to the outer rail, routing each token to the first node it encounters.",
+  "parts": "The **base** is a heavy square slab with rounded corners, elevated on four cylindrical feet with inset base screws, providing a solid industrial foundation. The **structure** features a thick, fixed outer ring band acting as a rail, and a towering central spindle that supports a cantilevered drop-chute suspended precisely over the target angle. The **mechanism** centers on a dynamic spinning platter adorned with 72 radial tick marks to represent the hash space, riding smoothly within the outer rail. The **subject** is the routing logic itself: tokens (keys) drop from the static chute onto the spinning platter and ride it until they strike a clamped-on diverter node, sliding along its angled blade radially outward to fall into an external catch bin. Adding or removing a node dynamically drops or lifts its entire clamp assembly from the rail.",
+  "validated": true,
+  "repairs": 1,
+  "firstCallSeconds": 190.1,
+  "genSeconds": 363.1,
+  "wallSeconds": 366.5,
+  "usage": {
+    "prompt": 54289,
+    "output": 8598,
+    "thoughts": 48741,
+    "total": 111628
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 190128,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24948,
+        "output": 4142,
+        "thoughts": 24908,
+        "total": 53998
+      },
+      "validateMs": 1411,
+      "kind": "hash-ring",
+      "errors": [
+        "scene 1 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+        "scene 2 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+        "scene 3 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+        "scene 4 t=0.00s: frame threw TypeError: G.radialTicks is not a function (at module.js line 111)",
+        "page frame 90 (t=3.00s) threw TypeError: G.radialTicks is not a function"
+      ]
+    },
+    {
+      "round": 1,
+      "genMs": 172960,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 29341,
+        "output": 4456,
+        "thoughts": 23833,
+        "total": 57630
+      },
+      "validateMs": 1781,
+      "kind": "hash-ring",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.1,
+    "p95": 0.2,
+    "max": 0.4
+  },
+  "pageMs": {
+    "median": 0.1,
+    "max": 0.8
+  },
+  "mountMs": [
+    5.7,
+    2.4,
+    2.7,
+    2.6
+  ],
+  "solids": [
+    31,
+    31,
+    43,
+    25
+  ],
+  "paths": [
+    233,
+    233,
+    317,
+    191
+  ],
+  "tile": "insights/visuals/gen/gemini-3.1-pro-preview/hash-ring.jpg"
+}

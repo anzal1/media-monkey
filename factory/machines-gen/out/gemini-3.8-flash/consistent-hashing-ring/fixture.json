@@ -1,0 +1,90 @@
+{
+  "scenes": [
+    {
+      "headline": "Keys route to their successor.",
+      "subhead": "clockwise walk along the ring",
+      "params": {
+        "label": "HASH RING",
+        "readout": "ASSIGNED NODE",
+        "nodes": [
+          {
+            "id": "A",
+            "angle": 30
+          },
+          {
+            "id": "B",
+            "angle": 150
+          },
+          {
+            "id": "C",
+            "angle": 270
+          }
+        ]
+      },
+      "state": {
+        "keyAngle": 70,
+        "action": "route"
+      }
+    },
+    {
+      "headline": "Add a node at 100°.",
+      "subhead": "clamped between nodes A and B",
+      "params": {
+        "label": "HASH RING",
+        "readout": "NEW NODE",
+        "nodes": [
+          {
+            "id": "A",
+            "angle": 30
+          },
+          {
+            "id": "B",
+            "angle": 150
+          },
+          {
+            "id": "C",
+            "angle": 270
+          }
+        ]
+      },
+      "state": {
+        "keyAngle": 70,
+        "newNode": {
+          "id": "D",
+          "angle": 100
+        },
+        "action": "insert"
+      }
+    },
+    {
+      "headline": "Only local keys re-route.",
+      "subhead": "tokens pass A to reach D",
+      "params": {
+        "label": "HASH RING",
+        "readout": "ASSIGNED NODE",
+        "nodes": [
+          {
+            "id": "A",
+            "angle": 30
+          },
+          {
+            "id": "B",
+            "angle": 150
+          },
+          {
+            "id": "C",
+            "angle": 270
+          }
+        ]
+      },
+      "state": {
+        "keyAngle": 70,
+        "newNode": {
+          "id": "D",
+          "angle": 100
+        },
+        "action": "reroute"
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "scenes": [
+    {
+      "headline": "Accessed record leaps to head.",
+      "subhead": "record B promoted to MRU",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "hit",
+        "key": "B",
+        "items": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      }
+    },
+    {
+      "headline": "Capacity full: tail is evicted.",
+      "subhead": "new record E evicts D",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "miss",
+        "key": "E",
+        "items": [
+          "B",
+          "A",
+          "C",
+          "D"
+        ],
+        "evicted": "D"
+      }
+    },
+    {
+      "headline": "Repeated hit stays hot.",
+      "subhead": "record A returns to front",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "hit",
+        "key": "A",
+        "items": [
+          "E",
+          "B",
+          "A",
+          "C"
+        ]
+      }
+    },
+    {
+      "headline": "Oldest record falls away.",
+      "subhead": "record C drops off stack",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "miss",
+        "key": "F",
+        "items": [
+          "A",
+          "E",
+          "B",
+          "C"
+        ],
+        "evicted": "C"
+      }
+    }
+  ]
+}

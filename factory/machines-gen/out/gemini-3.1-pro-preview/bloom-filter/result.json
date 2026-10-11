@@ -1,0 +1,102 @@
+{
+  "concept": "bloom filter",
+  "model": "gemini-3.1-pro-preview",
+  "modelVersion": "gemini-3.1-pro-preview",
+  "kind": "bloom-filter",
+  "mapping": "A mechanical punch gauge tests a metal tag: its three pegs push bit-pins down to add the item, but when checking, any un-pushed pin physically blocks the gauge from closing.",
+  "parts": "The base is a heavy bevelled slab on four round feet, featuring a faint inset groove and four corner screws. The mechanism rests on a raised anvil block with sixteen bore collars along its top. Sixteen cylindrical pins sit in the collars, their tips standing proud when zero and flush when one. Above them, a sliding carriage block rides on two tall cylindrical guide rails that are tied together by a top bar. The carriage holds a placard reading the current item, and features sixteen set-screws on its top, three of which hold long steel pegs pointing down to strike the pins below.",
+  "validated": true,
+  "repairs": 2,
+  "firstCallSeconds": 143.6,
+  "genSeconds": 423.3,
+  "wallSeconds": 433.7,
+  "usage": {
+    "prompt": 86356,
+    "output": 11059,
+    "thoughts": 59034,
+    "total": 156449
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 143571,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24947,
+        "output": 3354,
+        "thoughts": 20779,
+        "total": 49080
+      },
+      "validateMs": 3353,
+      "kind": "bloom-filter",
+      "errors": [
+        "scene 1: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=523",
+        "scene 2: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=524",
+        "scene 3: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=524",
+        "scene 4: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=18 y=151 w=1457 h=523"
+      ]
+    },
+    {
+      "round": 1,
+      "genMs": 141824,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 28641,
+        "output": 3783,
+        "thoughts": 19324,
+        "total": 51748
+      },
+      "validateMs": 3407,
+      "kind": "bloom-filter",
+      "errors": [
+        "scene 1: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421",
+        "scene 2: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421",
+        "scene 3: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421",
+        "scene 4: geometry leaves the plate (viewBox 0 0 1000 640) in 51 sampled frames, worst at t=0.00s with bbox x=-359 y=111 w=1306 h=421"
+      ]
+    },
+    {
+      "round": 2,
+      "genMs": 137906,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 32768,
+        "output": 3922,
+        "thoughts": 18931,
+        "total": 55621
+      },
+      "validateMs": 3446,
+      "kind": "bloom-filter",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 1.1,
+    "p95": 1.3,
+    "max": 1.4
+  },
+  "pageMs": {
+    "median": 0.8,
+    "max": 1.3
+  },
+  "mountMs": [
+    2.3,
+    1.6,
+    1.7,
+    1.8
+  ],
+  "solids": [
+    55,
+    55,
+    55,
+    55
+  ],
+  "paths": [
+    479,
+    479,
+    479,
+    479
+  ],
+  "tile": "insights/visuals/gen/gemini-3.1-pro-preview/bloom-filter.jpg"
+}

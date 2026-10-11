@@ -13,3 +13,9 @@ legacy/__pycache__/
 
 # CI review renders: kept locally, too big for the repo
 insights/visuals/ci/*.mp4
+
+# machines-gen: the generated modules, fixtures and answers are the kill test's
+# evidence and are kept; the private scene pages, shots and baseline are not
+!factory/machines-gen/out/
+factory/machines-gen/out/**/page/
+factory/machines-gen/out/baseline/

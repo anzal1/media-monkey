@@ -1,0 +1,82 @@
+{
+  "scenes": [
+    {
+      "headline": "Accessed items jump to front.",
+      "subhead": "record B promoted to MRU",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "hit",
+        "key": "B",
+        "items": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      }
+    },
+    {
+      "headline": "Coldest record drops off.",
+      "subhead": "capacity full, D is evicted",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "miss",
+        "key": "E",
+        "items": [
+          "B",
+          "A",
+          "C",
+          "D"
+        ],
+        "evicted": "D"
+      }
+    },
+    {
+      "headline": "Frequent hits stay warm.",
+      "subhead": "A returns to head slot",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "hit",
+        "key": "A",
+        "items": [
+          "E",
+          "B",
+          "A",
+          "C"
+        ]
+      }
+    },
+    {
+      "headline": "The least recent expires.",
+      "subhead": "C drops into discard tray",
+      "params": {
+        "capacity": 4,
+        "label": "LRU CACHE",
+        "readout": "STATUS"
+      },
+      "state": {
+        "op": "miss",
+        "key": "F",
+        "items": [
+          "A",
+          "E",
+          "B",
+          "C"
+        ],
+        "evicted": "C"
+      }
+    }
+  ]
+}

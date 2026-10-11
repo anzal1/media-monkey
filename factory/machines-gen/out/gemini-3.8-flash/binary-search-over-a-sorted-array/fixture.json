@@ -1,0 +1,40 @@
+{
+  "scenes": [
+    {
+      "headline": "Search starts at the middle.",
+      "subhead": "probe measures index 3",
+      "params": {
+        "target": 73,
+        "label": "BINARY COMPARATOR",
+        "readout": "COMPARISON"
+      },
+      "state": {
+        "step": 0
+      }
+    },
+    {
+      "headline": "Too low eliminates the left.",
+      "subhead": "shutters close, bounds halve",
+      "params": {
+        "target": 73,
+        "label": "BINARY COMPARATOR",
+        "readout": "COMPARISON"
+      },
+      "state": {
+        "step": 1
+      }
+    },
+    {
+      "headline": "Midpoint matches target value.",
+      "subhead": "found in two comparisons",
+      "params": {
+        "target": 73,
+        "label": "BINARY COMPARATOR",
+        "readout": "COMPARISON"
+      },
+      "state": {
+        "step": 1
+      }
+    }
+  ]
+}

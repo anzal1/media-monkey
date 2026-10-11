@@ -1,0 +1,82 @@
+{
+  "concept": "binary search over a sorted array",
+  "model": "gemini-3.1-pro-preview",
+  "modelVersion": "gemini-3.1-pro-preview",
+  "kind": "comparator-rack",
+  "mapping": "A mechanical comparator spans a row of gauge blocks, dropping a balancing beam to weigh the middle block against a target reference, sliding its boundary markers inward to discard half the array based on the tilt.",
+  "parts": "Base: A heavy steel base plate with four screw-in feet, featuring two long inset grooves for the block tray and target track.",
+  "validated": true,
+  "repairs": 1,
+  "firstCallSeconds": 209.5,
+  "genSeconds": 349.9,
+  "wallSeconds": 353.2,
+  "usage": {
+    "prompt": 54681,
+    "output": 9216,
+    "thoughts": 45791,
+    "total": 109688
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 209457,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24951,
+        "output": 4543,
+        "thoughts": 26855,
+        "total": 56349
+      },
+      "validateMs": 1392,
+      "kind": "comparator-rack",
+      "errors": [
+        "scene 1: the page fell back to a stat card because text.replace is not a function",
+        "scene 2: the page fell back to a stat card because text.replace is not a function",
+        "scene 3: the page fell back to a stat card because text.replace is not a function",
+        "scene 1: build/mount threw TypeError: text.replace is not a function (at anatomy.js line 415)",
+        "scene 2: build/mount threw TypeError: text.replace is not a function (at anatomy.js line 415)",
+        "scene 3: build/mount threw TypeError: text.replace is not a function (at anatomy.js line 415)"
+      ]
+    },
+    {
+      "round": 1,
+      "genMs": 140441,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 29730,
+        "output": 4673,
+        "thoughts": 18936,
+        "total": 53339
+      },
+      "validateMs": 1748,
+      "kind": "comparator-rack",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.1,
+    "p95": 0.4,
+    "max": 0.6
+  },
+  "pageMs": {
+    "median": 0.1,
+    "max": 0.7
+  },
+  "mountMs": [
+    2.2,
+    1.6,
+    2.2
+  ],
+  "solids": [
+    29,
+    29,
+    29
+  ],
+  "paths": [
+    235,
+    236,
+    235
+  ],
+  "tile": "insights/visuals/gen/gemini-3.1-pro-preview/comparator-rack.jpg"
+}

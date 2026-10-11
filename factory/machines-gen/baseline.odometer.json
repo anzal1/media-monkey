@@ -1,0 +1,66 @@
+{
+  "scenes": [
+    {
+      "headline": "Nine plus one carries.",
+      "subhead": "the carry ripples left",
+      "params": {
+        "digits": 4,
+        "base": 10,
+        "label": "request counter",
+        "readout": "requests"
+      },
+      "state": {
+        "from": 1297,
+        "to": 1300,
+        "behaviour": "count"
+      }
+    },
+    {
+      "headline": "999 plus one is 000.",
+      "subhead": "three wheels, nowhere to carry",
+      "params": {
+        "digits": 3,
+        "base": 10,
+        "label": "three digit counter",
+        "readout": "reads"
+      },
+      "state": {
+        "from": 999,
+        "to": 1000,
+        "behaviour": "rollover"
+      }
+    },
+    {
+      "headline": "127 plus one is -128.",
+      "subhead": "the sign bit takes the carry",
+      "params": {
+        "digits": 8,
+        "base": 2,
+        "signed": true,
+        "label": "int8 register",
+        "readout": "as int8"
+      },
+      "state": {
+        "from": "01111111",
+        "to": "10000000",
+        "behaviour": "rollover"
+      }
+    },
+    {
+      "headline": "Same crash at 32 bits.",
+      "subhead": "int32, read in hex",
+      "params": {
+        "digits": 8,
+        "base": 16,
+        "signed": true,
+        "label": "int32 register",
+        "readout": "as int32"
+      },
+      "state": {
+        "from": "7FFFFFFF",
+        "to": "80000000",
+        "behaviour": "rollover"
+      }
+    }
+  ]
+}

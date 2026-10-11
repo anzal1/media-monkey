@@ -1,0 +1,83 @@
+{
+  "concept": "mutex lock contention",
+  "model": "gemini-3.8-flash",
+  "modelVersion": "gemini-3.8-flash",
+  "kind": "mutex-gate",
+  "mapping": "Three spring-loaded follower carriages queue along parallel guide rails against a transverse sliding lock gate whose single slot admits only one carriage at a time to the work anvil, holding the others compressed and blocked in contention.",
+  "parts": "Base plate, four corner riser feet, four knurled levelling thumbscrews, perimeter oil groove, two bridge headstocks, three twin guide-rod pairs, six bronze rod bushings, three follower carriages, three carriage index plates, three compression springs, three drive pins, three latch tongues, transverse slide way, transverse locking gate block with hardened entry slot, two transverse way clamps, gate drive link, gate bellcrank, bellcrank pivot pin, gate detent rack, work anvil bridge, critical-section strike anvil, two tie bars, and six guide rod end stops.",
+  "validated": true,
+  "repairs": 1,
+  "firstCallSeconds": 58.5,
+  "genSeconds": 114.1,
+  "wallSeconds": 119.4,
+  "usage": {
+    "prompt": 56580,
+    "output": 12124,
+    "thoughts": 5010,
+    "total": 73714
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "genMs": 58512,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 24948,
+        "output": 6348,
+        "thoughts": 1411,
+        "total": 32707
+      },
+      "validateMs": 2693,
+      "kind": "mutex-gate",
+      "errors": [
+        "scene 1 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\"",
+        "scene 2 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\"",
+        "scene 3 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\"",
+        "scene 4 t=0.00s: markup contains NaN near \"path class=\"iso-line\" data-tone=\"lo\" d=\"MNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNLNaN NaNMNaN NaN\""
+      ]
+    },
+    {
+      "round": 1,
+      "genMs": 55617,
+      "finish": "STOP",
+      "usage": {
+        "prompt": 31632,
+        "output": 5776,
+        "thoughts": 3599,
+        "total": 41007
+      },
+      "validateMs": 2611,
+      "kind": "mutex-gate",
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "msPerFrame": {
+    "median": 0.6,
+    "p95": 0.7,
+    "max": 0.8
+  },
+  "pageMs": {
+    "median": 0.5,
+    "max": 1.2
+  },
+  "mountMs": [
+    4.1,
+    1.6,
+    1.5,
+    1.6
+  ],
+  "solids": [
+    36,
+    36,
+    36,
+    36
+  ],
+  "paths": [
+    292,
+    292,
+    292,
+    292
+  ],
+  "tile": "insights/visuals/gen/gemini-3.8-flash/mutex-gate.jpg"
+}
