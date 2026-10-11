@@ -1316,5 +1316,20 @@
     "slot": "2026-10-11T03:00:00.000Z",
     "igMediaId": "18127763434858110",
     "publishedAt": "2026-10-11T03:00:07Z"
+  },
+  {
+    "slug": "memory-latency-vs-clock-speed",
+    "topic": "memory latency vs clock speed",
+    "hook": "Your four gigahertz CPU does nothing all day.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-17",
+    "length": "tight",
+    "seconds": 94.9,
+    "lang": "en",
+    "at": "2026-10-11T08:03:07.779Z",
+    "ytVideoId": "YGMPsMFUJic",
+    "slot": "2026-10-11T07:30:00.000Z"
   }
 ]
