@@ -1,0 +1,120 @@
+{
+  "eyebrow": "SELFTEST",
+  "accent": "#2563eb",
+  "episode": "THE PROD MONKEY",
+  "handle": "",
+  "title": {
+    "kicker": "SELFTEST",
+    "title": "Machines degrade to stats."
+  },
+  "titleUntil": 2,
+  "starts": [
+    2,
+    6,
+    10,
+    14,
+    18,
+    22
+  ],
+  "scenes": [
+    {
+      "type": "machine",
+      "headline": "Unknown kind.",
+      "subhead": "",
+      "data": {
+        "kind": "turbine",
+        "params": {},
+        "state": {
+          "from": 1,
+          "to": 2
+        }
+      },
+      "beat": 0,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "Bad base.",
+      "subhead": "",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 4,
+          "base": 7,
+          "readout": "reads"
+        },
+        "state": {
+          "from": 1,
+          "to": 2
+        }
+      },
+      "beat": 1,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "No state.",
+      "subhead": "",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 4,
+          "base": 10
+        }
+      },
+      "beat": 2,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "Garbage value.",
+      "subhead": "",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 4,
+          "base": 10,
+          "label": "x"
+        },
+        "state": {
+          "from": "lots",
+          "to": "more"
+        }
+      },
+      "beat": 3,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "No data at all.",
+      "subhead": "",
+      "data": null,
+      "beat": 4,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "Clamped digits.",
+      "subhead": "",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 40,
+          "base": "hex"
+        },
+        "state": {
+          "from": "0xFF",
+          "behaviour": "rollover"
+        }
+      },
+      "beat": 5,
+      "half": 0,
+      "of": 1
+    }
+  ]
+}

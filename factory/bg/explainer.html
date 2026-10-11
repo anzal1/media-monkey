@@ -281,6 +281,27 @@
   .drow.add { background: #e9f6ec; color: #14532d; }
   .drow.del { background: #fdecec; color: #7f1d1d; }
 
+  /* machine: a parametric Anatomy figure (factory/explainer/machines) in a plate,
+     with the machine's own readout under it */
+  .mach { position: relative; width: 100%; padding: 16px 18px 16px; display: flex; flex-direction: column; }
+  .mach .mhd, .mach .mrd .l {
+    font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500;
+    font-size: 19px; letter-spacing: .16em; text-transform: uppercase; color: #8a857c; }
+  /* the plate's corner labels sit over the figure's empty top corners, as on an Anatomy plate */
+  .mach .mhd { position: absolute; left: 22px; right: 22px; top: 20px; display: flex; justify-content: space-between; gap: 20px; white-space: nowrap; pointer-events: none; }
+  .mach .mrd .l { white-space: nowrap; }
+  .mach .mrd .v.long { font-size: 38px; }
+  .mach .mfig { margin: 0 -10px; }
+  /* readout left-aligned: the right edge of the hero sits under the Reels buttons */
+  .mach .mrd { display: flex; align-items: center; gap: 24px;
+    margin: 4px 4px 0; padding-top: 12px; border-top: 2px solid var(--hair); }
+  .mach .mhd .mr { display: flex; align-items: center; gap: 16px; }
+  .mach .mrd .v { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700;
+    font-size: 46px; line-height: 1; letter-spacing: -.02em; color: var(--accent); white-space: nowrap; }
+  /* raised on the plate once the carry has gone over the top */
+  .mach .mhd .tag { font-size: 16px; letter-spacing: .14em; color: var(--bad); border: 2px solid currentColor;
+    border-radius: 999px; padding: 3px 11px 2px; margin: -5px 0; opacity: 0; background: #fff; }
+
   /* note */
   .note .lead { font-size: 46px; font-weight: 700; line-height: 1.15; letter-spacing: -.02em; }
   .note .body { margin-top: 26px; font-size: 30px; line-height: 1.45; color: var(--mute); }
@@ -672,6 +693,9 @@
 
 <script src="_harness.js"></script>
 <script src="icons.js"></script>
+<script src="../explainer/anatomy/anatomy.js"></script>
+<script src="../explainer/machines/machines.js"></script>
+<script src="../explainer/machines/odometer.js"></script>
 <script src="explainer-spec.js"></script>
 <script>
 (function () {
@@ -682,6 +706,32 @@
   document.documentElement.style.setProperty('--accent', S.accent || '#c2410c');
 
   const scenes = S.scenes || [];
+  /*
+   * A machine scene the runtime cannot draw (unknown kind, bad params, the
+   * kit failed to load) becomes a plain stat scene before anything is built,
+   * so every later branch sees an ordinary type and nothing can crash.
+   */
+  function machineFallback(d) {
+    const st = (d && d.state) || {};
+    const pr = (d && d.params) || {};
+    const v = st.to != null ? st.to : st.from;
+    return {
+      value: v == null || v === '' ? '?' : (typeof v === 'number' ? v.toLocaleString('en-US') : String(v)).slice(0, 14),
+      label: String(pr.readout || pr.label || '').slice(0, 40),
+    };
+  }
+  for (const sc of scenes) {
+    if (sc.type !== 'machine') continue;
+    try {
+      const d = sc.data || {};
+      if (!window.MM_MACHINES) throw new Error('machine runtime missing');
+      window.MM_MACHINES.normalize(d.kind, d.params, d.state);
+    } catch (e) {
+      sc.type = 'stat';
+      sc.data = machineFallback(sc.data);
+      sc.machineError = e.message;
+    }
+  }
   const TOTAL = scenes.length;
   // Scene boundaries come from the real TTS durations. Opening the page by hand
   // with no spec falls back to equal slices so it is still eyeball-able.
@@ -1353,6 +1403,14 @@
         `<i class="phb a"></i><i class="phb b"></i><i class="phb c"></i>` +
         `<div class="phscr">${form === 'phone' ? sb : ''}${scr}</div><div class="phisland"></div><div class="phhome"></div>${extra}</div>`;
     },
+    machine(d) {
+      // the figure itself is mounted into .mfig right after this is parsed
+      const accent = d.params && typeof d.params.accent === 'string' && /^#[0-9a-f]{3,8}$/i.test(d.params.accent) ? d.params.accent : '';
+      return `<div class="mach panel el"${accent ? ` style="--accent:${accent}"` : ''}>` +
+        `<div class="mhd"><span class="ml"></span><span class="mr"><span class="tag"></span><span class="mc"></span></span></div>` +
+        `<div class="mfig"></div>` +
+        `<div class="mrd"><span class="l"></span><span class="v"></span></div></div>`;
+    },
     note(d) {
       return `<div class="note"><div class="lead el">${esc(d.lead)}</div>` +
         (d.body ? `<div class="body el">${esc(d.body)}</div>` : '') + `</div>`;
@@ -1372,6 +1430,21 @@
     wrap.style.cssText = 'position:absolute;inset:0;display:none';
     wrap.innerHTML = builderFor(sc.type)(WORLD ? sc.data || {} : sc.data, sc);
     (isFull(sc.type) ? $('wstage') : hero).appendChild(wrap);
+    let machine = null;
+    if (sc.type === 'machine') {
+      try {
+        const d = sc.data;
+        const m = window.MM_MACHINES.mount(wrap.querySelector('.mfig'), d.kind, d.params, d.state);
+        wrap.querySelector('.ml').textContent = m.meta.label;
+        wrap.querySelector('.mc').textContent = m.meta.corner;
+        machine = { m, l: wrap.querySelector('.mrd .l'), v: wrap.querySelector('.mrd .v'), tag: wrap.querySelector('.mhd .tag'), last: '' };
+      } catch (e) {
+        sc.type = 'stat';
+        sc.data = machineFallback(sc.data);
+        sc.machineError = e.message;
+        wrap.innerHTML = BUILD.stat(sc.data);
+      }
+    }
     return {
       wrap,
       els: [...wrap.querySelectorAll('.el')],
@@ -1379,6 +1452,7 @@
       lines: [...wrap.querySelectorAll('.winbody .ln')],
       draws: [...wrap.querySelectorAll('.draw')],
       stat: wrap.querySelector('.stat .v'),
+      machine,
       nodes: [...wrap.querySelectorAll('.fnode')],
       morph: new Map(),
     };
@@ -2658,6 +2732,20 @@
         });
       }
 
+      // ---- a machine is a pure function of scene time; its readout comes with it
+      if (sc.type === 'machine' && B.machine) {
+        const r = B.machine.m.frame(local, span);
+        const key = r.label + '|' + r.value + '|' + r.tag;
+        if (key !== B.machine.last) {
+          B.machine.last = key;
+          B.machine.l.textContent = r.label;
+          B.machine.v.textContent = r.value;
+          B.machine.v.classList.toggle('long', r.value.length > 9);
+          if (r.tag) B.machine.tag.textContent = r.tag;
+        }
+        // the tag eases in once the carry has gone over the top, never blinks
+        B.machine.tag.style.opacity = r.tag ? r.tagIn.toFixed(3) : 0;
+      }
       if (sc.type === 'chart') animateChart(B, sc.data, local, span, k, tSec);
       animateNew(B, sc, local, span, tSec);
 

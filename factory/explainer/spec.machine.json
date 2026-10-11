@@ -1,0 +1,157 @@
+{
+  "eyebrow": "FROM THE ROOT · 02",
+  "accent": "#c2410c",
+  "episode": "THE PROD MONKEY",
+  "handle": "",
+  "title": {
+    "kicker": "FROM THE ROOT · PART 2",
+    "title": "Why 2,147,483,647 plus one is negative.",
+    "keyword": "overflow"
+  },
+  "titleUntil": 3,
+  "starts": [
+    3,
+    8,
+    13,
+    18,
+    23,
+    28
+  ],
+  "scenes": [
+    {
+      "type": "machine",
+      "headline": "A counter only knows up.",
+      "subhead": "four digit wheels, one crank",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 4,
+          "base": 10,
+          "label": "request counter",
+          "readout": "requests"
+        },
+        "state": {
+          "from": 1,
+          "to": 6,
+          "behaviour": "count"
+        }
+      },
+      "beat": 0,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "Nine plus one carries.",
+      "subhead": "the carry ripples left",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 4,
+          "base": 10,
+          "label": "request counter",
+          "readout": "requests"
+        },
+        "state": {
+          "from": 1297,
+          "to": 1300,
+          "behaviour": "count"
+        }
+      },
+      "beat": 1,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "999 plus one is 000.",
+      "subhead": "three wheels, nowhere to carry",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 3,
+          "base": 10,
+          "label": "three digit counter",
+          "readout": "reads"
+        },
+        "state": {
+          "from": 999,
+          "to": 1000,
+          "behaviour": "rollover"
+        }
+      },
+      "beat": 2,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "A byte is eight wheels.",
+      "subhead": "base 2, same machine",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 8,
+          "base": 2,
+          "signed": true,
+          "label": "int8 register",
+          "readout": "as int8"
+        },
+        "state": {
+          "from": "01111000",
+          "to": "01111111",
+          "behaviour": "count"
+        }
+      },
+      "beat": 3,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "127 plus one is -128.",
+      "subhead": "the sign bit takes the carry",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 8,
+          "base": 2,
+          "signed": true,
+          "label": "int8 register",
+          "readout": "as int8"
+        },
+        "state": {
+          "from": "01111111",
+          "to": "10000000",
+          "behaviour": "rollover"
+        }
+      },
+      "beat": 4,
+      "half": 0,
+      "of": 1
+    },
+    {
+      "type": "machine",
+      "headline": "Same crash at 32 bits.",
+      "subhead": "int32, read in hex",
+      "data": {
+        "kind": "odometer",
+        "params": {
+          "digits": 8,
+          "base": 16,
+          "signed": true,
+          "label": "int32 register",
+          "readout": "as int32"
+        },
+        "state": {
+          "from": "7FFFFFFF",
+          "to": "80000000",
+          "behaviour": "rollover"
+        }
+      },
+      "beat": 5,
+      "half": 0,
+      "of": 1
+    }
+  ]
+}
