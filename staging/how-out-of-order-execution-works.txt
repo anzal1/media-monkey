@@ -1,0 +1,22 @@
+Line four completed before line two.
+Registers get quietly rewritten.
+Out of order execution broke your lock-free queue 💥
+
+Out of order execution is the hardware mechanism where a CPU runs instructions as their operands become available rather than following your sequential source code.
+
+Here is where it bites:
+→ A background thread reads a pointer before its data fields initialize
+→ Your lock-free ring buffer drops writes under heavy load
+→ High-contention algorithms desync despite correct sequential code
+
+The instruction fetcher reads your binary sequentially, and the decoder breaks assembly into micro-operations. Register renaming maps your static variables onto hundreds of physical registers to eliminate false data dependencies. Work sits inside the reservation station until operands exist; while one operation waits hundreds of cycles on DRAM, ready independent instructions fire immediately.
+
+Everything finishes in a reorder buffer. The hardware guarantees in-order retirement to single-threaded observers, preserving precise interrupts. But across multiple cores, those reordered loads and stores become visible unless you insert memory barriers.
+
+A single cache miss costs about 200 clock cycles. Without out of order execution, modern silicon would idle over ninety percent of the day waiting on DRAM.
+
+Remember this next time you write concurrency primitives without atomic fences.
+
+Have you ever caught a multithreaded bug that only reproduced on weakly ordered hardware like ARM?
+
+#cpuarchitecture #systemsengineering #concurrency #lowlevel #computerscience
