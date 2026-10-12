@@ -1,0 +1,20 @@
+A user streams forty words smoothly.
+A massive document query hits the server.
+Your ttft vs tpot trade-off immediately breaks the active stream.
+
+Large language models split latency into time to first token and time per output token because each phase stresses totally different physical silicon bottlenecks.
+
+Here is where it bites:
+→ Prefill reads entire incoming prompts at once, running compute-bound on tensor cores
+→ Decode generates words one by one, bottlenecked by high bandwidth memory transfers
+→ Scheduling a new prefill freezes active output streams and wrecks user experience
+
+When a new request lands on a running continuous batch, the engine tries to process all prompt tokens simultaneously. That massive matrix multiplication monopolizes the GPU compute cores, forcing every streaming response to wait until the prefill completes.
+
+Splitting your cluster into dedicated prefill and decode instances or capping prefill chunks keeps your generation latency smooth while maintaining acceptable prompt start times.
+
+AI system design, part 10. Follow for part 11.
+
+Have you ever split prefill and decode into separate GPU worker pools in production?
+
+#llm #systemdesign #latency #gpu #transformers

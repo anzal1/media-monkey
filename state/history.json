@@ -1384,5 +1384,20 @@
     "slot": "2026-10-12T03:00:00.000Z",
     "igMediaId": "18437329384177875",
     "publishedAt": "2026-10-12T03:00:08Z"
+  },
+  {
+    "slug": "ttft-vs-tpot-llm-latency",
+    "topic": "TTFT vs TPOT",
+    "hook": "Your AI chat feels instant, then suddenly crawls.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-10",
+    "length": "tight",
+    "seconds": 95.2,
+    "lang": "en",
+    "at": "2026-10-12T08:21:27.203Z",
+    "ytVideoId": "ievSOvNJGRM",
+    "slot": "2026-10-12T07:30:00.000Z"
   }
 ]
