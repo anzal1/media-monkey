@@ -1,0 +1,26 @@
+Your append loop took ten milliseconds.
+In production dynamic arrays silently stall workers.
+Averages look fine until p99 spikes.
+
+A dynamic array is a contiguous memory buffer that automatically grows by allocating a larger chunk and copying all existing elements over.
+
+Here is where it bites:
+→ Streaming millions of incoming records into a raw vector
+→ High-frequency trading pipelines processing bursty order packets
+→ Game engines running real-time physics loops inside a frame budget
+
+Textbooks call dynamic arrays amortized constant time because nine hundred and ninety-nine appends take a couple of clock cycles. But that thousandth write hits the capacity ceiling. Because arrays must remain perfectly contiguous in memory, the runtime cannot simply append a new block to the end of the line.
+
+It calls the system allocator to find a significantly larger space, which often means dropping into the kernel. Then the CPU copies every single item over. Fresh virtual pages trigger hardware page faults, forcing the operating system to zero physical memory frames before releasing them.
+
+That one harmless append operation turns into tens of milliseconds of pure stall time. In managed runtimes, the abandoned slab immediately increases heap churn, triggering garbage collection passes right behind it.
+
+Pre-allocating your buffers using reserve or capacity flags costs nothing and completely eliminates runtime copies.
+
+Next time your tail latency spikes.
+
+From the root, part 13. Follow for part 14.
+
+What is the worst tail-latency spike you ever traced back to an innocent push operation?
+
+#datastructures #systemsengineering #softwareengineering #computerscience #latency

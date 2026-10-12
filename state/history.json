@@ -1367,5 +1367,20 @@
     "slot": "2026-10-11T17:30:00.000Z",
     "igMediaId": "17865657666680485",
     "publishedAt": "2026-10-11T17:30:08Z"
+  },
+  {
+    "slug": "why-dynamic-arrays-spike-latency",
+    "topic": "dynamic arrays",
+    "hook": "Your append loop just took ten milliseconds.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-19",
+    "length": "deep",
+    "seconds": 143.5,
+    "lang": "en",
+    "at": "2026-10-12T00:53:03.669Z",
+    "ytVideoId": "swMTeXdWnro",
+    "slot": "2026-10-12T03:00:00.000Z"
   }
 ]
