@@ -1,0 +1,22 @@
+A single cache put stalls for ninety milliseconds.
+Kernel CPU hits one hundred percent on an idle box.
+Your allocator trips on transparent huge pages under heavy fragmentation. 💥
+
+Transparent huge pages bundle memory into two-megabyte chunks to cut hardware translation lookaside buffer misses.
+
+Here is where it bites:
+→ An application requests four kilobytes of memory from the kernel.
+→ Physical memory is fragmented so no contiguous block exists.
+→ The kernel pauses the calling thread to compact pages synchronously.
+
+The Linux kernel memory management unit caches virtual to physical translations in fast hardware lookups. Standard pages are four kilobytes. Transparent huge pages promote allocations to two megabytes so one cache entry covers five hundred times more ground.
+
+When memory gets fragmented, the kernel cannot find a contiguous two-megabyte run. If direct compaction is enabled, your thread halts. The page migration scanner acquires zone spinlocks, copies physical pages across RAM, updates page tables, and flushes processor caches just to clear space for a future huge page.
+
+A four-kilobyte allocation that should take sub-microsecond time now absorbs eighty to two hundred milliseconds of latency.
+
+Save this for the next time your database tail latency mysteriously spikes.
+
+Have you ever had to disable transparent huge pages in production to save a database?
+
+#linuxkernel #memorymanagement #systemperformance #devops #databasedesign
