@@ -1469,5 +1469,20 @@
     "slot": "2026-10-13T07:30:00.000Z",
     "igMediaId": "18077309528433916",
     "publishedAt": "2026-10-13T08:47:23Z"
+  },
+  {
+    "slug": "why-databases-use-b-trees",
+    "topic": "B-trees",
+    "hook": "Your database never uses a binary tree.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-22",
+    "length": "deep",
+    "seconds": 119.2,
+    "lang": "en",
+    "at": "2026-10-13T15:43:19.793Z",
+    "ytVideoId": "RAYEVlsRdGg",
+    "slot": "2026-10-13T13:30:00.000Z"
   }
 ]

@@ -1,0 +1,24 @@
+A single query stalls on storage.
+Every lookup requires thirty sequential disk reads.
+Your production b-tree index solves this by staying wide instead of tall. 📦
+
+A B-tree is a self-balancing search tree where each node holds hundreds of keys sized directly to a storage page.
+
+Picture this:
+➔ A binary tree requires thirty hops to locate one row out of a billion
+➔ Storage hardware reads full four-kilobyte pages rather than isolated bytes
+➔ Twenty-nine disk round-trips waste time reading nearly empty data blocks
+
+Disk controllers and solid state drives fetch information in page-sized chunks. A binary search node contains one key and two pointers, which uses only a fraction of a fetched block. That leaves the storage bus moving empty space on every level of the traversal.
+
+B-trees match the hardware profile. By packing hundreds of sorted keys into each node, a single page read brings hundreds of routing paths into RAM at once. Searching inside that cached node takes microseconds of fast CPU time, while flattening the entire tree hierarchy.
+
+A billion items collapses from thirty disk round-trips down to three or four page reads. At four milliseconds per cold read, that drops query latency from a tenth of a second down to twelve milliseconds.
+
+Next time you tune index fill factors.
+
+From the root, part 15. Follow for part 16.
+
+What fill factor percentage do you run on high-write indexes?
+
+#btree #databases #systemdesign #datastructures #postgres
