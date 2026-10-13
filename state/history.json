@@ -1435,5 +1435,20 @@
     "slot": "2026-10-12T17:30:00.000Z",
     "igMediaId": "18111362063171772",
     "publishedAt": "2026-10-12T21:06:47Z"
+  },
+  {
+    "slug": "weight-quantisation-int8-int4",
+    "topic": "quantisation",
+    "hook": "Your seventy billion model requires eighty gigabytes of memory.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-12",
+    "length": "deep",
+    "seconds": 125.8,
+    "lang": "en",
+    "at": "2026-10-13T02:53:12.513Z",
+    "ytVideoId": "8ih1_HRgyDQ",
+    "slot": "2026-10-13T03:00:00.000Z"
   }
 ]
