@@ -1452,5 +1452,20 @@
     "slot": "2026-10-13T03:00:00.000Z",
     "igMediaId": "18103540625145558",
     "publishedAt": "2026-10-13T03:00:08Z"
+  },
+  {
+    "slug": "git-shallow-versus-blobless-clone",
+    "topic": "why shallow git clones download more bytes than blobless clones",
+    "hook": "You typed git clone depth one in CI.",
+    "source": "live",
+    "track": "production",
+    "category": "git-tooling",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 100.1,
+    "lang": "en",
+    "at": "2026-10-13T08:45:51.673Z",
+    "ytVideoId": "RnozXuqzawg",
+    "slot": "2026-10-13T07:30:00.000Z"
   }
 ]

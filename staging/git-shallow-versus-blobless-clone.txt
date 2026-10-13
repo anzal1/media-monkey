@@ -1,0 +1,22 @@
+CI runners burn gigabytes on clean pulls.
+Every build fetches the same repository.
+A shallow git clone actually transfers larger payloads.
+
+Blobless clones keep the whole commit graph while skipping large file payloads until checkout.
+
+Here is where it bites:
+→ Depth one severs ancestor history entirely
+→ Remote servers must generate bespoke packfiles instead of static caches
+→ Followup fetches cannot compute deltas and pull full duplicates
+
+When you pass depth one, Git truncates the history graph. The remote server loses the ability to negotiate shared ancestry, forcing it to compress a custom archive from scratch. That means no pre-generated server packfiles, higher remote CPU, and zero shared delta compression.
+
+A blobless clone using filter equals blob none fetches all commit trees without the file contents. Git understands every branch boundary and can use normal delta compression on subsequent fetches, pulling only the exact changed files your runner checks out.
+
+On a ten-gigabyte monorepo, a blobless fetch downloads a tiny fraction of the data that an updated shallow clone pushes across the wire.
+
+Next time your CI runner runs out of network bandwidth.
+
+Did your team switch CI pipelines to blobless clones yet, or are you still relying on depth one?
+
+#git #devops #cicd #softwareengineering #systems
