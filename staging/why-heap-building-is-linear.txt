@@ -1,0 +1,24 @@
+Ten million integers sitting in an array.
+Calling push in a loop burns two hundred million comparisons.
+Running build heap finishes in twenty milliseconds flat. ⚡
+
+A binary heap organizes a tree inside contiguous memory so parent and child relationships map directly to array indices without storing pointers.
+
+Here is where it bites:
+→ Pushing items one by one forces leaves to climb log n steps
+→ Repeated insertions waste CPU cycles rebuilding intermediate invariant states
+→ Cache misses skyrocket as tiny elements traverse deep tree levels
+
+Floyd's algorithm turns the whole process upside down. Half the elements in any binary tree sit on the very bottom layer as leaves. Because they have no children, their sift-down cost is zero.
+
+The layer directly above the leaves holds a quarter of your nodes, and each can only sift down one level. The next layer holds an eighth, moving at most two levels. Only the root can ever travel the full tree height. When you sum the work, you are multiplying shrinking node counts by growing heights. That mathematical series converges to a constant factor, proving the total cost is strictly linear.
+
+Calling push in a loop costs O(n log n). Sifting down from the middle costs O(n). That is a ten-fold drop in memory operations on large datasets.
+
+Save this for your next latency optimization pass.
+
+From the root, part 16. Follow for part 17.
+
+Did your university algorithms class teach Floyd's bottom-up build heap, or did they stop at repeated push?
+
+#computerscience #datastructures #algorithms #softwareengineering #programming
