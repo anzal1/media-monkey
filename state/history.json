@@ -1520,5 +1520,20 @@
     "slot": "2026-10-14T03:00:00.000Z",
     "igMediaId": "18079569974706041",
     "publishedAt": "2026-10-14T03:00:07Z"
+  },
+  {
+    "slug": "flashattention-io-aware-speedup",
+    "topic": "FlashAttention",
+    "hook": "Your GPU sits idle during attention.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-13",
+    "length": "deep",
+    "seconds": 150.8,
+    "lang": "en",
+    "at": "2026-10-14T06:58:39.493Z",
+    "ytVideoId": "EUJPBlhKulg",
+    "slot": "2026-10-14T07:30:00.000Z"
   }
 ]
