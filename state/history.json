@@ -1503,5 +1503,20 @@
     "slot": "2026-10-13T17:30:00.000Z",
     "igMediaId": "18119825941983396",
     "publishedAt": "2026-10-13T19:07:35Z"
+  },
+  {
+    "slug": "how-tries-power-instant-autocomplete",
+    "topic": "tries",
+    "hook": "You type three letters into a search bar.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-24",
+    "length": "deep",
+    "seconds": 135.6,
+    "lang": "en",
+    "at": "2026-10-14T00:41:35.200Z",
+    "ytVideoId": "BC1_GX3FO8U",
+    "slot": "2026-10-14T03:00:00.000Z"
   }
 ]
