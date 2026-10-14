@@ -1,0 +1,24 @@
+A missing user ID triggers a cache miss.
+Your disk heads thrash scanning massive SSTables.
+Unchecked bloom filters let pointless random lookups bleed your IOPS.
+
+A Bloom filter is a space-efficient probabilistic data structure that tests whether an element is definitely not in a set or might be in it.
+
+Here is where it bites:
+→ High-throughput APIs querying non-existent primary keys.
+→ Storage engines scanning multiple immutable on-disk tables sequentially.
+→ Distributed caches burning memory to store negative lookup markers.
+
+When a key enters the filter, several independent hash functions map it to discrete indices across a single bit array, flipping those positions from zero to one. The data itself is never retained, which eliminates the overhead of node pointers.
+
+Lookups evaluate those identical bit indices. If any addressed bit contains a zero, the element definitely does not exist, short-circuiting the request before touching disk. If every bit is one, the element probably exists, though hash collisions introduce a tunable false positive rate.
+
+Allocating roughly ten bits per key keeps false positives under one percent, shielding your disk from ninety-nine percent of phantom queries.
+
+Remember this before your next database outage.
+
+How do you handle deletes when your read path relies on a probabilistic filter?
+
+From the root, part 18. Follow for part 19.
+
+#systemdesign #datastructures #databases #backend #softwareengineering

@@ -1554,5 +1554,20 @@
     "slot": "2026-10-14T13:30:00.000Z",
     "igMediaId": "18087408128295426",
     "publishedAt": "2026-10-14T13:32:53Z"
+  },
+  {
+    "slug": "how-bloom-filters-work",
+    "topic": "bloom filters",
+    "hook": "Your database just checked a billion missing keys.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-25",
+    "length": "deep",
+    "seconds": 127,
+    "lang": "en",
+    "at": "2026-10-14T16:47:16.315Z",
+    "ytVideoId": "0Mb75_mpMUY",
+    "slot": "2026-10-14T17:30:00.000Z"
   }
 ]
