@@ -1,0 +1,22 @@
+P99 latency jumps to ten seconds.
+CPU usage drops to four percent.
+Your on-cpu flame graph is an empty, flat plateau. 📉
+
+Standard profilers measure what runs on the core, leaving blocked threads completely invisible.
+
+Here is where it bites:
+→ Connection pool starvation silently queues incoming requests
+→ Synchronous logging locks a global mutex under sudden traffic
+→ Downstream microservices stall your TCP sockets without erroring
+
+Traditional performance tools fire interrupts to check which instruction a CPU core is executing. When your software spends ninety-nine percent of its life waiting on a network packet or a database lock, the operating system kernel deschedules the thread entirely. The thread is asleep, so the hardware timer never catches it in the act.
+
+Off-CPU profiling fixes this blind spot by instrumenting the kernel scheduler itself. Using eBPF, tools hook into the scheduler to record the exact call stack when a thread goes to sleep and calculate the time elapsed until it wakes back up.
+
+Instead of burning days blindly tweaking thread pool sizes, tracing the sleep states shows you the exact line of code holding the lock.
+
+Save this for your next latency mystery.
+
+What was the weirdest off-CPU lock that ever stalled your production services?
+
+#ebpf #profiling #linuxkernel #observability #performance
