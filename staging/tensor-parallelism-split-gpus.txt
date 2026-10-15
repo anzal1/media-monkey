@@ -1,0 +1,24 @@
+A 70B model needs 140 gigabytes just for weights.
+Your primary server card taps out at 80.
+Production tensor parallelism splits the matrix to survive. 💥
+
+Tensor parallelism is a distributed execution strategy where individual weight matrices inside each transformer layer are sliced across multiple GPUs operating in lockstep.
+
+Here is where it bites:
+→ Splitting a single layer forces an all-reduce operation across chips
+→ A standard 80-layer architecture synchronizes 160 times per generated token
+→ Running that sync over plain PCIe destroys decode throughput immediately
+
+Inside the attention block, the query, key, and value projections get column-sharded. Every GPU computes its fraction of heads without external state. The output projection is row-sharded, producing partial sums that require an immediate all-reduce to reconstruct the true activation vector.
+
+The MLP block mirrors this exact pattern: column-parallel up-projection followed by row-parallel down-projection, firing another all-reduce. On an eight-GPU node using NVLink, these exchanges move at 900 GB/s in microseconds. Attempt that over an ethernet switch or PCIe fabric, and communication latency completely swallows matrix arithmetic.
+
+Never extend a tensor parallel group past a single chassis. Keep your tensor parallel degree locked to the node boundary, and switch to pipeline or data parallelism for inter-node scaling.
+
+Next time you size an inference cluster, check your interconnect specs first.
+
+What is the lowest NVLink bandwidth where you have seen tensor parallelism remain viable?
+
+AI system design, part 14. Follow for part 15.
+
+#tensorparallelism #megatronlm #nvlink #llminference #systemdesign
