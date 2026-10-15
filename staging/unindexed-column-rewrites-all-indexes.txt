@@ -1,0 +1,22 @@
+Disk IOPS pin at one hundred percent after an innocent patch.
+Postgres autovacuum spins out of control trying to keep up with dead tuples.
+You only updated a tiny unindexed status flag.
+
+Postgres uses multi-version concurrency control, meaning an update is always a hidden insert of a brand-new row version at a new physical storage location.
+
+Here is where it bites:
+→ The target column has no index of its own
+→ The table page is packed tight with no free space
+→ Every single secondary index must log a new leaf pointer
+
+When a row version moves to a separate disk page, Heap-Only Tuple optimization fails. Secondary indexes do not point to primary keys; they point straight to raw physical disk addresses. When the physical location changes, every index tree on that table must record the new item pointer.
+
+A single update on a table with eight indexes turns into nine separate disk writes, leaving piles of dead tuples behind for autovacuum to clean up.
+
+Lowering your table fillfactor from one hundred to eighty-five or ninety leaves enough free space inside each page for HOT updates to chain locally without touching a single index.
+
+Keep this handy for your next production index tuning session.
+
+Have you ever caught write amplification completely shredding your disk throughput because of missing page fillfactor headroom?
+
+#postgres #autovacuum #databaseperformance #sql #systemdesign

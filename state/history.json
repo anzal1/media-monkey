@@ -1639,5 +1639,20 @@
     "slot": "2026-10-15T17:30:00.000Z",
     "igMediaId": "17916459006526857",
     "publishedAt": "2026-10-15T17:30:06Z"
+  },
+  {
+    "slug": "unindexed-column-rewrites-all-indexes",
+    "topic": "updating an unindexed column rewrites every index on your table",
+    "hook": "You update one column without an index.",
+    "source": "live",
+    "track": "production",
+    "category": "databases",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 97.3,
+    "lang": "en",
+    "at": "2026-10-15T23:55:56.366Z",
+    "ytVideoId": "N1HD30_8vyU",
+    "slot": "2026-10-16T03:00:00.000Z"
   }
 ]
