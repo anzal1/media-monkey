@@ -1571,5 +1571,20 @@
     "slot": "2026-10-14T17:30:00.000Z",
     "igMediaId": "17989336212119815",
     "publishedAt": "2026-10-14T17:30:07Z"
+  },
+  {
+    "slug": "memory-bandwidth-is-the-limit",
+    "topic": "memory bandwidth is the limit",
+    "hook": "Your GPU compute sits at five percent.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-14",
+    "length": "tight",
+    "seconds": 87.3,
+    "lang": "en",
+    "at": "2026-10-15T00:10:53.440Z",
+    "ytVideoId": "lX7vzR63cxU",
+    "slot": "2026-10-15T03:00:00.000Z"
   }
 ]
