@@ -1,0 +1,24 @@
+Ten million players update scores simultaneously.
+A balanced tree locks up cascading rotations.
+Skip lists keep your leaderboard p99 flat. ⚡
+
+A skip list is a probabilistic data structure that layers multiple linked lists so lookups skip intermediate nodes in logarithmic time.
+
+Here is where it bites:
+➔ Red-black tree writes force rebalances across memory
+➔ Concurrent queries stall waiting on tree rotation locks
+➔ Range scans require constant vertical branch traversals
+
+Standard linked lists are simple to append to, but finding an item takes linear scans. Red-black trees give you fast search, but a single write can trigger cascades of node rotations that trash CPU caches and require wide memory locks.
+
+Skip lists solve this using randomized heights. When Redis inserts an entry into a sorted set, it flips a biased coin. With a twenty-five percent probability, the node gets promoted to an upper express lane. To find any key, the engine scans along the highest level, drops down when it overshoots, and finishes on the base list.
+
+Because node heights never change after insertion, updates only touch direct neighbors. Range queries jump straight to the start and walk horizontally across the base linked list at bare-metal memory speeds.
+
+Next system design interview when someone defaults to balanced trees.
+
+Have you ever rolled your own skip list, or do you always defer to database primitives?
+
+From the root, part 19. Follow for part 20.
+
+#redis #datastructures #systemdesign #computerscience #algorithms
