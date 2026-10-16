@@ -1,0 +1,22 @@
+Your clean microservice just hit 100% CPU on an already sorted list.
+The stack trace points directly to your standard quicksort function.
+One call stack blew past its limit and died. 💥
+
+Quicksort is an in-place divide-and-conquer algorithm that recursively partitions elements around a pivot value.
+
+Here is where it bites:
+→ An already sorted array hits the default pivot picker
+→ Every partition step splits into zero and n minus one elements
+→ Recursion depth scales linearly until memory exhausts
+
+When a pivot splits poorly, quicksort collapses from O(n log n) down to O(n squared). At one hundred thousand elements, that degrades from roughly one million operations straight to ten billion operations, blowing the call stack.
+
+Production standard libraries like C++ std::sort dodge this using introsort. Introsort monitors the call stack depth, and if partitions nest past two times log n, it abruptly swaps to heapsort to guarantee an O(n log n) worst-case bound. Small sub-arrays swap to insertion sort to exploit CPU cache lines.
+
+Never roll your own quicksort in production unless you enforce a strict recursion ceiling.
+
+From the root, part 21. Follow for part 22.
+
+Have you ever seen an unchecked sort trigger an outage in your services?
+
+#quicksort #introsort #algorithms #computerscience #datastructures

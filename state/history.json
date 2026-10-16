@@ -1673,5 +1673,20 @@
     "slot": "2026-10-16T07:30:00.000Z",
     "igMediaId": "18124417105926691",
     "publishedAt": "2026-10-16T07:30:06Z"
+  },
+  {
+    "slug": "why-quicksort-fails-in-production",
+    "topic": "quicksort",
+    "hook": "Your sorted array just crashed production.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-29",
+    "length": "tight",
+    "seconds": 96.6,
+    "lang": "en",
+    "at": "2026-10-16T13:10:57.162Z",
+    "ytVideoId": "Tl1GeZK-ZpI",
+    "slot": "2026-10-16T13:30:00.000Z"
   }
 ]
