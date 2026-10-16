@@ -1,0 +1,22 @@
+Your payment gateway hangs for two seconds.
+A single checkout click triggers a catastrophic retry storm that cascades across your architecture. 🔥
+Your database connection pool dies immediately.
+
+A retry storm is a cascading failure where automated retransmissions multiply across layered services until downstream infrastructure collapses.
+
+Picture this:
+→ The API gateway allows three retries per timed out call
+→ Service A and Service B each retry three times internally
+→ A brief database lock turns one request into eighty queries
+
+When a minor blip causes a call to stall, the outer client re-executes. But internal microservices also execute their own isolated retry loops. Because these attempts multiply at every hop, a chain of three services turns one failure into twenty-seven executions.
+
+Without randomized delays, these retried requests hit the database in synchronized lockstep. Your connection pools saturate, memory explodes, and threads spend all their clock cycles contending for row locks on requests users abandoned minutes ago.
+
+Enforce strict retry budgets capped at ten percent of total traffic, add full jitter to backoffs, and trip circuit breakers before downstream queues drown.
+
+Next time your latency alerts fire at 3am, remember this math.
+
+What retry budget does your primary backend enforce right now?
+
+#systemdesign #microservices #sre #backendengineering #distributedsystems

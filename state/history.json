@@ -1707,5 +1707,20 @@
     "slot": "2026-10-16T17:30:00.000Z",
     "igMediaId": "17937235572125018",
     "publishedAt": "2026-10-16T17:30:06Z"
+  },
+  {
+    "slug": "three-retries-eighty-queries",
+    "topic": "your three retries turned into eighty downstream database queries",
+    "hook": "Your retry setting just killed the database.",
+    "source": "live",
+    "track": "production",
+    "category": "reliability",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 107.1,
+    "lang": "en",
+    "at": "2026-10-16T23:58:13.969Z",
+    "ytVideoId": "DsZ_P-k5iEo",
+    "slot": "2026-10-17T03:00:00.000Z"
   }
 ]
