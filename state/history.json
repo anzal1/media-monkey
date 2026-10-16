@@ -1690,5 +1690,20 @@
     "slot": "2026-10-16T13:30:00.000Z",
     "igMediaId": "18447397699121276",
     "publishedAt": "2026-10-16T13:30:06Z"
+  },
+  {
+    "slug": "how-model-routing-actually-works",
+    "topic": "model routing",
+    "hook": "Every prompt hits your most expensive flagship model.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-17",
+    "length": "deep",
+    "seconds": 125.2,
+    "lang": "en",
+    "at": "2026-10-16T16:22:29.009Z",
+    "ytVideoId": "CzjzSZXiDKs",
+    "slot": "2026-10-16T17:30:00.000Z"
   }
 ]
