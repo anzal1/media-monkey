@@ -1656,5 +1656,20 @@
     "slot": "2026-10-16T03:00:00.000Z",
     "igMediaId": "18342390229249192",
     "publishedAt": "2026-10-16T03:00:07Z"
+  },
+  {
+    "slug": "how-ring-buffers-really-work",
+    "topic": "ring buffers",
+    "hook": "Your thread-safe queue drops fifty percent throughput.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-27",
+    "length": "deep",
+    "seconds": 117.1,
+    "lang": "en",
+    "at": "2026-10-16T06:43:14.738Z",
+    "ytVideoId": "To58u9dvfkw",
+    "slot": "2026-10-16T07:30:00.000Z"
   }
 ]
