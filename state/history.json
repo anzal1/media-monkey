@@ -1758,5 +1758,20 @@
     "slot": "2026-10-17T13:30:00.000Z",
     "igMediaId": "17895991974681226",
     "publishedAt": "2026-10-17T13:30:08Z"
+  },
+  {
+    "slug": "producer-interfaces-break-dependency-inversion",
+    "topic": "defining interfaces in the producer package defeats dependency inversion",
+    "hook": "You export an interface right next to its implementation.",
+    "source": "live",
+    "track": "production",
+    "category": "code-craft",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 132.8,
+    "lang": "en",
+    "at": "2026-10-17T15:15:26.135Z",
+    "ytVideoId": "qCykYQODJeQ",
+    "slot": "2026-10-17T17:30:00.000Z"
   }
 ]

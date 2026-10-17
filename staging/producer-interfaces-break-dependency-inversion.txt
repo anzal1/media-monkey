@@ -1,0 +1,22 @@
+Your storage package exports an interface alongside its driver.
+Every business domain imports the storage package to use it.
+Applying the dependency inversion principle in reverse breaks compile boundaries.
+
+Dependency inversion states that high-level modules should never depend on low-level modules; both should depend on abstractions.
+
+Here is where it bites:
+→ Domain services importing concrete database packages just to see an interface
+→ Test suites stubbing twelve unused methods on massive bloated interfaces
+→ A schema tweak in storage forcing a recompile of pure business logic
+
+When a producer defines its own interface, it dictates terms to callers. Control flow and compile-time dependencies run in the exact same direction. The abstraction is merely co-located with the implementation, dragging transitive dependencies along for the ride.
+
+Real inversion places the interface next to the consumer. If your billing service only needs an account balance, define a single-method Reader interface inside the billing package. The storage package satisfies it implicitly without knowing billing exists.
+
+Flipping that dependency arrow cuts build times and decouples business logic from external drivers entirely.
+
+Remember this during your next architectural review.
+
+Do you let consumers define their own interfaces, or do you still maintain a shared contracts package?
+
+#golang #softwarearchitecture #cleancode #systemdesign #refactoring
