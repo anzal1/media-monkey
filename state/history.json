@@ -1741,5 +1741,20 @@
     "slot": "2026-10-17T07:30:00.000Z",
     "igMediaId": "18231519133333926",
     "publishedAt": "2026-10-17T07:30:06Z"
+  },
+  {
+    "slug": "gpu-cold-starts-weight-loading",
+    "topic": "GPU cold starts",
+    "hook": "Your autoscaler just spun up an empty GPU.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-18",
+    "length": "tight",
+    "seconds": 103.8,
+    "lang": "en",
+    "at": "2026-10-17T12:08:30.424Z",
+    "ytVideoId": "nhMzbRPNA98",
+    "slot": "2026-10-17T13:30:00.000Z"
   }
 ]

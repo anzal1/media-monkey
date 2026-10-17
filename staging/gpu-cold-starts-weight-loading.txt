@@ -1,0 +1,24 @@
+Your autoscaler provisions a fresh worker.
+The router pushes the prompt.
+GPU cold starts lock your latency at ninety seconds. ⏳
+
+GPU cold starts are the physical transfer bottlenecks that occur before a neural network can run inference on an empty accelerator.
+
+Here is where it bites:
+→ Serverless workers launch on demand without resident weights in memory
+→ Tens of gigabytes must move across storage, host RAM, and PCIe buses
+→ P99 latency explodes while clients wait on engine compilation
+
+When a new GPU container launches, it holds zero model parameters. The host machine first downloads raw model checkpoints over the network from object storage into host RAM. Every layer tensor must then be parsed and copied across PCIe bus lanes into high bandwidth GPU memory.
+
+Once the parameters exist on-chip, inference frameworks like vLLM must profile available memory and preallocate huge contiguous chunks of VRAM for the KV cache. Until this setup pipeline completes, the inference engine cannot execute a single matrix multiplication.
+
+Moving an eighty gigabyte model across Gen 4 PCIe takes multiple seconds just for raw transfer, and full initialization easily drags past a minute.
+
+Next time your autoscaler spins down warm instances.
+
+Do you keep expensive hot standbys running, or do you use local NVMe caching to cut down warm-up times?
+
+AI system design, part 16. Follow for part 17.
+
+#vllm #cuda #machinelearning #systemdesign #gpus
