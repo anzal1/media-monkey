@@ -1792,5 +1792,20 @@
     "slot": "2026-10-18T03:00:00.000Z",
     "igMediaId": "17896716891676905",
     "publishedAt": "2026-10-18T03:00:07Z"
+  },
+  {
+    "slug": "why-llm-services-reject-requests",
+    "topic": "admission control",
+    "hook": "Your LLM server just crashed at ninety percent load.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-19",
+    "length": "deep",
+    "seconds": 143.2,
+    "lang": "en",
+    "at": "2026-10-18T06:51:45.952Z",
+    "ytVideoId": "lGPPOE9Mm9s",
+    "slot": "2026-10-18T07:30:00.000Z"
   }
 ]

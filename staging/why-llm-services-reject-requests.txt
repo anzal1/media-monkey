@@ -1,0 +1,22 @@
+Your tail latency just spiked under peak load.
+Your GPU memory allocator is threatening out-of-memory errors.
+Without strict admission control your LLM service enters fatal thrashing. 🚨
+
+Admission control is the deliberate decision to reject or shed incoming requests before they can exhaust hardware resources.
+
+Here is where it bites:
+➔ Traffic surges by forty percent during a product launch
+➔ The KV cache consumes all available GPU memory
+➔ The scheduler starts swapping tokens over PCIe to host RAM
+
+When a standard web API receives too much traffic, threads queue up and CPU cycles get divided evenly. But large language models allocate continuous memory for the KV cache as they decode tokens one by one.
+
+If you accept more requests than your GPU memory can hold, the engine runs out of physical cache blocks. It has to preempt running requests, evict their working state to system RAM, or abort them halfway through generation.
+
+Dropping excess traffic early at the API gateway protects the engine queues, ensuring your generation latency stays flat under heavy load.
+
+Next time your cluster hits a traffic spike.
+
+Have you had to configure request shedding on your inference endpoints, or did you let the queue absorb the burst?
+
+#systemdesign #vllm #gpumemory #inferencelatency #llmops
