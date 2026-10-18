@@ -1826,5 +1826,20 @@
     "slot": "2026-10-18T13:30:00.000Z",
     "igMediaId": "17909577264486096",
     "publishedAt": "2026-10-18T13:30:06Z"
+  },
+  {
+    "slug": "recursion-and-the-call-stack",
+    "topic": "recursion and the call stack",
+    "hook": "Your clean recursive tree walk just crashed.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-32",
+    "length": "deep",
+    "seconds": 126.1,
+    "lang": "en",
+    "at": "2026-10-18T15:40:13.311Z",
+    "ytVideoId": "V2-f07Hxfrk",
+    "slot": "2026-10-18T17:30:00.000Z"
   }
 ]
