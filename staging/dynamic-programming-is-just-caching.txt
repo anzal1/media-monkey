@@ -1,0 +1,24 @@
+Fibonacci of fifty crashes the thread.
+Dynamic programming sounds like high-level calculus.
+Your hardware is actually just begging for a lookup table. 💡
+
+Dynamic programming is simply remembering past answers so you never recompute overlapping subproblems.
+
+Here is where it bites:
+→ Elegant recursive formulas branch into trillions of duplicate stack frames.
+→ The CPU repeats identical branches millions of times per second.
+→ Memory thrashing explodes while solving subproblems you already finished.
+
+Pure recursion creates an exponential call tree. When computing Fibonacci numbers, finding the forty-fifth value requires resolving the fortieth value dozens of times across independent stack frames.
+
+Dynamic programming eliminates this tree. Top-down memoization checks a lookup table before recursing. Bottom-up tabulation throws away recursion altogether, filling a contiguous flat array iteratively from the ground up.
+
+That flat buffer transforms computational complexity. A task demanding two quadrillion recursive steps drops to seventy simple iterations, streaming straight through CPU cache lines.
+
+Next time your recursive code stalls in production.
+
+From the root, part 25. Follow for part 26.
+
+Do you default to top-down memoization with recursion or rewrite straight to a bottom-up iterative table?
+
+#dynamicprogramming #algorithms #computerscience #softwareengineering #datastructures

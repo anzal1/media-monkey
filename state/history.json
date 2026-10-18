@@ -1843,5 +1843,20 @@
     "slot": "2026-10-18T17:30:00.000Z",
     "igMediaId": "18041649329831436",
     "publishedAt": "2026-10-18T17:30:06Z"
+  },
+  {
+    "slug": "dynamic-programming-is-just-caching",
+    "topic": "dynamic programming",
+    "hook": "Your recursive function just timed out on fifty.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-33",
+    "length": "tight",
+    "seconds": 109,
+    "lang": "en",
+    "at": "2026-10-18T23:38:29.241Z",
+    "ytVideoId": "jt5bIo-VWxU",
+    "slot": "2026-10-19T03:00:00.000Z"
   }
 ]
