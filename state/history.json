@@ -1809,5 +1809,20 @@
     "slot": "2026-10-18T07:30:00.000Z",
     "igMediaId": "18021403466927674",
     "publishedAt": "2026-10-18T07:30:07Z"
+  },
+  {
+    "slug": "raii-breaks-tail-call-optimization",
+    "topic": "adding a single raii guard broke your tail call optimization",
+    "hook": "You add one lock and crash your stack.",
+    "source": "live",
+    "track": "production",
+    "category": "compilers",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 80.6,
+    "lang": "en",
+    "at": "2026-10-18T12:35:43.418Z",
+    "ytVideoId": "lmKniBO7ZLU",
+    "slot": "2026-10-18T13:30:00.000Z"
   }
 ]
