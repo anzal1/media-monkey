@@ -1,0 +1,24 @@
+Your production heap is drowning in a bad graph traversal.
+Memory grows without a crash.
+Objects never get collected.
+
+Graph traversal is the process of visiting every connected node in a network of references without cycling forever.
+
+Picture this:
+→ A background cache array quietly holds onto user session pointers
+→ The garbage collector starts at thread roots and follows every live reference
+→ Millions of unused data objects stay pinned in RAM forever
+
+Textbooks frame graph search as a puzzle on whiteboards. In production, your runtime executes depth-first traversal every time a garbage collector runs a mark phase. Thread stacks serve as root nodes, following pointer addresses across heap allocations. Whatever is reached stays alive. Anything detached gets reclaimed.
+
+Web crawlers run the exact opposite strategy. They push incoming links into distributed queues for breadth-first traversals, grabbing broad web structure before wandering down single domain rabbit holes.
+
+A single forgotten reference edge can pin seventy percent of your application heap. You do not fix it by tuning collector pauses; you fix it by breaking the traversal path.
+
+Next time your memory usage climbs.
+
+From the root, part 26. Follow for part 27.
+
+Have you ever chased down a leak that turned out to be a static collection holding an entire tree alive?
+
+#graphtraversal #garbagecollection #computerscience #softwareengineering #jvm
