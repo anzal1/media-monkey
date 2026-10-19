@@ -1,0 +1,24 @@
+Your chat app feels instant because streaming responses bypass whole-payload buffering.
+Nothing is waiting for the complete generation.
+The browser draws each word as the GPU emits it. ⚡
+
+Streaming responses deliver LLM tokens immediately across an open HTTP connection instead of buffering the full completion on the server.
+
+Here is where it bites:
+→ Nginx buffers chunks until a 4KB memory page fills
+→ Users wait five seconds for a sudden wall of text
+→ Connection drops lose the entire generated answer
+
+The inference engine runs token generation autoregressively. Each forward pass produces a token ID, decodes it into UTF-8 text, and yields it to an asynchronous HTTP handler. The server sets the Content-Type header to text/event-stream and enables HTTP chunked transfer encoding, which omits the Content-Length header so bytes can leave immediately.
+
+Each message follows the Server-Sent Events wire format: data followed by a JSON payload and two newlines. The client reads the incoming TCP byte stream chunk by chunk using a ReadableStream reader on the Fetch API, updating the document model token by token.
+
+Time to first token drops from 5000 milliseconds to under 200 milliseconds. You cut perceived latency by 90 percent without making the model run any faster.
+
+Next time you debug an inference pipeline that hangs until completion.
+
+Did an intermediate reverse proxy kill your streaming setup, or was it a misconfigured gzip middleware?
+
+AI system design, part 18. Follow for part 19.
+
+#serversentevents #webdevelopment #systemdesign #latency #softwareengineering

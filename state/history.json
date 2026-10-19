@@ -1860,5 +1860,20 @@
     "slot": "2026-10-19T03:00:00.000Z",
     "igMediaId": "18210125710320192",
     "publishedAt": "2026-10-19T03:00:10Z"
+  },
+  {
+    "slug": "how-streaming-responses-work",
+    "topic": "streaming responses",
+    "hook": "Your browser renders the answer word by word.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-20",
+    "length": "deep",
+    "seconds": 148.7,
+    "lang": "en",
+    "at": "2026-10-19T07:19:49.576Z",
+    "ytVideoId": "a52SEbRZ3Sw",
+    "slot": "2026-10-19T07:30:00.000Z"
   }
 ]
