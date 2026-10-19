@@ -1,0 +1,22 @@
+Your p99 latency doubled after enabling speculative decoding on your cluster.
+Throughput cratered by forty percent.
+Your GPU tensor cores are pinned at one hundred percent while generating almost nothing 📉
+
+Speculative decoding uses a lightweight draft model to propose tokens that a larger target model validates in parallel.
+
+Here is where it bites:
+→ Running high-entropy coding tasks with low acceptance rates
+→ Batch sizes large enough to already saturate your compute units
+→ Rollbacks that thrash high bandwidth memory inside your KV cache
+
+The draft model produces speculative tokens sequentially. The target model then runs a single forward pass to verify those candidates via rejection sampling. When the prompt involves strict logic or code, the target rejects the candidate at token one.
+
+That rejection throws away all remaining speculative tokens. Meanwhile, your memory allocator has to prune allocations from the KV cache, and the compute cycles spent running the draft model are completely lost. Under high traffic, speculative decoding robs resources from real concurrent batches.
+
+If your acceptance rate drops below sixty percent, speculative decoding costs you raw throughput instead of saving it.
+
+Save this for your next LLM deployment review.
+
+What acceptance rate threshold are you seeing in production before speculative decoding breaks even?
+
+#speculativedecoding #llminference #vllm #deeplearning #systemdesign
