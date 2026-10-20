@@ -1945,5 +1945,20 @@
     "slot": "2026-10-20T07:30:00.000Z",
     "igMediaId": "17972167659169417",
     "publishedAt": "2026-10-20T07:30:05Z"
+  },
+  {
+    "slug": "topological-sort-build-systems",
+    "topic": "topological sort",
+    "hook": "Your build tool compiles forty files at once.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-35",
+    "length": "deep",
+    "seconds": 119,
+    "lang": "en",
+    "at": "2026-10-20T13:33:45.938Z",
+    "ytVideoId": "1kuoR_ONS_4",
+    "slot": "2026-10-20T13:30:00.000Z"
   }
 ]
