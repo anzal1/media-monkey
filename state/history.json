@@ -1911,5 +1911,20 @@
     "slot": "2026-10-19T17:30:00.000Z",
     "igMediaId": "18396784924206412",
     "publishedAt": "2026-10-19T18:37:47Z"
+  },
+  {
+    "slug": "token-economics-input-vs-output",
+    "topic": "token economics",
+    "hook": "Your token bill just tripled overnight.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-21",
+    "length": "deep",
+    "seconds": 123.6,
+    "lang": "en",
+    "at": "2026-10-20T00:45:31.006Z",
+    "ytVideoId": "ivFdI_na_X4",
+    "slot": "2026-10-20T03:00:00.000Z"
   }
 ]
