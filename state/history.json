@@ -1928,5 +1928,20 @@
     "slot": "2026-10-20T03:00:00.000Z",
     "igMediaId": "18143441899598656",
     "publishedAt": "2026-10-20T03:00:08Z"
+  },
+  {
+    "slug": "silent-udp-packet-drops-flatline-graphs",
+    "topic": "silent udp packet drops make peak traffic look completely flat",
+    "hook": "Your traffic graph just flatlined at peak.",
+    "source": "live",
+    "track": "production",
+    "category": "observability",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 89.3,
+    "lang": "en",
+    "at": "2026-10-20T06:58:20.265Z",
+    "ytVideoId": "CEJANhmxsBc",
+    "slot": "2026-10-20T07:30:00.000Z"
   }
 ]

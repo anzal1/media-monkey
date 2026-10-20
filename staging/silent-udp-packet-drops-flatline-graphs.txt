@@ -1,0 +1,22 @@
+Your busiest DNS server shows a perfectly flat peak line.
+CPU stays cool at thirty percent.
+Silent udp packet drops are deleting traffic before your app ever sees it.
+
+The UDP receive buffer is a fixed kernel queue that dumps packets without warning when userspace reads too slowly.
+
+Here is where it bites:
+→ Traffic doubles during a flash sale
+→ Runtimes pause for a short memory sweep
+→ Clients hang waiting for responses that never arrive
+
+Incoming datagrams travel from the network card directly into socket memory. The Linux kernel assigns this queue a default byte limit defined by rmem_default. Unlike TCP, UDP carries no congestion windows or backoff signals. When that buffer hits its ceiling, incoming packets drop on the floor instantly.
+
+Your metrics flatline because your application continues reading at its maximum processing speed. You measure steady performance while discarding half your customer traffic behind the scenes.
+
+Fix it by raising net.core.rmem_max, sizing up SO_RCVBUF, and draining packets in batches using the recvmmsg system call.
+
+Save this for your next latency investigation.
+
+Have you ever caught RcvbufErrors silently lying on your peak throughput dashboards?
+
+#networking #linuxkernel #sysadmin #sre #devops
