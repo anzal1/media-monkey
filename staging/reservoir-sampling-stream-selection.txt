@@ -1,0 +1,24 @@
+A socket dumps millions of events.
+Your ram limit is fixed.
+Reservoir sampling pulls a provably fair sample anyway.
+
+Reservoir sampling is an algorithm that maintains a uniform random sample of size k from an unbounded data stream in a single pass.
+
+Picture this:
+→ An infinite Kafka stream needs uniform audit logging
+→ You cannot store the stream in memory or write it to temporary disk
+→ The total number of events is completely unknown ahead of time
+
+The naive textbook approach fills an array of size k with the first k items. For every subsequent item i, you draw a random number from one to i. If that integer is smaller than k, it replaces an existing item at that index. Every item that has passed through the socket holds an identical k over i chance of surviving.
+
+At high volume, calling a random number generator for every single record bottlenecks CPU caches. Production engines implement Vitter Algorithm Z instead. It calculates how many records to skip by sampling a geometric distribution, skipping the coin toss entirely for thousands of records at a time.
+
+That cuts random number generation by over ninety percent while preserving exact mathematical uniformity.
+
+Next time your telemetry collector runs out of memory, stop buffering batches.
+
+From the root, part 29. Follow for part 30.
+
+Have you ever run reservoir sampling inside a distributed pipeline, or do you always hash keys to partitions instead?
+
+#reservoirsampling #algorithms #datastructures #computerscience #systemdesign

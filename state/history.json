@@ -2013,5 +2013,20 @@
     "slot": "2026-10-21T07:30:00.000Z",
     "igMediaId": "18117253205034554",
     "publishedAt": "2026-10-21T07:30:06Z"
+  },
+  {
+    "slug": "reservoir-sampling-stream-selection",
+    "topic": "reservoir sampling",
+    "hook": "Your stream has billions of uncounted rows.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-38",
+    "length": "deep",
+    "seconds": 125.7,
+    "lang": "en",
+    "at": "2026-10-21T13:40:09.215Z",
+    "ytVideoId": "DkJ2HkSocUA",
+    "slot": "2026-10-21T13:30:00.000Z"
   }
 ]
