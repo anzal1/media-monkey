@@ -1996,5 +1996,20 @@
     "slot": "2026-10-21T03:00:00.000Z",
     "igMediaId": "18049323038815930",
     "publishedAt": "2026-10-21T03:00:10Z"
+  },
+  {
+    "slug": "why-maps-skip-plain-dijkstra",
+    "topic": "shortest paths",
+    "hook": "Your phone routes across continents in milliseconds.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-36",
+    "length": "tight",
+    "seconds": 111.6,
+    "lang": "en",
+    "at": "2026-10-21T06:54:35.584Z",
+    "ytVideoId": "xuNy0IbPUPM",
+    "slot": "2026-10-21T07:30:00.000Z"
   }
 ]
