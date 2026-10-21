@@ -2030,5 +2030,20 @@
     "slot": "2026-10-21T13:30:00.000Z",
     "igMediaId": "18140054620615899",
     "publishedAt": "2026-10-21T13:41:56Z"
+  },
+  {
+    "slug": "rag-document-chunking-explained",
+    "topic": "chunking",
+    "hook": "Your retriever just missed the exact answer.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-23",
+    "length": "tight",
+    "seconds": 93.8,
+    "lang": "en",
+    "at": "2026-10-21T16:54:08.183Z",
+    "ytVideoId": "5UlT3-RFEhU",
+    "slot": "2026-10-21T17:30:00.000Z"
   }
 ]

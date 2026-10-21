@@ -1,0 +1,22 @@
+Your retriever misses an obvious fact.
+Naive document chunking cut the table in half.
+The vector search returned completely irrelevant context. 📄
+
+Chunking is the process of breaking long documents into bounded pieces before calculating vector embeddings for retrieval.
+
+Picture this:
+↳ A fixed 500-token window splits a financial balance sheet midway through Q3 revenue.
+↳ The pronoun 'it' lives in chunk B while its actual subject sits stranded in chunk A.
+↳ The embedding model calculates vectors for fragments that carry half-truths.
+
+When text gets chopped blindly by character counts, semantic coherence evaporates. An embedding model maps full thoughts into vector space; feed it half a sentence, and its mathematical coordinates float away from the actual query.
+
+Production architectures drop static character splitters. They use semantic chunking to track running cosine similarity between adjacent sentences, breaking only when topics shift. Or they use parent-child indexing: embed small child chunks for precise retrieval, but return the whole parent section to your LLM context window.
+
+Stop blaming your embedding model for bad chunking boundaries. Smarter splits substantially boost your retrieval recall without touching model weights.
+
+Next time your retrieval pipeline hallucinates.
+
+Are you still running fixed-size character splitters in production, or did you move to parent-child retrieval?
+
+#rag #vectordatabase #systemdesign #langchain #llm
