@@ -1,0 +1,24 @@
+Two threads on separate cores.
+Two completely isolated atomic integers.
+A sudden crash into false sharing kills your throughput. 💥
+
+False sharing happens when distinct variables edited by different CPU cores happen to share the same sixty-four-byte cache line in system memory.
+
+Here is where it bites:
+→ Thread workers updating independent metrics counters
+→ High-frequency ring buffers with adjacent head and tail indexes
+→ Parallel array updates without explicit cache line padding
+
+CPUs do not read or write single variables from RAM. They move memory in sixty-four-byte chunks called cache lines into local L1 caches. When two independent counters sit next to each other inside a struct, they occupy the same cache line.
+
+To ensure consistency across cores, modern chips enforce a coherence protocol like MESI. If core zero wants to update its counter, it must gain exclusive ownership. It broadcasts an invalidation across the internal bus, instantly wiping core one's copy of that line.
+
+When core one increments its own variable a cycle later, it hits an invalid line. It stalls while reloading the data, only to invalidate core zero right back. The line sloshes back and forth across interconnects instead of computing.
+
+Padding the struct fields to keep them sixty-four bytes apart eliminates the bouncing entirely and restores near-linear scaling.
+
+Save this for your next latency debug.
+
+What is the worst latency cliff you have traced back to cache coherence?
+
+#multithreading #cpuarchitecture #falsesharing #systemsengineering #lowlatency

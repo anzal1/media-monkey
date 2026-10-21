@@ -1979,5 +1979,20 @@
     "slot": "2026-10-20T17:30:00.000Z",
     "igMediaId": "18120330682749853",
     "publishedAt": "2026-10-20T17:30:06Z"
+  },
+  {
+    "slug": "two-independent-counters-run-slower",
+    "topic": "two independent atomic counters run ten times slower together",
+    "hook": "Two independent atomic counters run ten times slower.",
+    "source": "live",
+    "track": "production",
+    "category": "concurrency",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 128.5,
+    "lang": "en",
+    "at": "2026-10-21T00:16:02.837Z",
+    "ytVideoId": "69Utv1GObPs",
+    "slot": "2026-10-21T03:00:00.000Z"
   }
 ]
