@@ -2047,5 +2047,20 @@
     "slot": "2026-10-21T17:30:00.000Z",
     "igMediaId": "18128356214493056",
     "publishedAt": "2026-10-21T17:30:07Z"
+  },
+  {
+    "slug": "binary-search-branch-mispredictions",
+    "topic": "your binary search branch mispredictions cost more than the comparisons",
+    "hook": "Your sorted array lookup runs twice as slow.",
+    "source": "live",
+    "track": "production",
+    "category": "algorithms",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 119,
+    "lang": "en",
+    "at": "2026-10-22T00:22:35.684Z",
+    "ytVideoId": "qbRaSHmDoTA",
+    "slot": "2026-10-22T03:00:00.000Z"
   }
 ]
