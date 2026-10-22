@@ -2064,5 +2064,20 @@
     "slot": "2026-10-22T03:00:00.000Z",
     "igMediaId": "17950243572319099",
     "publishedAt": "2026-10-22T03:00:09Z"
+  },
+  {
+    "slug": "hyperloglog-counting-billions-in-kilobytes",
+    "topic": "HyperLogLog",
+    "hook": "You want to count unique visitors.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-39",
+    "length": "tight",
+    "seconds": 73.8,
+    "lang": "en",
+    "at": "2026-10-22T06:50:49.512Z",
+    "ytVideoId": "0aAKDrdVuqA",
+    "slot": "2026-10-22T07:30:00.000Z"
   }
 ]

@@ -1,0 +1,22 @@
+A billion unique IDs hit your tracking pipeline.
+A naive hash table burns gigabytes of memory.
+HyperLogLog counts them in twelve kilobytes. 📊
+
+HyperLogLog is an algorithm that estimates the number of distinct elements in a massive stream using a tiny, fixed amount of memory.
+
+Picture this:
+→ Storing every user ID as an exact set burns your RAM.
+→ Your stream needs fast cardinality counts across days.
+→ A tiny margin of error is completely acceptable.
+
+When a piece of data arrives, the algorithm runs it through a uniform hash function to produce a sixty-four-bit number. The first handful of bits choose a specific bucket. The remaining bits represent a random sequence of binary coin flips.
+
+Each bucket only records the longest streak of leading zeroes it has encountered. Seeing a run of twenty zeroes is statistically improbable unless millions of unique values passed through. By combining the readings across thousands of buckets with a harmonic mean, extreme lucky runs cancel out.
+
+You count a billion distinct keys within twelve kilobytes of storage, keeping standard error near one percent.
+
+From the root, part 30. Follow for part 31.
+
+hyperloglog redis cardinality systemdesign algorithms
+
+#hyperloglog #redis #cardinality #systemdesign #algorithms
