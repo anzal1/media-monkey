@@ -2098,5 +2098,20 @@
     "slot": "2026-10-22T13:30:00.000Z",
     "igMediaId": "17965841019078725",
     "publishedAt": "2026-10-22T13:39:58Z"
+  },
+  {
+    "slug": "git-rebase-fork-point-drops-commits",
+    "topic": "git rebase silently drops your commits using fork point calculation",
+    "hook": "You ran git rebase and three commits vanished.",
+    "source": "live",
+    "track": "production",
+    "category": "git-tooling",
+    "episodeId": null,
+    "length": "tight",
+    "seconds": 85.2,
+    "lang": "en",
+    "at": "2026-10-22T16:57:01.713Z",
+    "ytVideoId": "EPUdBF3AQh0",
+    "slot": "2026-10-22T17:30:00.000Z"
   }
 ]

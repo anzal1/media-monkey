@@ -1,0 +1,22 @@
+Your branch just lost three local commits.
+Git printed successful rebase.
+The fork point calculation decided your work was garbage.
+
+Git rebase uses your upstream reflog to guess where you split off instead of just comparing commit ancestry.
+
+Here is where it bites:
+→ Upstream gets force pushed or amended by a teammate
+→ You run git pull --rebase on your local branch
+→ Git assumes your matching commits were intentionally discarded
+
+When git rebase runs without explicit base arguments, it calls git merge-base with the fork point option. It walks through your local reflog for the upstream branch. If any of your commits share an ancestor that was rewritten upstream, git guesses that those changes are already obsolete.
+
+It skips them during replay. No merge conflict appears, no warning gets printed, and your commits simply cease to exist on the new branch. You only realize hours later when code is missing from your pull request.
+
+Passing --no-fork-point forces git to look at the actual commit graph instead of ephemeral reflog states, saving your commits from the void.
+
+Keep this ready next time your rebase eats clean code.
+
+Have you ever lost commits to fork-point calculation without realizing it?
+
+#git #gitrebase #devops #softwareengineering #systemdesign
