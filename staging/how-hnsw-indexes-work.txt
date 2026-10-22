@@ -1,0 +1,24 @@
+Ten million vector comparisons freeze your pipeline.
+A flat nearest-neighbor scan costs three seconds per query.
+Production engines survive this using HNSW vector indexes.
+
+Hierarchical Navigable Small World is a multi-layer graph index that enables logarithmic-time approximate nearest neighbor search across high-dimensional vector spaces.
+
+Here is where it bites:
+→ Running flat L2 or cosine scans over embeddings inside a user-facing loop
+→ Hitting strict latency budgets when scaling a retrieval pipeline beyond one million chunks
+→ Running out of instance RAM because graph edge pointers consume more memory than vectors
+
+Search begins at the topmost layer of an HNSW graph. This sparse top layer contains long-range highway edges connecting distant vectors. Your query greedily hops across neighbors until it hits a local minimum, then drops vertically to the corresponding node in the denser layer below.
+
+It repeats this process down through the hierarchy. By the time the search lands on layer zero, it is already centered in the exact semantic neighborhood, needing only a handful of local checks to collect the nearest k vectors.
+
+Logarithmic search turns millions of floating-point distance checks into a few hundred hops, keeping p99 retrieval under five milliseconds.
+
+Next time your retrieval latency spikes as the dataset scales.
+
+AI system design, part 22. Follow for part 23.
+
+What value of efSearch are you running in production to balance recall against latency?
+
+#hnsw #vectorsearch #vectordatabase #systemdesign #rag

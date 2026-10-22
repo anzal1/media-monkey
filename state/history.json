@@ -2081,5 +2081,20 @@
     "slot": "2026-10-22T07:30:00.000Z",
     "igMediaId": "17954910435295674",
     "publishedAt": "2026-10-22T07:30:06Z"
+  },
+  {
+    "slug": "how-hnsw-indexes-work",
+    "topic": "HNSW vector indexes",
+    "hook": "Your vector search scans ten million embeddings.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-24",
+    "length": "deep",
+    "seconds": 139.9,
+    "lang": "en",
+    "at": "2026-10-22T13:37:29.973Z",
+    "ytVideoId": "VV3uXqWHfjc",
+    "slot": "2026-10-22T13:30:00.000Z"
   }
 ]
