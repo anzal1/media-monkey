@@ -2166,5 +2166,20 @@
     "slot": "2026-10-23T13:30:00.000Z",
     "igMediaId": "18082513166372291",
     "publishedAt": "2026-10-23T13:30:07Z"
+  },
+  {
+    "slug": "everything-is-a-file-descriptor",
+    "topic": "file descriptors",
+    "hook": "Your backend just threw too many open files.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-42",
+    "length": "tight",
+    "seconds": 97.5,
+    "lang": "en",
+    "at": "2026-10-23T17:12:29.772Z",
+    "ytVideoId": "9waEI8nuIi8",
+    "slot": "2026-10-23T17:30:00.000Z"
   }
 ]

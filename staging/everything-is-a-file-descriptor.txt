@@ -1,0 +1,24 @@
+A simple API server stops accepting TCP traffic at midnight.
+The process runs out of file descriptors after twenty minutes under load.
+Error code EMFILE breaks every worker.
+
+A file descriptor is just an unsigned integer acting as an index into a process-level table managed by the kernel.
+
+Here is where it bites:
+→ Leaking unclosed HTTP response bodies in a loop
+→ Pooling database connections without tight release timers
+→ Forgetting that Unix handles network sockets using the exact same table as disk files
+
+When your application calls socket or open, the operating system assigns the lowest available integer in your local descriptor table. That entry points directly to an open file description in kernel space, managing access flags, offsets, and active reference counters.
+
+The kernel resolves that entry down to the actual inode, virtual pipe buffer, or TCP socket struct. Because default system limits cap a single process at 1,024 descriptors, failing to close a socket consumes the exact same finite slots needed to read configuration files or spawn threads.
+
+Running out takes down the entire process without touching disk space or maxing out memory.
+
+Audit your connection pools before your next load test.
+
+From the root, part 32. Follow for part 33.
+
+Have you ever taken down a production box because a background routine leaked raw sockets?
+
+#filedescriptors #linux #kernel #systemsengineering #unix
