@@ -2149,5 +2149,20 @@
     "slot": "2026-10-23T07:30:00.000Z",
     "igMediaId": "17915814636496509",
     "publishedAt": "2026-10-23T07:30:07Z"
+  },
+  {
+    "slug": "nagle-algorithm-delayed-ack",
+    "topic": "nagle algorithm and delayed ack turn one packet into forty milliseconds",
+    "hook": "Your tiny write just took forty milliseconds.",
+    "source": "live",
+    "track": "production",
+    "category": "networking",
+    "episodeId": null,
+    "length": "deep",
+    "seconds": 137.9,
+    "lang": "en",
+    "at": "2026-10-23T13:17:53.007Z",
+    "ytVideoId": "nrTCkq-kB4w",
+    "slot": "2026-10-23T13:30:00.000Z"
   }
 ]

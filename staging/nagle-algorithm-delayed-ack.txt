@@ -1,0 +1,20 @@
+A ten byte write over a local rack.
+Zero dropped packets in your logs.
+The nagle algorithm stalls your p99 latency at exactly forty milliseconds.
+
+TCP was built to conserve scarce bandwidth, but two independent optimizations from the nineteen eighties quietly deadlock each other on modern low latency networks.
+
+Here is where it bites:
+→ An application sends a small header and then a small payload in two separate write calls
+→ The sender kernel buffers the second write because the first has not been acknowledged
+→ The receiver kernel holds the acknowledgement on a forty millisecond timer waiting for more data
+
+The sender refuses to transmit partial packets while unacknowledged bytes sit on the wire. The receiver delays its acknowledgement hoping outbound response traffic will carry it for free. Neither side transmits. Your request sits frozen in kernel buffers until the receiver timer runs out and forces a standalone ack.
+
+Disabling nagle with the TCP NODELAY socket option drops that latency back to sub-millisecond speeds.
+
+Save this for your next latency debug.
+
+Have you ever caught this bug hiding behind an HTTP client library or an RPC framework?
+
+#networking #tcp #latency #linux #systemdesign
