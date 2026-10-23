@@ -1,0 +1,24 @@
+A single null pointer dereference in thread five.
+Every active request in your service drops simultaneously.
+The dashboard reveals processes vs threads isn't just about speed.
+
+A thread is not a mini-process; it is an execution context sharing your process's exact page table and virtual address space.
+
+Here is where it bites:
+→ Spawning eight threads to handle untrusted user uploads concurrently.
+→ One thread triggers a buffer overrun in an image decoding library.
+→ The kernel delivers SIGSEGV to that thread, terminating the entire process and killing all seven healthy threads mid-request.
+
+The CPU enforces memory safety through page tables. When you fork a process, the OS provisions a distinct page directory. Switch between processes, and the CPU must reload control register three and flush the translation lookaside buffer, incurring expensive cache misses.
+
+To skip that overhead, the clone syscall creates threads that point to the parent's memory descriptor. Threads share the heap, data segment, and file tables, keeping only their own registers and stack. But because all memory is mapped into the same hardware table, thread isolation does not exist at the silicon layer. A hardware fault in one thread directs a fatal signal that tears down the entire process.
+
+Running multi-process architectures costs about 15MB to 30MB of RAM per worker, but isolates crashes completely.
+
+Next time you design a multi-tenant worker architecture.
+
+Do you run multi-process workers or thread pools for heavy compute jobs?
+
+From the root, part 31. Follow for part 32.
+
+#operatingsystems #multithreading #linuxkernel #computerscience #systemdesign

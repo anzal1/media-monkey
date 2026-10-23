@@ -2115,5 +2115,20 @@
     "slot": "2026-10-22T17:30:00.000Z",
     "igMediaId": "18100002326651779",
     "publishedAt": "2026-10-22T17:30:08Z"
+  },
+  {
+    "slug": "processes-vs-threads-memory",
+    "topic": "processes vs threads",
+    "hook": "One thread segfaults and your whole app dies.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-40",
+    "length": "deep",
+    "seconds": 161.4,
+    "lang": "en",
+    "at": "2026-10-23T00:24:32.315Z",
+    "ytVideoId": "NQLu73JRVrM",
+    "slot": "2026-10-23T03:00:00.000Z"
   }
 ]
