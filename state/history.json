@@ -2132,5 +2132,20 @@
     "slot": "2026-10-23T03:00:00.000Z",
     "igMediaId": "17903028126373300",
     "publishedAt": "2026-10-23T03:00:10Z"
+  },
+  {
+    "slug": "ivf-and-product-quantisation",
+    "topic": "IVF and product quantisation",
+    "hook": "A billion vectors just melted your server RAM.",
+    "source": "series",
+    "track": "ai",
+    "category": "ai-systems",
+    "episodeId": "ai-25",
+    "length": "tight",
+    "seconds": 107.8,
+    "lang": "en",
+    "at": "2026-10-23T06:46:10.200Z",
+    "ytVideoId": "oPZV2TmvAHc",
+    "slot": "2026-10-23T07:30:00.000Z"
   }
 ]

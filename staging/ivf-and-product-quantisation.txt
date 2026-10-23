@@ -1,0 +1,24 @@
+One billion raw embeddings require 4TB of memory.
+Uncompressed floats crush your vector search budget.
+Running product quantisation shrinks that footprint to 100GB.
+
+Product quantisation is a lossy compression algorithm that cuts high-dimensional vectors into segments and maps each segment to a shared codebook centroid.
+
+Picture this:
+→ Storing uncompressed vectors causes out-of-memory crashes
+→ HNSW graph indexes require massive amounts of dedicated RAM
+→ Your similarity queries slow to an unworkable crawl
+
+First, inverted file partitioning groups the dataset into Voronoi cells using k-means. A query vector checks only nearby cluster centroids, pruning ninety-nine percent of candidates immediately.
+
+Then, product quantisation slices each vector into sub-vectors. Each sub-vector maps to its closest codebook centroid, turning floating-point arrays into a compact sequence of single-byte indices.
+
+During inference, the system builds an asymmetric distance lookup table. Distances are calculated against the codebook instead of rebuilding raw floats, slashing memory footprint by up to ninety-seven percent.
+
+Next vector database architecture review.
+
+Do you run pure HNSW in production, or do you quantise your vectors?
+
+AI system design, part 23. Follow for part 24.
+
+#vectordatabase #faiss #embeddings #systemdesign #machinelearning
