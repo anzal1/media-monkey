@@ -2200,5 +2200,20 @@
     "slot": "2026-10-24T03:00:00.000Z",
     "igMediaId": "18650572054036754",
     "publishedAt": "2026-10-24T03:00:06Z"
+  },
+  {
+    "slug": "mmap-hidden-page-faults",
+    "topic": "mmap",
+    "hook": "You replaced read with mmap to go fast.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-45",
+    "length": "tight",
+    "seconds": 86,
+    "lang": "en",
+    "at": "2026-10-24T06:44:15.630Z",
+    "ytVideoId": "bsUzcPn0Y3Q",
+    "slot": "2026-10-24T07:30:00.000Z"
   }
 ]

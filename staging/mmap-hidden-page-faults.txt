@@ -1,0 +1,24 @@
+Your latency profiler blames an innocent pointer dereference.
+You thought using mmap avoided all kernel overhead.
+Instead your worker thread stalls on disk.
+
+Memory mapping creates the illusion that a file lives entirely in RAM without calling read.
+
+Here is where it bites:
+→ Pointer access suddenly takes ten milliseconds
+→ Random reads trigger a flood of hardware traps
+→ Disk corruption throws a fatal SIGBUS
+
+When you invoke mmap, the operating system assigns virtual address space but loads nothing from disk. The page tables remain invalid until you touch the pointer.
+
+The CPU triggers a page fault exception on access, forcing the kernel to pause your thread while fetching storage blocks synchronously. You traded explicit I/O for invisible blocking traps.
+
+A single uncached block turns a sub-microsecond memory load into a full roundtrip to your solid state drive.
+
+Remember this before designing your next storage engine.
+
+Have you ever had a production worker killed by a mystery SIGBUS from an mmap boundary?
+
+From the root, part 34. Follow for part 35.
+
+#mmap #virtualmemory #linuxkernel #pagefault #systemsperformance
