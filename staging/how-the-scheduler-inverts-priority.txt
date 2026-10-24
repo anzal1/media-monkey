@@ -1,0 +1,24 @@
+Your audio buffer crackles at 99% idle CPU.
+A thread marked critical starves for ten full seconds.
+The operating system scheduler keeps feeding ordinary background workers instead. 💥
+
+Priority inversion happens when a low-priority thread holds a shared lock that a high-priority thread needs, while medium-priority work starves them both.
+
+Here is where it bites:
+→ Your low-priority telemetry worker takes a lock on a shared state buffer
+→ A real-time audio thread wakes up and blocks waiting on that exact lock
+→ A swarm of ordinary HTTP workers wake up and consume all remaining CPU cycles
+
+The scheduler looks at runnable threads. The critical thread is sleeping on the mutex, so it cannot run. The medium threads beat the low thread, so the kernel schedules them indefinitely. The low thread never gets CPU time to finish its work and unlock the resource. Your VIP task sits trapped behind ordinary background compute.
+
+NASA almost lost the Mars Pathfinder lander to this exact glitch in 1997 when an information bus mutex kept resetting the craft's realtime computer.
+
+When you build multithreaded systems with mixed priorities, configure your mutexes with priority inheritance using PTHREAD_PRIO_INHERIT. The kernel automatically boosts the lock holder's priority to match the highest blocked thread until it unlocks.
+
+Remember this next time your real-time threads stutter under zero overall load.
+
+Have you ever run into a priority inversion bug in production, or do you avoid shared locks between thread ranks entirely?
+
+From the root, part 33. Follow for part 34.
+
+#operatingsystems #concurrency #linuxkernel #multithreading #systemsengineering

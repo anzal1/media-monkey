@@ -2183,5 +2183,20 @@
     "slot": "2026-10-23T17:30:00.000Z",
     "igMediaId": "18100435331420248",
     "publishedAt": "2026-10-23T17:30:07Z"
+  },
+  {
+    "slug": "how-the-scheduler-inverts-priority",
+    "topic": "the scheduler",
+    "hook": "Your critical audio thread just missed its deadline.",
+    "source": "series",
+    "track": "root",
+    "category": "fundamentals",
+    "episodeId": "root-43",
+    "length": "deep",
+    "seconds": 117.4,
+    "lang": "en",
+    "at": "2026-10-24T00:06:06.417Z",
+    "ytVideoId": "qZzbumIqDUw",
+    "slot": "2026-10-24T03:00:00.000Z"
   }
 ]
